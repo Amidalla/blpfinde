@@ -4,7 +4,7 @@ import LazyLoad from "vanilla-lazyload";
 import Swiper from 'swiper';
 import 'swiper/swiper-bundle.css';
 import { Pagination, Navigation, Autoplay, Thumbs, EffectFade } from 'swiper/modules';
-import { Animation } from "./animation.js";
+import Animation from "./animation.js"; // Изменено на дефолтный импорт
 import IMask from 'imask';
 
 Swiper.use([Pagination, Navigation, Autoplay, Thumbs, EffectFade]);
@@ -29,27 +29,35 @@ function initPhoneMasks() {
 
 // Инициализация анимаций
 function initAnimation() {
-        const svgElement = document.querySelector('.stub__left svg');
+        const svgContainer = document.querySelector('.svg-animation-container');
 
-        if (svgElement) {
-                const animation = new Animation(svgElement);
+        if (svgContainer) {
+                const animation = new Animation(svgContainer);
 
+                // Проверяем SVG внутри контейнера
+                const svgElement = svgContainer.querySelector('svg');
 
-                if (svgElement.hasAttribute('data-loaded')) {
-                        animation.start();
-                } else {
-                        svgElement.addEventListener('load', () => {
-                                svgElement.setAttribute('data-loaded', 'true');
+                if (svgElement) {
+                        if (svgElement.hasAttribute('data-loaded')) {
                                 animation.start();
-                        });
-
-
-                        setTimeout(() => {
-                                if (!svgElement.hasAttribute('data-loaded')) {
+                        } else {
+                                svgElement.addEventListener('load', () => {
                                         svgElement.setAttribute('data-loaded', 'true');
                                         animation.start();
-                                }
-                        }, 500);
+                                });
+
+                                setTimeout(() => {
+                                        if (!svgElement.hasAttribute('data-loaded')) {
+                                                svgElement.setAttribute('data-loaded', 'true');
+                                                animation.start();
+                                        }
+                                }, 500);
+                        }
+                } else {
+
+                        setTimeout(() => {
+                                animation.start();
+                        }, 100);
                 }
         }
 }

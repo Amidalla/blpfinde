@@ -1,324 +1,776 @@
 export class Animation {
-    constructor(svgElement) {
-        this.svgElement = svgElement;
+    constructor(svgContainer) {
+        if (svgContainer.__animationInstance) {
+            return svgContainer.__animationInstance;
+        }
+
+        this.container = svgContainer;
+        this.container.__animationInstance = this;
+
         this.isAnimating = false;
         this.hasAnimated = false;
+        this.isAnimatingSixthCircle = false;
+        this.isAnimatingSeventhCircle = false;
 
+        this.SEVENTH_CIRCLE_SELECTOR = 'path[d="M296.919 651.403C302.329 652.473 305.359 658.378 303.536 664.69C301.714 671.003 295.785 675.135 290.375 674.064C284.965 672.994 281.934 667.089 283.757 660.776C285.58 654.464 291.509 650.332 296.919 651.403Z"]';
+        this.SEVENTH_ELLIPSE_SELECTOR = 'ellipse[cx="290.445"][cy="655.823"], ellipse[transform*="290.445 655.823"]';
+        this.SEVENTH_CIRCLE_RX = 5.54134;
+        this.SEVENTH_CIRCLE_RY = 6.44785;
 
-        this.svgElement.style.opacity = '0';
-        this.svgElement.style.visibility = 'hidden';
-        this.svgElement.style.pointerEvents = 'none';
-        this.svgElement.style.transition = 'none';
+        this.LINE_ANIMATION_DURATION = '0.528s';
+        this.LINE_ANIMATION_TIMEOUT = 528;
+        this.CIRCLE_ANIMATION_SCALE = 0.5;
 
+        this.elementsCache = {
+            lines: new Map(),
+            circles: new Map(),
+            ellipses: new Map(),
+            rectGroups: new Map(),
+            panels: new Map()
+        };
 
-        this.svgElement.classList.add('svg-animation-container');
+        // Проверяем разрешение экрана
+        this.isMobileView = window.innerWidth <= 750;
+
+        if (this.isMobileView) {
+            this.showAllElementsImmediately();
+        } else {
+            this.initializeElements();
+            this.hideAllElements();
+        }
+    }
+
+    showAllElementsImmediately() {
+        if (!this.container) return;
+
+        // Показываем контейнер сразу
+        this.container.style.opacity = '1';
+        this.container.style.visibility = 'visible';
+        this.container.style.pointerEvents = 'auto';
+
+        // Показываем все элементы внутри SVG
+        const svgElement = this.container.querySelector('svg');
+        if (!svgElement) return;
+
+        // Делаем все линии видимыми
+        const allPaths = svgElement.querySelectorAll('path');
+        allPaths.forEach(path => {
+            path.style.opacity = '1';
+            path.style.transition = 'none';
+        });
+
+        // Делаем все эллипсы видимыми
+        const allEllipses = svgElement.querySelectorAll('ellipse');
+        allEllipses.forEach(ellipse => {
+            ellipse.style.opacity = '1';
+            ellipse.style.transition = 'none';
+        });
+
+        // Делаем все группы видимыми
+        const allGroups = svgElement.querySelectorAll('g');
+        allGroups.forEach(group => {
+            group.style.opacity = '1';
+            group.style.transition = 'none';
+        });
+
+        // Отмечаем, что анимация уже завершена для мобильных
+        this.hasAnimated = true;
+        this.container.classList.add('animation-complete');
+    }
+
+    initializeElements() {
+        if (!this.container) return;
+
+        const svgElement = this.container.querySelector('svg');
+        if (!svgElement) return;
+
+        const linesConfig = [
+            {
+                id: 'line1',
+                selector: 'path[d="M660 216C812.115 192.347 886.782 180.653 1038.9 157"]',
+                direction: -1
+            },
+            {
+                id: 'line2',
+                selector: 'path[d="M660 216L636.849 218.612C583.591 224.878 519.543 220.005 490.651 216.524C390.401 199.816 249.397 166.589 185 180.512"]',
+                direction: 1
+            },
+            {
+                id: 'line3',
+                selector: 'path[d="M374.734 260.383C455.77 249.523 472.227 245.588 659.5 216"]',
+                direction: -1
+            },
+            {
+                id: 'line4',
+                selector: 'path[d="M261 334.394C366.828 330.456 407.325 299.602 513.001 259.877C580.67 233.144 650.95 217.392 660 216"]',
+                direction: -1
+            },
+            {
+                id: 'line5',
+                selector: 'path[d="M686.344 423.246C686.344 423.246 801.457 402.121 874.313 329.262C950.545 246.764 973.519 163.221 1038.26 158"]',
+                direction: -1
+            },
+            {
+                id: 'line6',
+                selector: 'path[d="M310.398 483.814L664.5 427.5"]',
+                direction: -1
+            },
+            {
+                id: 'line7',
+                selector: 'path[d="M302 662.841C415.776 638.543 408.062 536.878 514.124 484.271C615.558 433.96 677.291 424.638 686.342 423.246"]',
+                direction: -1
+            }
+        ];
+
+        linesConfig.forEach(config => {
+            const line = svgElement.querySelector(config.selector);
+            if (line) {
+                const length = line.getTotalLength();
+                this.elementsCache.lines.set(config.id, {
+                    element: line,
+                    length: length,
+                    direction: config.direction,
+                    startOffset: config.direction * length
+                });
+            }
+        });
+
+        const circlesConfig = [
+            {
+                id: 'circle1',
+                circleSelector: 'path[d="M687.164 193.102C697.318 195.111 702.928 206.159 699.544 217.877C696.16 229.595 685.12 237.348 674.966 235.339C664.813 233.33 659.203 222.282 662.587 210.564C665.971 198.846 677.01 191.093 687.164 193.102Z"]',
+                ellipseSelector: 'ellipse[transform*="675.148 200.69"]',
+                rx: 10.1763,
+                ry: 11.841,
+                fillColor: '#BBDFFD'
+            },
+            {
+                id: 'circle2',
+                circleSelector: 'path[d="M181.334 171.093C185.881 171.993 188.443 176.963 186.904 182.293C185.365 187.622 180.365 191.096 175.817 190.197C171.269 189.296 168.708 184.326 170.247 178.997C171.787 173.667 176.786 170.194 181.334 171.093Z"]',
+                ellipseSelector: 'ellipse[transform*="175.859 174.786"]',
+                rx: 4.69862,
+                ry: 5.46727,
+                fillColor: '#BBDFFD'
+            },
+            {
+                id: 'circle3',
+                circleSelector: 'path[d="M369.919 249.403C375.329 250.473 378.359 256.378 376.536 262.69C374.714 269.003 368.785 273.135 363.375 272.064C357.965 270.994 354.934 265.089 356.757 258.776C358.58 252.464 364.509 248.332 369.919 249.403Z"]',
+                ellipseSelector: 'ellipse[transform*="363.383 254.197"]',
+                rx: 5.28345,
+                ry: 6.14777,
+                fillColor: '#BBDFFD'
+            },
+            {
+                id: 'circle4',
+                circleSelector: 'path[d="M263.334 324.093C267.881 324.993 270.443 329.963 268.904 335.293C267.365 340.622 262.365 344.096 257.817 343.197C253.269 342.296 250.708 337.326 252.247 331.997C253.787 326.667 258.786 323.194 263.334 324.093Z"]',
+                ellipseSelector: 'ellipse[transform*="257.859 327.786"]',
+                rx: 4.69862,
+                ry: 5.46727,
+                fillColor: '#BBDFFD'
+            },
+            {
+                id: 'circle5',
+                circleSelector: 'path[d="M689.164 400.102C699.318 402.111 704.928 413.159 701.544 424.877C698.16 436.595 687.12 444.348 676.966 442.339C666.813 440.33 661.203 429.282 664.587 417.564C667.971 405.846 679.01 398.093 689.164 400.102Z"]',
+                ellipseSelector: 'ellipse[transform*="677.188 408.531"]',
+                rx: 10.1763,
+                ry: 11.841,
+                fillColor: '#FFC838'
+            }
+        ];
+
+        circlesConfig.forEach(config => {
+            const circle = svgElement.querySelector(config.circleSelector);
+            const ellipse = svgElement.querySelector(config.ellipseSelector);
+
+            if (circle && ellipse) {
+                this.elementsCache.circles.set(config.id, {
+                    element: circle,
+                    bbox: circle.getBBox()
+                });
+                this.elementsCache.ellipses.set(`${config.id}_ellipse`, {
+                    element: ellipse,
+                    rx: config.rx,
+                    ry: config.ry,
+                    fillColor: config.fillColor
+                });
+            }
+        });
+
+        const sixthCircle = svgElement.querySelector(
+            'path[d="M300.172 462.102C310.325 464.111 315.936 475.159 312.552 486.877C309.168 498.595 298.128 506.348 287.974 504.339C277.821 502.33 272.21 491.282 275.594 479.564C278.979 467.846 290.018 460.093 300.172 462.102Z"]'
+        );
+        const sixthEllipse = svgElement.querySelector(
+            'ellipse[transform*="288.195 470.531"]'
+        );
+        if (sixthCircle && sixthEllipse) {
+            this.elementsCache.circles.set('circle6', {
+                element: sixthCircle,
+                bbox: sixthCircle.getBBox()
+            });
+            this.elementsCache.ellipses.set('ellipse6', {
+                element: sixthEllipse,
+                rx: 10.1763,
+                ry: 11.841
+            });
+        }
+
+        const seventhCircle = svgElement.querySelector(this.SEVENTH_CIRCLE_SELECTOR);
+        const seventhEllipse = svgElement.querySelector(this.SEVENTH_ELLIPSE_SELECTOR);
+        if (seventhCircle && seventhEllipse) {
+            this.elementsCache.circles.set('circle7', {
+                element: seventhCircle,
+                bbox: seventhCircle.getBBox()
+            });
+            this.elementsCache.ellipses.set('ellipse7', {
+                element: seventhEllipse,
+                rx: this.SEVENTH_CIRCLE_RX,
+                ry: this.SEVENTH_CIRCLE_RY
+            });
+        }
+
+        this.initializeRectGroups(svgElement);
+    }
+
+    initializeRectGroups(svgElement) {
+        const firstRectGroup = svgElement.querySelector('g[opacity="0.8"]');
+        if (firstRectGroup) {
+            this.elementsCache.rectGroups.set('rectGroup1', firstRectGroup);
+
+            const allGroups = svgElement.querySelectorAll('g');
+            for (let i = 0; i < allGroups.length; i++) {
+                if (allGroups[i] === firstRectGroup && allGroups[i + 1]) {
+                    this.elementsCache.panels.set('panel1', allGroups[i + 1]);
+                    break;
+                }
+            }
+        }
+
+        const allOpacityGroups = svgElement.querySelectorAll('g[opacity="0.8"]');
+        for (let group of allOpacityGroups) {
+            const path = group.querySelector('path[d="M108.422 280.772C108.422 272.252 115.164 263.847 123.482 261.998L316.893 219.018C325.21 217.17 331.953 222.578 331.953 231.099V259.771C331.953 268.291 325.21 276.697 316.893 278.545L123.482 321.525C115.164 323.374 108.422 317.965 108.422 309.445V280.772Z"]');
+            if (path) {
+                this.elementsCache.rectGroups.set('rectGroup2', group);
+
+                const sixthPanel = this.findSixthPanel();
+                if (sixthPanel) {
+                    this.elementsCache.panels.set('panel2', sixthPanel);
+                }
+                break;
+            }
+        }
+
+        if (allOpacityGroups.length >= 3) {
+            this.elementsCache.rectGroups.set('rectGroup3', allOpacityGroups[2]);
+
+            const thirdPanel = this.findThirdPanel(svgElement);
+            if (thirdPanel) {
+                this.elementsCache.panels.set('panel3', thirdPanel);
+            }
+        }
+
+        for (let group of allOpacityGroups) {
+            const path = group.querySelector('path[d="M127.711 615.542C127.711 607.022 134.453 598.617 142.771 596.768L336.182 553.788C344.499 551.94 351.242 557.348 351.242 565.869V594.541C351.242 603.061 344.499 611.467 336.182 613.315L142.771 656.295C134.453 658.144 127.711 652.735 127.711 644.215V615.542Z"]');
+            if (path) {
+                this.elementsCache.rectGroups.set('rectGroup4', group);
+
+                const fourthPanel = this.findFourthPanelElement(svgElement);
+                if (fourthPanel) {
+                    this.elementsCache.panels.set('panel4', fourthPanel);
+                }
+                break;
+            }
+        }
+    }
+
+    hideAllElements() {
+        if (!this.container) return;
+
+        this.container.style.transition = 'none';
+        this.container.style.opacity = '0';
+        this.container.style.visibility = 'hidden';
+        this.container.style.pointerEvents = 'none';
+
+        this.container.getBoundingClientRect();
+
+        const svgElement = this.container.querySelector('svg');
+        if (!svgElement) return;
+
+        this.elementsCache.lines.forEach((lineData, key) => {
+            const line = lineData.element;
+            const startOffset = lineData.startOffset;
+
+            line.style.transition = 'none';
+            line.style.strokeDasharray = `${lineData.length}`;
+            line.style.strokeDashoffset = `${startOffset}`;
+            line.style.opacity = '0';
+            line.style.willChange = 'stroke-dashoffset';
+        });
+
+        ['circles', 'ellipses'].forEach(cacheName => {
+            this.elementsCache[cacheName].forEach((elementData, key) => {
+                const element = elementData.element;
+                element.style.transition = 'none';
+                element.style.opacity = '0';
+            });
+        });
+
+        this.elementsCache.rectGroups.forEach((group, key) => {
+            group.style.transition = 'none';
+            group.style.opacity = '0';
+        });
+
+        this.elementsCache.panels.forEach((panel, key) => {
+            panel.style.transition = 'none';
+            panel.style.opacity = '0';
+        });
+
+        svgElement.getBoundingClientRect();
     }
 
     start() {
-
-        if (this.hasAnimated || this.isAnimating) {
+        // Для мобильных разрешений не запускаем анимацию
+        if (this.isMobileView) {
             return;
         }
 
-        this.isAnimating = true;
+        if (this.hasAnimated || this.isAnimating) return;
 
+        this.isAnimating = true;
+        this.animationStartTime = performance.now();
 
         requestAnimationFrame(() => {
-            requestAnimationFrame(() => {
-                this.prepareElements();
+            if (this.container) {
+                this.container.style.transition = 'none';
+                this.container.style.opacity = '1';
+                this.container.style.visibility = 'visible';
+                this.container.style.pointerEvents = 'auto';
+
+                this.container.getBoundingClientRect();
 
                 requestAnimationFrame(() => {
-                    // Показываем SVG контейнер
-                    this.svgElement.style.opacity = '1';
-                    this.svgElement.style.visibility = 'visible';
-                    this.svgElement.style.pointerEvents = 'auto';
+                    this.animateFirstLine();
+                });
+            }
+        });
+    }
 
-                    // Запускаем анимацию в следующем кадре
+    animateLine(lineData) {
+        return new Promise((resolve) => {
+            const line = lineData.element;
+            const startOffset = lineData.startOffset;
+
+            requestAnimationFrame(() => {
+                line.style.transition = 'none';
+                line.style.strokeDasharray = `${lineData.length}`;
+                line.style.strokeDashoffset = `${startOffset}`;
+                line.style.opacity = '1';
+                line.style.willChange = 'stroke-dashoffset';
+
+                line.getBoundingClientRect();
+
+                requestAnimationFrame(() => {
+                    line.style.transition = `stroke-dashoffset ${this.LINE_ANIMATION_DURATION} cubic-bezier(0.25, 0.46, 0.45, 0.94)`;
+
+                    line.getBoundingClientRect();
+
                     requestAnimationFrame(() => {
-                        this.animateSvgPaths();
+                        line.style.strokeDashoffset = '0';
+
+                        setTimeout(() => {
+                            line.style.willChange = 'auto';
+                            resolve();
+                        }, this.LINE_ANIMATION_TIMEOUT);
                     });
                 });
             });
         });
     }
 
-    // Подготовка элементов
-    prepareElements() {
-        const targetLinePaths = [
-            'path[d="M283.836 203.674C364.872 192.813 381.504 188.799 568.778 159.211"]',
-            'path[d="M588.766 156.682L545.951 161.903C492.693 168.169 428.644 163.295 399.752 159.815C299.502 143.106 158.498 109.879 94.1016 123.803"]',
-            'path[d="M220.133 426.104L571.009 366.581"]',
-            'path[d="M181.5 274.684C287.328 270.747 327.825 239.893 433.501 200.168C501.17 173.434 549.433 162.251 558.483 160.859L947.998 100.291"]',
-            'path[d="M211.734 605.131C325.51 580.834 317.796 479.168 423.858 426.562C525.292 376.251 587.026 366.929 596.076 365.536C596.076 365.536 711.19 344.412 784.046 271.552C860.278 189.055 883.252 105.512 947.997 100.291"]'
-        ];
+    animateFirstLine() {
+        const lineData = this.elementsCache.lines.get('line1');
 
-        const targetCirclePaths = [
-            'path[d="M207.437 406.188C217.591 408.197 223.201 419.245 219.817 430.963C216.433 442.681 205.394 450.434 195.24 448.425C185.086 446.416 179.476 435.368 182.86 423.65C186.244 411.932 197.284 404.179 207.437 406.188Z"]',
-            'path[d="M204.357 595.578C209.767 596.649 212.797 602.553 210.974 608.866C209.151 615.178 203.223 619.31 197.812 618.24C192.402 617.169 189.371 611.264 191.194 604.952C193.017 598.639 198.947 594.507 204.357 595.578Z"]',
-            'path[d="M595.906 343.785C606.06 345.794 611.67 356.841 608.286 368.559C604.902 380.278 593.862 388.031 583.709 386.021C573.555 384.012 567.945 372.964 571.329 361.246C574.713 349.528 585.753 341.775 595.906 343.785Z"]',
-            'path[d="M594.625 136.29C604.779 138.299 610.389 149.347 607.005 161.065C603.621 172.783 592.581 180.536 582.427 178.526C572.274 176.517 566.664 165.47 570.048 153.751C573.432 142.033 584.471 134.28 594.625 136.29Z"]',
-            'path[d="M88.1695 115.044C92.7172 115.944 95.279 120.914 93.7399 126.244C92.2008 131.573 87.2005 135.047 82.6527 134.148C78.1051 133.247 75.5443 128.277 77.0834 122.948C78.6226 117.618 83.6218 114.145 88.1695 115.044Z"]',
-            'path[d="M175.99 266.335C180.538 267.235 183.099 272.205 181.56 277.534C180.021 282.864 175.021 286.338 170.473 285.438C165.925 284.538 163.365 279.568 164.904 274.238C166.443 268.909 171.442 265.436 175.99 266.335Z"]',
-            'path[d="M276.74 193.545C282.15 194.616 285.18 200.52 283.357 206.833C281.534 213.145 275.605 217.277 270.195 216.207C264.785 215.136 261.754 209.231 263.577 202.919C265.4 196.606 271.329 192.474 276.74 193.545Z"]'
-        ];
-
-        // Скрываем все анимируемые элементы
-        targetLinePaths.forEach(selector => {
-            const path = this.svgElement.querySelector(selector);
-            if (path) {
-                path.style.opacity = '0';
-                path.style.transition = 'none';
-            }
-        });
-
-        targetCirclePaths.forEach(selector => {
-            const path = this.svgElement.querySelector(selector);
-            if (path) {
-                path.style.opacity = '0';
-                path.style.transition = 'none';
-            }
-        });
-
-        const ellipses = this.svgElement.querySelectorAll('ellipse');
-        ellipses.forEach(ellipse => {
-            ellipse.style.opacity = '0';
-            ellipse.style.transition = 'none';
-        });
-
-        const groupsToHide = [
-            'g[opacity="0.8"]:has(rect[width="228.984"])',
-            'g[clip-path="url(#clip0_347_4170)"]',
-            'g[opacity="0.8"]:has(path[d^="M15.4219 224.772"])',
-            'g[clip-path="url(#clip1_347_4170)"]',
-            'g[opacity="0.8"]:has(path[d^="M134.984 347.418"])',
-            'g[clip-path="url(#clip2_347_4170)"]',
-            'g[opacity="0.8"]:has(path[d^="M34.7112 559.542"])',
-            'g[clip-path="url(#clip3_347_4170)"]'
-        ];
-
-        groupsToHide.forEach(selector => {
-            const group = this.svgElement.querySelector(selector);
-            if (group) {
-                group.style.opacity = '0';
-                group.style.transition = 'none';
-            }
-        });
-
-        const allGroups = this.svgElement.querySelectorAll('g[opacity="0.8"]');
-        allGroups.forEach(group => {
-            group.style.opacity = '0';
-            group.style.transition = 'none';
-        });
-
-        const clipPathGroups = this.svgElement.querySelectorAll('g[clip-path]');
-        clipPathGroups.forEach(group => {
-            group.style.opacity = '0';
-            group.style.transition = 'none';
-        });
-    }
-
-    animateSvgPaths() {
-        const targetPaths = [
-            'path[d="M283.836 203.674C364.872 192.813 381.504 188.799 568.778 159.211"]',
-            'path[d="M588.766 156.682L545.951 161.903C492.693 168.169 428.644 163.295 399.752 159.815C299.502 143.106 158.498 109.879 94.1016 123.803"]',
-            'path[d="M220.133 426.104L571.009 366.581"]',
-            'path[d="M181.5 274.684C287.328 270.747 327.825 239.893 433.501 200.168C501.17 173.434 549.433 162.251 558.483 160.859L947.998 100.291"]',
-            'path[d="M211.734 605.131C325.51 580.834 317.796 479.168 423.858 426.562C525.292 376.251 587.026 366.929 596.076 365.536C596.076 365.536 711.19 344.412 784.046 271.552C860.278 189.055 883.252 105.512 947.997 100.291"]'
-        ];
-
-        const lineAnimationDuration = 1445;
-        const delayBetweenLines = 361;
-
-        const totalLinesAnimationTime = (targetPaths.length * delayBetweenLines) + lineAnimationDuration;
-        const ellipsesAndCirclesStartTime = totalLinesAnimationTime * 0.4;
-
-        // Отслеживаем завершение анимации групп
-        const groupsAnimationEndTime = this.calculateGroupsAnimationEndTime();
-        const totalAnimationTime = Math.max(
-            totalLinesAnimationTime,
-            ellipsesAndCirclesStartTime + 2000,
-            groupsAnimationEndTime
-        );
-
-        // Устанавливаем таймер для завершения всей анимации
-        setTimeout(() => {
+        if (!lineData) {
             this.onAnimationComplete();
-        }, totalAnimationTime + 1000);
+            return;
+        }
+
+        this.animateLine(lineData).then(() => {
+            setTimeout(() => {
+                this.animateCachedCircle('circle1', this.animateSecondLine.bind(this));
+            }, 100);
+        });
+    }
+
+    animateSecondLine() {
+        const lineData = this.elementsCache.lines.get('line2');
+
+        if (!lineData) {
+            this.onAnimationComplete();
+            return;
+        }
+
+        this.animateLine(lineData).then(() => {
+            setTimeout(() => {
+                this.animateCachedCircle('circle2', this.animateThirdElement.bind(this));
+            }, 100);
+        });
+    }
+
+    animateThirdElement() {
+        const rectGroup = this.elementsCache.rectGroups.get('rectGroup1');
+        const panel = this.elementsCache.panels.get('panel1');
+
+        if (!rectGroup || !panel) {
+            this.onAnimationComplete();
+            return;
+        }
+
+        rectGroup.classList.add('animate-first-rect');
+        panel.classList.add('animate-first-panel');
 
         setTimeout(() => {
-            this.animateEllipsesAndCircles();
-        }, ellipsesAndCirclesStartTime);
+            this.animateThirdLine();
+        }, 300);
+    }
 
-        targetPaths.forEach((selector, index) => {
-            const path = this.svgElement.querySelector(selector);
-            if (path) {
-                const length = path.getTotalLength();
+    animateThirdLine() {
+        const lineData = this.elementsCache.lines.get('line3');
 
-                path.style.strokeDasharray = length;
-                path.style.strokeDashoffset = length;
-                path.style.transition = 'none';
+        if (!lineData) {
+            this.onAnimationComplete();
+            return;
+        }
 
-                setTimeout(() => {
-                    path.style.opacity = '1';
-
-                    setTimeout(() => {
-                        path.style.transition = `stroke-dashoffset ${lineAnimationDuration / 1000}s ease-in-out`;
-                        path.style.strokeDashoffset = '0';
-                    }, 50);
-                }, index * delayBetweenLines);
-            }
+        this.animateLine(lineData).then(() => {
+            setTimeout(() => {
+                this.animateCachedCircle('circle3', this.animateSecondRectElement.bind(this));
+            }, 100);
         });
     }
 
-    animateEllipsesAndCircles() {
-        this.animateEllipses();
-        this.animateCirclePaths();
+    animateSecondRectElement() {
+        const rectGroup = this.elementsCache.rectGroups.get('rectGroup2');
+        const panel = this.elementsCache.panels.get('panel2');
+
+        if (!rectGroup || !panel) {
+            this.onAnimationComplete();
+            return;
+        }
+
+        rectGroup.style.opacity = '0';
+        panel.style.opacity = '0';
 
         setTimeout(() => {
-            this.animateGroups();
-        }, 500);
-    }
-
-    animateEllipses() {
-        const ellipses = this.svgElement.querySelectorAll('ellipse');
-
-        if (ellipses.length === 0) return;
-
-        const indices = Array.from({length: ellipses.length}, (_, i) => i);
-        this.shuffleArray(indices);
-
-        const ellipseAnimationDuration = 680;
-
-        indices.forEach((ellipseIndex, orderIndex) => {
-            const ellipse = ellipses[ellipseIndex];
-            const delay = orderIndex * 128 + Math.random() * 170;
+            rectGroup.classList.add('animate-second-rect');
+            panel.classList.add('animate-second-panel');
 
             setTimeout(() => {
-                ellipse.style.transition = `opacity ${ellipseAnimationDuration / 1000}s ease-out`;
-                ellipse.style.opacity = '1';
-            }, delay);
+                this.animateFourthLine();
+            }, 1100);
+        }, 10);
+    }
+
+    animateFourthLine() {
+        const lineData = this.elementsCache.lines.get('line4');
+
+        if (!lineData) {
+            this.onAnimationComplete();
+            return;
+        }
+
+        this.animateLine(lineData).then(() => {
+            setTimeout(() => {
+                this.animateCachedCircle('circle4', this.animateFifthLine.bind(this));
+            }, 100);
         });
     }
 
-    animateCirclePaths() {
-        const circlePaths = [
-            'path[d="M207.437 406.188C217.591 408.197 223.201 419.245 219.817 430.963C216.433 442.681 205.394 450.434 195.24 448.425C185.086 446.416 179.476 435.368 182.86 423.65C186.244 411.932 197.284 404.179 207.437 406.188Z"]',
-            'path[d="M204.357 595.578C209.767 596.649 212.797 602.553 210.974 608.866C209.151 615.178 203.223 619.31 197.812 618.24C192.402 617.169 189.371 611.264 191.194 604.952C193.017 598.639 198.947 594.507 204.357 595.578Z"]',
-            'path[d="M595.906 343.785C606.06 345.794 611.67 356.841 608.286 368.559C604.902 380.278 593.862 388.031 583.709 386.021C573.555 384.012 567.945 372.964 571.329 361.246C574.713 349.528 585.753 341.775 595.906 343.785Z"]',
-            'path[d="M594.625 136.29C604.779 138.299 610.389 149.347 607.005 161.065C603.621 172.783 592.581 180.536 582.427 178.526C572.274 176.517 566.664 165.47 570.048 153.751C573.432 142.033 584.471 134.28 594.625 136.29Z"]',
-            'path[d="M88.1695 115.044C92.7172 115.944 95.279 120.914 93.7399 126.244C92.2008 131.573 87.2005 135.047 82.6527 134.148C78.1051 133.247 75.5443 128.277 77.0834 122.948C78.6226 117.618 83.6218 114.145 88.1695 115.044Z"]',
-            'path[d="M175.99 266.335C180.538 267.235 183.099 272.205 181.56 277.534C180.021 282.864 175.021 286.338 170.473 285.438C165.925 284.538 163.365 279.568 164.904 274.238C166.443 268.909 171.442 265.436 175.99 266.335Z"]',
-            'path[d="M276.74 193.545C282.15 194.616 285.18 200.52 283.357 206.833C281.534 213.145 275.605 217.277 270.195 216.207C264.785 215.136 261.754 209.231 263.577 202.919C265.4 196.606 271.329 192.474 276.74 193.545Z"]'
-        ];
+    animateFifthLine() {
+        const lineData = this.elementsCache.lines.get('line5');
 
-        const circleAnimationDuration = 1700;
-        const indices = Array.from({length: circlePaths.length}, (_, i) => i);
-        this.shuffleArray(indices);
+        if (!lineData) {
+            this.onAnimationComplete();
+            return;
+        }
 
-        indices.forEach((pathIndex, orderIndex) => {
-            const selector = circlePaths[pathIndex];
-            const path = this.svgElement.querySelector(selector);
+        this.animateLine(lineData).then(() => {
+            setTimeout(() => {
+                this.animateCachedCircle('circle5', this.animateSixthLine.bind(this));
+            }, 100);
+        });
+    }
 
-            if (path) {
-                const length = path.getTotalLength();
+    animateSixthLine() {
+        const lineData = this.elementsCache.lines.get('line6');
 
-                path.style.strokeDasharray = length;
-                path.style.strokeDashoffset = length;
-                path.style.transition = 'none';
+        if (!lineData) {
+            this.animateThirdRectElement();
+            return;
+        }
 
-                const delay = orderIndex * 150 + Math.random() * 200;
+        this.animateLine(lineData).then(() => {
+            setTimeout(() => {
+                this.animateSixthCircle();
+            }, 100);
+        });
+    }
+
+    animateSixthCircle() {
+        const circleData = this.elementsCache.circles.get('circle6');
+        const ellipseData = this.elementsCache.ellipses.get('ellipse6');
+
+        if (!circleData || !ellipseData) {
+            this.animateThirdRectElement();
+            return;
+        }
+
+        if (this.isAnimatingSixthCircle) return;
+        this.isAnimatingSixthCircle = true;
+
+        const outerCircle = circleData.element;
+        const innerEllipse = ellipseData.element;
+
+        this.animateCircleWithClone(outerCircle, innerEllipse,
+            ellipseData.rx, ellipseData.ry, '#FFC838', '#D4D4D4')
+            .then(() => {
+                this.isAnimatingSixthCircle = false;
+                this.animateThirdRectElement();
+            });
+    }
+
+    animateThirdRectElement() {
+        const rectGroup = this.elementsCache.rectGroups.get('rectGroup3');
+        const panel = this.elementsCache.panels.get('panel3');
+
+        if (!rectGroup || !panel) {
+            this.animateSeventhLine();
+            return;
+        }
+
+        rectGroup.style.opacity = '0';
+        panel.style.opacity = '0';
+
+        setTimeout(() => {
+            rectGroup.classList.add('animate-third-rect');
+            panel.classList.add('animate-third-panel');
+
+            setTimeout(() => {
+                this.animateSeventhLine();
+            }, 1100);
+        }, 10);
+    }
+
+    animateSeventhLine() {
+        const lineData = this.elementsCache.lines.get('line7');
+
+        if (!lineData) {
+            this.animateSeventhCircle();
+            return;
+        }
+
+        this.animateLine(lineData).then(() => {
+            setTimeout(() => {
+                this.animateSeventhCircle();
+            }, 100);
+        });
+    }
+
+    animateSeventhCircle() {
+        const circleData = this.elementsCache.circles.get('circle7');
+        const ellipseData = this.elementsCache.ellipses.get('ellipse7');
+
+        if (!circleData || !ellipseData) {
+            this.animateFourthRectElement();
+            return;
+        }
+
+        if (this.isAnimatingSeventhCircle) return;
+        this.isAnimatingSeventhCircle = true;
+
+        const outerCircle = circleData.element;
+        const innerEllipse = ellipseData.element;
+
+        this.animateCircleWithClone(outerCircle, innerEllipse,
+            ellipseData.rx, ellipseData.ry, '#FFC838', '#FFC838')
+            .then(() => {
+                this.isAnimatingSeventhCircle = false;
+                this.animateFourthRectElement();
+            });
+    }
+
+    animateFourthRectElement() {
+        const rectGroup = this.elementsCache.rectGroups.get('rectGroup4');
+        const panel = this.elementsCache.panels.get('panel4');
+
+        if (!rectGroup || !panel) {
+            this.onAnimationComplete();
+            return;
+        }
+
+        rectGroup.style.opacity = '0';
+        panel.style.opacity = '0';
+
+        setTimeout(() => {
+            rectGroup.classList.add('animate-fourth-rect');
+            panel.classList.add('animate-fourth-panel');
+
+            setTimeout(() => {
+                this.onAnimationComplete();
+            }, 1100);
+        }, 10);
+    }
+
+    animateCachedCircle(circleId, callback) {
+        const circleData = this.elementsCache.circles.get(circleId);
+        const ellipseData = this.elementsCache.ellipses.get(`${circleId}_ellipse`);
+
+        if (!circleData || !ellipseData) {
+            if (callback) callback();
+            return;
+        }
+
+        const outerCircle = circleData.element;
+        const innerEllipse = ellipseData.element;
+        const fillColor = ellipseData.fillColor || '#BBDFFD';
+
+        this.animateCircleWithClone(outerCircle, innerEllipse,
+            ellipseData.rx, ellipseData.ry, fillColor, fillColor, true)
+            .then(() => {
+                if (callback) callback();
+            });
+    }
+
+    animateCircleWithClone(outerCircle, innerEllipse, originalRx, originalRy,
+                           ellipseFillColor, circleStrokeColor, isWhiteFill = false) {
+        return new Promise((resolve) => {
+            outerCircle.style.fill = isWhiteFill ? 'white' : 'transparent';
+            outerCircle.style.stroke = circleStrokeColor;
+            outerCircle.style.strokeWidth = '0.77136px';
+            innerEllipse.style.fill = ellipseFillColor;
+
+            outerCircle.style.opacity = '0';
+            innerEllipse.style.opacity = '0';
+            innerEllipse.setAttribute('rx', '0.1');
+            innerEllipse.setAttribute('ry', '0.1');
+            innerEllipse.style.transition = 'none';
+
+            const circleBox = outerCircle.getBBox();
+            const centerX = circleBox.x + circleBox.width / 2;
+            const centerY = circleBox.y + circleBox.height / 2;
+
+            const circleClone = outerCircle.cloneNode(true);
+            circleClone.style.cssText = '';
+            circleClone.style.stroke = circleStrokeColor;
+            circleClone.style.fill = isWhiteFill ? 'white' : 'transparent';
+            circleClone.style.strokeWidth = '0.77136px';
+            circleClone.style.transformOrigin = `${centerX}px ${centerY}px`;
+            circleClone.style.transform = 'scale(0.1)';
+            circleClone.style.transition = 'none';
+            circleClone.style.opacity = '0';
+            circleClone.style.pointerEvents = 'none';
+
+            outerCircle.parentNode.insertBefore(circleClone, outerCircle.nextSibling);
+
+            setTimeout(() => {
+                circleClone.style.transition = `all ${this.CIRCLE_ANIMATION_SCALE}s cubic-bezier(0.34, 1.56, 0.64, 1)`;
+                circleClone.style.opacity = '1';
+                circleClone.style.transform = 'scale(1)';
+
+                innerEllipse.style.transition = `all ${this.CIRCLE_ANIMATION_SCALE}s cubic-bezier(0.34, 1.56, 0.64, 1)`;
+                innerEllipse.style.opacity = '1';
+                innerEllipse.setAttribute('rx', originalRx.toString());
+                innerEllipse.setAttribute('ry', originalRy.toString());
 
                 setTimeout(() => {
-                    path.style.opacity = '1';
+                    outerCircle.style.opacity = '1';
+                    outerCircle.style.transition = 'opacity 0.3s ease-out';
 
                     setTimeout(() => {
-                        path.style.transition = `stroke-dashoffset ${circleAnimationDuration / 1000}s ease-in-out`;
-                        path.style.strokeDashoffset = '0';
-                    }, 50);
-                }, delay);
-            }
+                        circleClone.remove();
+                        resolve();
+                    }, 300);
+                }, this.CIRCLE_ANIMATION_SCALE * 1000);
+            }, 50);
         });
-    }
-
-    animateGroups() {
-        const groupPairs = [
-            [
-                'g[opacity="0.8"]:has(rect[width="228.984"])',
-                'g[clip-path="url(#clip0_347_4170)"]'
-            ],
-            [
-                'g[opacity="0.8"]:has(path[d^="M15.4219 224.772"])',
-                'g[clip-path="url(#clip1_347_4170)"]'
-            ],
-            [
-                'g[opacity="0.8"]:has(path[d^="M134.984 347.418"])',
-                'g[clip-path="url(#clip2_347_4170)"]'
-            ],
-            [
-                'g[opacity="0.8"]:has(path[d^="M34.7112 559.542"])',
-                'g[clip-path="url(#clip3_347_4170)"]'
-            ]
-        ];
-
-        groupPairs.forEach((pairSelectors, pairIndex) => {
-            const delay = pairIndex * 1040;
-
-            setTimeout(() => {
-                pairSelectors.forEach(selector => {
-                    const group = this.svgElement.querySelector(selector);
-                    if (group) {
-                        group.style.transition = 'opacity 1.56s ease-out';
-                        group.style.opacity = group.getAttribute('opacity') || '1';
-                    }
-                });
-            }, delay);
-        });
-    }
-
-    calculateGroupsAnimationEndTime() {
-
-        const groupPairsCount = 4;
-        const delayBetweenPairs = 1040;
-        const groupAnimationDuration = 1560;
-
-        return (groupPairsCount * delayBetweenPairs) + groupAnimationDuration;
     }
 
     onAnimationComplete() {
         this.isAnimating = false;
         this.hasAnimated = true;
-
-
         this.cleanupAnimationStyles();
-
-
         this.dispatchAnimationCompleteEvent();
     }
 
     cleanupAnimationStyles() {
+        const svgElement = this.container?.querySelector('svg');
+        if (svgElement && this.container) {
+            this.elementsCache.lines.forEach(lineData => {
+                const line = lineData.element;
+                line.style.transition = '';
+                line.style.strokeDasharray = '';
+                line.style.strokeDashoffset = '';
+                line.style.willChange = 'auto';
+            });
 
-        const allElements = this.svgElement.querySelectorAll('*');
-        allElements.forEach(el => {
-            el.style.transition = '';
-        });
-
-
-        this.svgElement.style.transition = '';
-        this.svgElement.classList.add('animation-complete');
+            this.container.classList.add('animation-complete');
+        }
     }
 
     dispatchAnimationCompleteEvent() {
         const event = new CustomEvent('animationComplete', {
-            detail: { svgElement: this.svgElement }
+            detail: {
+                container: this.container,
+                animationTime: performance.now() - this.animationStartTime
+            }
         });
-        this.svgElement.dispatchEvent(event);
+
+        if (this.container) {
+            this.container.dispatchEvent(event);
+        }
     }
 
-    shuffleArray(array) {
-        for (let i = array.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [array[i], array[j]] = [array[j], array[i]];
+    findSixthPanel() {
+        const svgElement = this.container?.querySelector('svg');
+        if (!svgElement) return null;
+
+        const allGroups = svgElement.querySelectorAll('g');
+        for (let i = 0; i < allGroups.length; i++) {
+            if (allGroups[i].getAttribute('clip-path') === 'url(#clip1_421_1180)') {
+                return allGroups[i];
+            }
         }
-        return array;
+        return null;
+    }
+
+    findThirdPanel(svgElement = null) {
+        if (!svgElement) {
+            svgElement = this.container?.querySelector('svg');
+        }
+        if (!svgElement) return null;
+
+        const allGroups = svgElement.querySelectorAll('g');
+        for (let i = 0; i < allGroups.length; i++) {
+            if (allGroups[i].getAttribute('clip-path') === 'url(#clip2_421_1180)') {
+                return allGroups[i];
+            }
+        }
+        return null;
+    }
+
+    findFourthPanelElement(svgElement = null) {
+        if (!svgElement) {
+            svgElement = this.container?.querySelector('svg');
+        }
+        if (!svgElement) return null;
+
+        const allGroups = svgElement.querySelectorAll('g');
+        for (let i = 0; i < allGroups.length; i++) {
+            if (allGroups[i].getAttribute('clip-path') === 'url(#clip3_421_1180)') {
+                return allGroups[i];
+            }
+        }
+        return null;
     }
 }
+
+export default Animation;

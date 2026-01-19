@@ -4,11 +4,11 @@
 
 html {
   scroll-behavior: smooth;
-  scrollbar-gutter: stable;
 }
 
 body {
   display: flex;
+  min-width: 100vw;
   flex-direction: column;
   min-height: 100vh;
   font-family: 'AAStetica', sans-serif;
@@ -51,7 +51,7 @@ main {
   &__mail {
 
     a {
-      font-family: 'Alike Angular', serif;
+      font-family: 'Alike Angular', sans-serif;
       font-size: 20px;
       font-weight: 400;
       color: c.$blue;
@@ -92,6 +92,8 @@ main {
     height: 100%;
     display: flex;
     flex-direction: column;
+    position: relative;
+    z-index: 5;
 
     @media (max-width: 750px) {
       padding-bottom: 0;
@@ -163,54 +165,67 @@ main {
   }
 
   &__left {
-    width: 934px;
-    height: 621px;
+    width: 1357px;
+    height: 801px;
     position: absolute;
-    right: 0;
-    top: 100px;
+    right: -320px;
+    top: 35px;
+    z-index: 1;
 
-    svg {
+    .svg-animation-container {
       width: 100%;
       height: 100%;
+
+      svg {
+        width: 100%;
+        height: 100%;
+      }
     }
     
     @media (max-width: 1700px) {
-      width: 834px;
-      height: 521px;
-      top: 150px;
-      right: -30px;
+      width: 1257px;
+      height: 701px;
+      right: -340px;
+      top: 120px;
     }
 
     @media (max-width: 1400px) {
-      width: 774px;
-      height: 461px;
+      width: 1207px;
+      height: 651px;
+      top: 100px
     }
 
     @media (max-width: 1200px) {
-      right: -100px;
+     right: -400px;
     }
 
     @media (max-width: 1100px) {
-      right: -200px;
+      right: -480px;
     }
     @media (max-width: 1000px) {
-      right: -280px;
+      right: -550px;
     }
 
     @media (max-width: 850px) {
-      width: 754px;
-      height: 441px;
-      right: -250px;
+      width: 1157px;
+      height: 601px;
+      right: -550px;
     }
 
     @media (max-width: 750px) {
       position: static;
       transform: none;
+      margin-left: -110px;
+      margin-top: -30px;
+      margin-bottom: -100px;
     }
 
     @media (max-width: 500px) {
-      width: 801px;
-      height: 488px;
+      width: 901px;
+      height: 588px;
+      margin-left: -40px;
+      margin-top: -60px;
+      margin-bottom: -120px;
     }
   }
 
@@ -275,26 +290,52 @@ main {
   }
 
   &__btn {
+    position: relative;
     width: 187px;
     height: 64px;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 10px;
-    background: linear-gradient(to right, #E13C54 0%, #F83E49 100%);
     color: c.$white;
     text-transform: uppercase;
     border-radius: 20px;
     font-size: 18px;
     font-weight: 500;
     line-height: 140%;
-    transition: all 0.3s ease;
+    transition: gap 0.5s ease, box-shadow 0.5s ease;
+    overflow: hidden;
+    z-index: 1;
+
+
+    background: linear-gradient(to right, #E13C54 0%, #F83E49 100%);
+
+
     box-shadow:
             -2px 2px 2.4px 0 rgba(246, 213, 213, 0.35),
             10px 10px 30px 0 rgba(174, 174, 192, 0.4);
 
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(to right, #F83E49 0%, #D72B44 100%);
+      border-radius: 20px;
+      z-index: -1;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+
     &:hover {
       gap: 15px;
+
+      &::before {
+        opacity: 1;
+      }
     }
 
     @media (max-width: 1300px) {
@@ -319,10 +360,89 @@ main {
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
+
+  @media (max-width: 750px) {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
 }
 
 .svg-animation-container.animation-complete {
   opacity: 1;
   visibility: visible;
   pointer-events: auto;
+}
+
+.animate-first-rect,
+.animate-first-panel,
+.animate-second-rect,
+.animate-second-panel,
+.animate-third-rect,
+.animate-third-panel,
+.animate-fourth-rect,
+.animate-fourth-panel {
+  transform-origin: center !important;
+  transform-box: fill-box !important;
+  animation: scaleAnimation 1s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.animate-first-rect,
+.animate-second-rect,
+.animate-third-rect,
+.animate-fourth-rect {
+  animation-name: scaleAnimationOpacity08;
+}
+
+.animate-first-panel,
+.animate-second-panel,
+.animate-third-panel,
+.animate-fourth-panel {
+  animation-name: scaleAnimationOpacity1;
+}
+
+@keyframes scaleAnimationOpacity08 {
+  0% {
+    transform: scale(0.01);
+    opacity: 0;
+  }
+  30% {
+    transform: scale(1.15);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(0.95);
+    opacity: 0.8;
+  }
+  70% {
+    transform: scale(1.08);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+}
+
+@keyframes scaleAnimationOpacity1 {
+  0% {
+    transform: scale(0.01);
+    opacity: 0;
+  }
+  30% {
+    transform: scale(1.15);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(0.95);
+    opacity: 1;
+  }
+  70% {
+    transform: scale(1.08);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
