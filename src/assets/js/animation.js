@@ -19,7 +19,7 @@ export class Animation {
 
         this.LINE_ANIMATION_DURATION = '0.264s';
         this.LINE_ANIMATION_TIMEOUT = 264;
-        this.CIRCLE_ANIMATION_SCALE = 0.5;
+        this.CIRCLE_ANIMATION_SCALE = 0.5; 
 
         this.elementsCache = {
             lines: new Map(),
@@ -29,7 +29,7 @@ export class Animation {
             panels: new Map()
         };
 
-        // Проверяем разрешение экрана
+
         this.isMobileView = window.innerWidth <= 750;
 
         if (this.isMobileView) {
@@ -43,37 +43,31 @@ export class Animation {
     showAllElementsImmediately() {
         if (!this.container) return;
 
-        // Показываем контейнер сразу
         this.container.style.opacity = '1';
         this.container.style.visibility = 'visible';
         this.container.style.pointerEvents = 'auto';
 
-        // Показываем все элементы внутри SVG
         const svgElement = this.container.querySelector('svg');
         if (!svgElement) return;
 
-        // Делаем все линии видимыми
         const allPaths = svgElement.querySelectorAll('path');
         allPaths.forEach(path => {
             path.style.opacity = '1';
             path.style.transition = 'none';
         });
 
-        // Делаем все эллипсы видимыми
         const allEllipses = svgElement.querySelectorAll('ellipse');
         allEllipses.forEach(ellipse => {
             ellipse.style.opacity = '1';
             ellipse.style.transition = 'none';
         });
 
-        // Делаем все группы видимыми
         const allGroups = svgElement.querySelectorAll('g');
         allGroups.forEach(group => {
             group.style.opacity = '1';
             group.style.transition = 'none';
         });
 
-        // Отмечаем, что анимация уже завершена для мобильных
         this.hasAnimated = true;
         this.container.classList.add('animation-complete');
     }
@@ -328,7 +322,6 @@ export class Animation {
     }
 
     start() {
-        // Для мобильных разрешений не запускаем анимацию
         if (this.isMobileView) {
             return;
         }
@@ -411,17 +404,19 @@ export class Animation {
 
         this.animateLine(lineData).then(() => {
             setTimeout(() => {
-                this.animateCachedCircle('circle2', this.animateThirdElement.bind(this));
+
+                this.animateCachedCircle('circle2', () => {});
+                this.animateFirstRectElement();
             }, 100);
         });
     }
 
-    animateThirdElement() {
+    animateFirstRectElement() {
         const rectGroup = this.elementsCache.rectGroups.get('rectGroup1');
         const panel = this.elementsCache.panels.get('panel1');
 
         if (!rectGroup || !panel) {
-            this.onAnimationComplete();
+            this.animateThirdLine();
             return;
         }
 
@@ -430,7 +425,7 @@ export class Animation {
 
         setTimeout(() => {
             this.animateThirdLine();
-        }, 300);
+        }, 1000);
     }
 
     animateThirdLine() {
@@ -443,7 +438,9 @@ export class Animation {
 
         this.animateLine(lineData).then(() => {
             setTimeout(() => {
-                this.animateCachedCircle('circle3', this.animateSecondRectElement.bind(this));
+
+                this.animateCachedCircle('circle3', () => {});
+                this.animateSecondRectElement();
             }, 100);
         });
     }
@@ -453,7 +450,7 @@ export class Animation {
         const panel = this.elementsCache.panels.get('panel2');
 
         if (!rectGroup || !panel) {
-            this.onAnimationComplete();
+            this.animateFourthLine();
             return;
         }
 
@@ -466,7 +463,7 @@ export class Animation {
 
             setTimeout(() => {
                 this.animateFourthLine();
-            }, 1100);
+            }, 1000);
         }, 10);
     }
 
@@ -504,23 +501,23 @@ export class Animation {
         const lineData = this.elementsCache.lines.get('line6');
 
         if (!lineData) {
-            this.animateThirdRectElement();
+            this.animateSixthCircleWithRect();
             return;
         }
 
         this.animateLine(lineData).then(() => {
             setTimeout(() => {
-                this.animateSixthCircle();
+                this.animateSixthCircleWithRect();
             }, 100);
         });
     }
 
-    animateSixthCircle() {
+    animateSixthCircleWithRect() {
         const circleData = this.elementsCache.circles.get('circle6');
         const ellipseData = this.elementsCache.ellipses.get('ellipse6');
 
         if (!circleData || !ellipseData) {
-            this.animateThirdRectElement();
+            this.animateSeventhLine();
             return;
         }
 
@@ -534,8 +531,9 @@ export class Animation {
             ellipseData.rx, ellipseData.ry, '#FFC838', '#D4D4D4')
             .then(() => {
                 this.isAnimatingSixthCircle = false;
-                this.animateThirdRectElement();
             });
+
+        this.animateThirdRectElement();
     }
 
     animateThirdRectElement() {
@@ -556,7 +554,7 @@ export class Animation {
 
             setTimeout(() => {
                 this.animateSeventhLine();
-            }, 1100);
+            }, 1000);
         }, 10);
     }
 
@@ -564,18 +562,18 @@ export class Animation {
         const lineData = this.elementsCache.lines.get('line7');
 
         if (!lineData) {
-            this.animateSeventhCircle();
+            this.animateSeventhCircleWithRect();
             return;
         }
 
         this.animateLine(lineData).then(() => {
             setTimeout(() => {
-                this.animateSeventhCircle();
+                this.animateSeventhCircleWithRect();
             }, 100);
         });
     }
 
-    animateSeventhCircle() {
+    animateSeventhCircleWithRect() {
         const circleData = this.elementsCache.circles.get('circle7');
         const ellipseData = this.elementsCache.ellipses.get('ellipse7');
 
@@ -594,8 +592,9 @@ export class Animation {
             ellipseData.rx, ellipseData.ry, '#FFC838', '#FFC838')
             .then(() => {
                 this.isAnimatingSeventhCircle = false;
-                this.animateFourthRectElement();
             });
+
+        this.animateFourthRectElement();
     }
 
     animateFourthRectElement() {
@@ -616,7 +615,7 @@ export class Animation {
 
             setTimeout(() => {
                 this.onAnimationComplete();
-            }, 1100);
+            }, 1000);
         }, 10);
     }
 
