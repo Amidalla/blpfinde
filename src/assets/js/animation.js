@@ -17,8 +17,8 @@ export class Animation {
         this.SEVENTH_CIRCLE_RX = 5.54134;
         this.SEVENTH_CIRCLE_RY = 6.44785;
 
-        this.LINE_ANIMATION_DURATION = '0.528s';
-        this.LINE_ANIMATION_TIMEOUT = 528;
+        this.LINE_ANIMATION_DURATION = '0.264s';
+        this.LINE_ANIMATION_TIMEOUT = 264;
         this.CIRCLE_ANIMATION_SCALE = 0.5;
 
         this.elementsCache = {
