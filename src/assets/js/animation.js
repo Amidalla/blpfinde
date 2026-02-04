@@ -19,7 +19,7 @@ export class Animation {
 
         this.LINE_ANIMATION_DURATION = '0.264s';
         this.LINE_ANIMATION_TIMEOUT = 264;
-        this.CIRCLE_ANIMATION_SCALE = 0.5; 
+        this.CIRCLE_ANIMATION_SCALE = 0.5;
 
         this.elementsCache = {
             lines: new Map(),
