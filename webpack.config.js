@@ -4,7 +4,7 @@ const fs = require('fs');
 const pages = fs.readdirSync(path.resolve(__dirname, 'src')).filter(fileName => fileName.endsWith('.html'));
 const postHtmlInclude = require('posthtml-include');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-//const FaviconsWebpackPlugin = require('favicons-webpack-plugin');
+const FaviconsWebpackPlugin = require('favicons-webpack-plugin');
 
 module.exports = (env, argv) => {
     const isProduction = argv.mode === 'production';
@@ -107,7 +107,7 @@ module.exports = (env, argv) => {
             new MiniCssExtractPlugin({
                 filename: 'css/[name].css',
             }),
-            /*new FaviconsWebpackPlugin({
+            new FaviconsWebpackPlugin({
                 logo: path.resolve(__dirname, 'src/assets/images/favicon-source.png'),
                 prefix: 'assets/images/favicon/',
                 mode: 'webapp',
@@ -126,7 +126,7 @@ module.exports = (env, argv) => {
                         windows: true
                     }
                 }
-            }),*/
+            }),
             ...pages.map(page => new HtmlWebpackPlugin({
                 template: path.join(__dirname, 'src', page),
                 filename: page,

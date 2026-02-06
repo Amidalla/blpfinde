@@ -28,6 +28,8 @@ button {
 
 a {
   text-decoration: none;
+  border: none;
+  outline: none;
 }
 
 ul,
@@ -84,3 +86,19 @@ textarea {
   resize: none;
 }
 
+h2 {
+  color: #212529;
+  font-size: 43px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+}
+
+h3 {
+  color: #212529;
+  font-size: 32px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  margin-bottom: 16px;
+}

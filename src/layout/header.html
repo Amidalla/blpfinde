@@ -1,10 +1,79 @@
 <header class="header">
-    <div class="header__inner container">
-        <div class="header__logo">
-            <include src="assets/svg/logo.html"></include>
-        </div>
-        <div class="header__mail">
-            <a href="mailto:BLP-finder@yandex.ru">BLP-finder@yandex.ru</a>
-        </div>
+    <div class="container">
+       <div class="header__top">
+           <div class="search-container">
+               <div class="search-toggle" id="searchToggle">
+                   <include src="assets/svg/search.html"></include>
+               </div>
+               <div class="search-box" id="searchBox">
+                   <button class="search-close" id="searchClose">×</button>
+                   <input type="text" class="search-input" placeholder="Введите запрос для поиска...">
+               </div>
+           </div>
+           <div class="access-container">
+               <a href="#" class="access-link">
+                   <include src="assets/svg/access.html"></include>
+                   <span>Доступ к материалам</span>
+               </a>
+           </div>
+       </div>
+       <div class="header__bottom">
+           <div class="header__logo">
+               <a href="#">
+                    <include src="assets/svg/logo.html"></include>
+               </a>
+           </div>
+           <nav class="header__nav">
+               <ul class="header__list">
+                   <li class="header__item">
+                       <a  href="#" class="header__link">Решение BLP-finder</a>
+                   </li>
+                   <li class="header__item dropdown">
+                       <a href="#" class="header__link">
+                           <span>О нас</span>
+                           <include src="assets/svg/header-arrow.html"></include>
+                       </a>
+                       <ul class="header__sublist">
+                           <li class="header__subitem">
+                               <a href="#" class="header__additional-link">
+                                   Кто мы?
+                               </a>
+                           </li>
+                           <li class="header__subitem">
+                               <a href="#" class="header__additional-link">
+                                   Интеллектуальная собственность
+                               </a>
+                           </li>
+                           <li class="header__subitem">
+                               <a href="#" class="header__additional-link">
+                                   Отзывы
+                               </a>
+                           </li>
+                       </ul>
+                   </li>
+                   <li class="header__item">
+                       <a href="#" class="header__link">Новости</a>
+                   </li>
+                   <li class="header__item">
+                       <a href="#" class="header__link">Статьи</a>
+                   </li>
+                   <li class="header__item">
+                       <a href="#" class="header__link">Кейсы</a>
+                   </li>
+                   <li class="header__item">
+                       <a href="#" class="header__link">Консультанты</a>
+                   </li>
+                   <li class="header__item">
+                       <a href="#" class="header__link">FAQ</a>
+                   </li>
+                   <li class="header__item">
+                       <a href="#" class="header__link">Контакты</a>
+                   </li>
+               </ul>
+           </nav>
+           <div class="header__btn">
+               <a href="#" class="color-btn">Получить решение</a>
+           </div>
+       </div>
     </div>
 </header>

@@ -1,1 +1,1 @@
-Вертска заглушки blpfinder
+Вертска blpfinder
