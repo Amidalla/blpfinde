@@ -30,34 +30,15 @@ function initPhoneMasks() {
 }
 
 function initAnimation() {
-        const svgContainer = document.querySelector('.svg-animation-container');
+        const svgContainers = document.querySelectorAll('.benefit .svg-animation-container');
 
-        if (svgContainer) {
-                const animation = new Animation(svgContainer);
-                const svgElement = svgContainer.querySelector('svg');
+        svgContainers.forEach((container) => {
+                const animation = new Animation(container);
 
-                if (svgElement) {
-                        if (svgElement.hasAttribute('data-loaded')) {
-                                animation.start();
-                        } else {
-                                svgElement.addEventListener('load', () => {
-                                        svgElement.setAttribute('data-loaded', 'true');
-                                        animation.start();
-                                });
-
-                                setTimeout(() => {
-                                        if (!svgElement.hasAttribute('data-loaded')) {
-                                                svgElement.setAttribute('data-loaded', 'true');
-                                                animation.start();
-                                        }
-                                }, 500);
-                        }
-                } else {
-                        setTimeout(() => {
-                                animation.start();
-                        }, 100);
+                if (!animation.isMobileView) {
+                        animation.setupScrollObserver();
                 }
-        }
+        });
 }
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -69,7 +50,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 window.addEventListener('load', function() {
-        setTimeout(initAnimation, 100);
+        lazyLoadInstance.update();
 });
 
 export {

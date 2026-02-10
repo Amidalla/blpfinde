@@ -63,7 +63,7 @@ main {
       &:hover {
         text-decoration: underline;
       }
-      
+
       @media (max-width: 1300px) {
         font-size: 18px;
       }
@@ -182,7 +182,7 @@ main {
         height: 100%;
       }
     }
-    
+
     @media (max-width: 1700px) {
       width: 1257px;
       height: 701px;
@@ -197,7 +197,7 @@ main {
     }
 
     @media (max-width: 1200px) {
-     right: -400px;
+      right: -400px;
     }
 
     @media (max-width: 1100px) {
@@ -256,7 +256,7 @@ main {
     display: flex;
     gap: 29px;
     align-items: center;
-    
+
     @media (max-width: 1300px) {
       flex-direction: column;
       gap: 14px;
@@ -357,6 +357,7 @@ main {
   }
 }
 
+// ИСХОДНЫЕ СТИЛИ ИЗ ПЕРВОГО ФАЙЛА - ТОЧНО ТЕ ЖЕ
 .svg-animation-container {
   opacity: 0;
   visibility: hidden;
@@ -375,6 +376,7 @@ main {
   pointer-events: auto;
 }
 
+// ВОТ ЭТИ СТИЛИ У ВАС РАБОТАЛИ - ОСТАВЛЯЕМ ИХ БЕЗ ИЗМЕНЕНИЙ
 .animate-first-rect,
 .animate-first-panel,
 .animate-second-rect,

@@ -29,7 +29,6 @@ export class Animation {
             panels: new Map()
         };
 
-
         this.isMobileView = window.innerWidth <= 750;
 
         if (this.isMobileView) {
@@ -38,6 +37,32 @@ export class Animation {
             this.initializeElements();
             this.hideAllElements();
         }
+    }
+
+    setupScrollObserver() {
+        const section = this.container.closest('section');
+
+        if (!section) {
+            this.start();
+            return;
+        }
+
+        this.observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting && !this.hasAnimated && !this.isAnimating) {
+                        this.start();
+                        this.observer.unobserve(entry.target);
+                    }
+                });
+            },
+            {
+                threshold: 0.2,
+                rootMargin: '0px 0px -50px 0px'
+            }
+        );
+
+        this.observer.observe(section);
     }
 
     showAllElementsImmediately() {
@@ -226,52 +251,45 @@ export class Animation {
     }
 
     initializeRectGroups(svgElement) {
-        const firstRectGroup = svgElement.querySelector('g[opacity="0.8"]');
-        if (firstRectGroup) {
+        const allOpacityGroups = svgElement.querySelectorAll('g[opacity="0.8"]');
+
+        if (allOpacityGroups.length > 0) {
+            const firstRectGroup = allOpacityGroups[0];
             this.elementsCache.rectGroups.set('rectGroup1', firstRectGroup);
 
-            const allGroups = svgElement.querySelectorAll('g');
-            for (let i = 0; i < allGroups.length; i++) {
-                if (allGroups[i] === firstRectGroup && allGroups[i + 1]) {
-                    this.elementsCache.panels.set('panel1', allGroups[i + 1]);
-                    break;
-                }
+            const firstPanel = svgElement.querySelector('g[clip-path="url(#clip0_421_1180)"]');
+            if (firstPanel) {
+                this.elementsCache.panels.set('panel1', firstPanel);
             }
         }
 
-        const allOpacityGroups = svgElement.querySelectorAll('g[opacity="0.8"]');
-        for (let group of allOpacityGroups) {
-            const path = group.querySelector('path[d="M108.422 280.772C108.422 272.252 115.164 263.847 123.482 261.998L316.893 219.018C325.21 217.17 331.953 222.578 331.953 231.099V259.771C331.953 268.291 325.21 276.697 316.893 278.545L123.482 321.525C115.164 323.374 108.422 317.965 108.422 309.445V280.772Z"]');
-            if (path) {
-                this.elementsCache.rectGroups.set('rectGroup2', group);
+        if (allOpacityGroups.length > 1) {
+            const secondRectGroup = allOpacityGroups[1];
+            this.elementsCache.rectGroups.set('rectGroup2', secondRectGroup);
 
-                const sixthPanel = this.findSixthPanel();
-                if (sixthPanel) {
-                    this.elementsCache.panels.set('panel2', sixthPanel);
-                }
-                break;
+            const secondPanel = svgElement.querySelector('g[clip-path="url(#clip1_421_1180)"]');
+            if (secondPanel) {
+                this.elementsCache.panels.set('panel2', secondPanel);
             }
         }
 
-        if (allOpacityGroups.length >= 3) {
-            this.elementsCache.rectGroups.set('rectGroup3', allOpacityGroups[2]);
+        if (allOpacityGroups.length > 2) {
+            const thirdRectGroup = allOpacityGroups[2];
+            this.elementsCache.rectGroups.set('rectGroup3', thirdRectGroup);
 
-            const thirdPanel = this.findThirdPanel(svgElement);
+            const thirdPanel = svgElement.querySelector('g[clip-path="url(#clip2_421_1180)"]');
             if (thirdPanel) {
                 this.elementsCache.panels.set('panel3', thirdPanel);
             }
         }
 
-        for (let group of allOpacityGroups) {
-            const path = group.querySelector('path[d="M127.711 615.542C127.711 607.022 134.453 598.617 142.771 596.768L336.182 553.788C344.499 551.94 351.242 557.348 351.242 565.869V594.541C351.242 603.061 344.499 611.467 336.182 613.315L142.771 656.295C134.453 658.144 127.711 652.735 127.711 644.215V615.542Z"]');
-            if (path) {
-                this.elementsCache.rectGroups.set('rectGroup4', group);
+        if (allOpacityGroups.length > 3) {
+            const fourthRectGroup = allOpacityGroups[3];
+            this.elementsCache.rectGroups.set('rectGroup4', fourthRectGroup);
 
-                const fourthPanel = this.findFourthPanelElement(svgElement);
-                if (fourthPanel) {
-                    this.elementsCache.panels.set('panel4', fourthPanel);
-                }
-                break;
+            const fourthPanel = svgElement.querySelector('g[clip-path="url(#clip3_421_1180)"]');
+            if (fourthPanel) {
+                this.elementsCache.panels.set('panel4', fourthPanel);
             }
         }
     }
@@ -289,7 +307,7 @@ export class Animation {
         const svgElement = this.container.querySelector('svg');
         if (!svgElement) return;
 
-        this.elementsCache.lines.forEach((lineData, key) => {
+        this.elementsCache.lines.forEach((lineData) => {
             const line = lineData.element;
             const startOffset = lineData.startOffset;
 
@@ -301,21 +319,23 @@ export class Animation {
         });
 
         ['circles', 'ellipses'].forEach(cacheName => {
-            this.elementsCache[cacheName].forEach((elementData, key) => {
+            this.elementsCache[cacheName].forEach((elementData) => {
                 const element = elementData.element;
                 element.style.transition = 'none';
                 element.style.opacity = '0';
             });
         });
 
-        this.elementsCache.rectGroups.forEach((group, key) => {
+        this.elementsCache.rectGroups.forEach((group) => {
             group.style.transition = 'none';
-            group.style.opacity = '0';
+            group.classList.remove('animate-first-rect', 'animate-second-rect',
+                'animate-third-rect', 'animate-fourth-rect');
         });
 
-        this.elementsCache.panels.forEach((panel, key) => {
+        this.elementsCache.panels.forEach((panel) => {
             panel.style.transition = 'none';
-            panel.style.opacity = '0';
+            panel.classList.remove('animate-first-panel', 'animate-second-panel',
+                'animate-third-panel', 'animate-fourth-panel');
         });
 
         svgElement.getBoundingClientRect();
@@ -326,7 +346,9 @@ export class Animation {
             return;
         }
 
-        if (this.hasAnimated || this.isAnimating) return;
+        if (this.hasAnimated || this.isAnimating) {
+            return;
+        }
 
         this.isAnimating = true;
         this.animationStartTime = performance.now();
@@ -404,7 +426,6 @@ export class Animation {
 
         this.animateLine(lineData).then(() => {
             setTimeout(() => {
-
                 this.animateCachedCircle('circle2', () => {});
                 this.animateFirstRectElement();
             }, 100);
@@ -419,6 +440,12 @@ export class Animation {
             this.animateThirdLine();
             return;
         }
+
+        rectGroup.style.removeProperty('opacity');
+        panel.style.removeProperty('opacity');
+
+        rectGroup.getBoundingClientRect();
+        panel.getBoundingClientRect();
 
         rectGroup.classList.add('animate-first-rect');
         panel.classList.add('animate-first-panel');
@@ -438,7 +465,6 @@ export class Animation {
 
         this.animateLine(lineData).then(() => {
             setTimeout(() => {
-
                 this.animateCachedCircle('circle3', () => {});
                 this.animateSecondRectElement();
             }, 100);
@@ -454,17 +480,18 @@ export class Animation {
             return;
         }
 
-        rectGroup.style.opacity = '0';
-        panel.style.opacity = '0';
+        rectGroup.style.removeProperty('opacity');
+        panel.style.removeProperty('opacity');
+
+        rectGroup.getBoundingClientRect();
+        panel.getBoundingClientRect();
+
+        rectGroup.classList.add('animate-second-rect');
+        panel.classList.add('animate-second-panel');
 
         setTimeout(() => {
-            rectGroup.classList.add('animate-second-rect');
-            panel.classList.add('animate-second-panel');
-
-            setTimeout(() => {
-                this.animateFourthLine();
-            }, 1000);
-        }, 10);
+            this.animateFourthLine();
+        }, 1000);
     }
 
     animateFourthLine() {
@@ -521,7 +548,10 @@ export class Animation {
             return;
         }
 
-        if (this.isAnimatingSixthCircle) return;
+        if (this.isAnimatingSixthCircle) {
+            return;
+        }
+
         this.isAnimatingSixthCircle = true;
 
         const outerCircle = circleData.element;
@@ -545,17 +575,18 @@ export class Animation {
             return;
         }
 
-        rectGroup.style.opacity = '0';
-        panel.style.opacity = '0';
+        rectGroup.style.removeProperty('opacity');
+        panel.style.removeProperty('opacity');
+
+        rectGroup.getBoundingClientRect();
+        panel.getBoundingClientRect();
+
+        rectGroup.classList.add('animate-third-rect');
+        panel.classList.add('animate-third-panel');
 
         setTimeout(() => {
-            rectGroup.classList.add('animate-third-rect');
-            panel.classList.add('animate-third-panel');
-
-            setTimeout(() => {
-                this.animateSeventhLine();
-            }, 1000);
-        }, 10);
+            this.animateSeventhLine();
+        }, 1000);
     }
 
     animateSeventhLine() {
@@ -582,7 +613,10 @@ export class Animation {
             return;
         }
 
-        if (this.isAnimatingSeventhCircle) return;
+        if (this.isAnimatingSeventhCircle) {
+            return;
+        }
+
         this.isAnimatingSeventhCircle = true;
 
         const outerCircle = circleData.element;
@@ -606,17 +640,18 @@ export class Animation {
             return;
         }
 
-        rectGroup.style.opacity = '0';
-        panel.style.opacity = '0';
+        rectGroup.style.removeProperty('opacity');
+        panel.style.removeProperty('opacity');
+
+        rectGroup.getBoundingClientRect();
+        panel.getBoundingClientRect();
+
+        rectGroup.classList.add('animate-fourth-rect');
+        panel.classList.add('animate-fourth-panel');
 
         setTimeout(() => {
-            rectGroup.classList.add('animate-fourth-rect');
-            panel.classList.add('animate-fourth-panel');
-
-            setTimeout(() => {
-                this.onAnimationComplete();
-            }, 1000);
-        }, 10);
+            this.onAnimationComplete();
+        }, 1000);
     }
 
     animateCachedCircle(circleId, callback) {
@@ -696,6 +731,7 @@ export class Animation {
     onAnimationComplete() {
         this.isAnimating = false;
         this.hasAnimated = true;
+
         this.cleanupAnimationStyles();
         this.dispatchAnimationCompleteEvent();
     }
@@ -726,49 +762,6 @@ export class Animation {
         if (this.container) {
             this.container.dispatchEvent(event);
         }
-    }
-
-    findSixthPanel() {
-        const svgElement = this.container?.querySelector('svg');
-        if (!svgElement) return null;
-
-        const allGroups = svgElement.querySelectorAll('g');
-        for (let i = 0; i < allGroups.length; i++) {
-            if (allGroups[i].getAttribute('clip-path') === 'url(#clip1_421_1180)') {
-                return allGroups[i];
-            }
-        }
-        return null;
-    }
-
-    findThirdPanel(svgElement = null) {
-        if (!svgElement) {
-            svgElement = this.container?.querySelector('svg');
-        }
-        if (!svgElement) return null;
-
-        const allGroups = svgElement.querySelectorAll('g');
-        for (let i = 0; i < allGroups.length; i++) {
-            if (allGroups[i].getAttribute('clip-path') === 'url(#clip2_421_1180)') {
-                return allGroups[i];
-            }
-        }
-        return null;
-    }
-
-    findFourthPanelElement(svgElement = null) {
-        if (!svgElement) {
-            svgElement = this.container?.querySelector('svg');
-        }
-        if (!svgElement) return null;
-
-        const allGroups = svgElement.querySelectorAll('g');
-        for (let i = 0; i < allGroups.length; i++) {
-            if (allGroups[i].getAttribute('clip-path') === 'url(#clip3_421_1180)') {
-                return allGroups[i];
-            }
-        }
-        return null;
     }
 }
 
