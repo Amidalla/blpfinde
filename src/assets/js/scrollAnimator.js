@@ -7,7 +7,83 @@ class ScrollAnimator {
     constructor() {
         this.isMobileView = window.innerWidth <= 750;
         this.isHomePage = document.querySelector('main.home-page') !== null;
+        this.animationsStarted = false;
         this.init();
+    }
+
+    setupDesktopAnimation() {
+
+        this.setInitialState();
+
+
+        if (document.readyState === 'complete') {
+            this.delayedStart();
+        } else {
+            window.addEventListener('load', () => {
+                this.delayedStart();
+            });
+        }
+    }
+
+    setInitialState() {
+
+        const sections = [
+            '.hero',
+            '.tools',
+            '.technology',
+            '.dignity',
+            '.main-about',
+            '.clients',
+            '.main-info',
+            '.bid'
+        ];
+
+        sections.forEach(selector => {
+            const section = document.querySelector(selector);
+            if (section) {
+                gsap.set(section, { opacity: 0, y: 50 });
+            }
+        });
+
+        gsap.set('.tools__item', { opacity: 0, y: 60, scale: 0.95 });
+        gsap.set('.technology__item', { opacity: 0, y: 80, scale: 0.95 });
+        gsap.set('.dignity__item', { opacity: 0, y: 50, scale: 0.95 });
+        gsap.set('.modal-item', { opacity: 0, y: 40, scale: 0.9 });
+        gsap.set('.main-about__point', { opacity: 0, y: 40, scale: 0.95 });
+        gsap.set('.clients__media', { opacity: 0, scale: 0.8, rotation: -3 });
+
+        const buttons = document.querySelectorAll('.btn, .color-btn, .not-color-btn, .hero-btn, .technology__btn, .main-about__btn, .clients__btn, .bid-btn, .submit-btn, .footer .color-btn, .download-link');
+        const headerBtn = document.querySelector('.header__btn .color-btn');
+
+        buttons.forEach(btn => {
+            if (btn !== headerBtn && !btn.closest('.news-tabs') && !btn.classList.contains('link-btn')) {
+                gsap.set(btn, { opacity: 0, scale: 0.9 });
+            }
+        });
+
+        gsap.set(headerBtn, { opacity: 0, scale: 0.9, y: -5 });
+    }
+
+    delayedStart() {
+        if (this.animationsStarted) return;
+        this.animationsStarted = true;
+
+        setTimeout(() => {
+            this.startAnimations();
+        }, 300);
+    }
+
+    startAnimations() {
+        this.animateSections();
+        this.animateToolsItems();
+        this.animateTechnologyItems();
+        this.animateDignityItems();
+        this.animateModalItems();
+        this.animateAboutPoints();
+        this.animateClientsMedia();
+        this.animateButtons();
+        this.animateHeader();
+        this.setupTabsButtons();
     }
 
     init() {

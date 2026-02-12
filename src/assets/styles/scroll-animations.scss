@@ -2,6 +2,36 @@
 @use "../styles/mixins.scss" as *;
 @use "./fonts.scss";
 
+.home-page {
+    .hero,
+    .tools,
+    .technology,
+    .dignity,
+    .main-about,
+    .clients,
+    .main-info,
+    .bid,
+    .tools__item,
+    .technology__item,
+    .dignity__item,
+    .modal-item,
+    .main-about__point,
+    .clients__media,
+    .btn,
+    .color-btn,
+    .not-color-btn,
+    .hero-btn,
+    .technology__btn,
+    .main-about__btn,
+    .clients__btn,
+    .bid-btn,
+    .submit-btn,
+    .download-link {
+        opacity: 0;
+        visibility: visible;
+    }
+}
+
 
 .hero,
 .tools,
