@@ -17,16 +17,17 @@ export class Animation {
         this.SEVENTH_CIRCLE_RX = 5.54134;
         this.SEVENTH_CIRCLE_RY = 6.44785;
 
-        this.LINE_ANIMATION_DURATION = '0.264s';
-        this.LINE_ANIMATION_TIMEOUT = 264;
-        this.CIRCLE_ANIMATION_SCALE = 0.5;
+        this.LINE_ANIMATION_DURATION = '0.2s';
+        this.LINE_ANIMATION_TIMEOUT = 200;
+        this.CIRCLE_ANIMATION_SCALE = 0.4;
 
         this.elementsCache = {
             lines: new Map(),
             circles: new Map(),
             ellipses: new Map(),
             rectGroups: new Map(),
-            panels: new Map()
+            panels: new Map(),
+            benefitItems: new Map()
         };
 
         this.isMobileView = window.innerWidth <= 750;
@@ -93,6 +94,14 @@ export class Animation {
             group.style.transition = 'none';
         });
 
+        const benefitItems = document.querySelectorAll('.benefit__item');
+        benefitItems.forEach(item => {
+            item.style.opacity = '1';
+            item.style.visibility = 'visible';
+            item.style.transition = 'none';
+            item.style.transform = 'translateY(0) scale(1)';
+        });
+
         this.hasAnimated = true;
         this.container.classList.add('animation-complete');
     }
@@ -102,6 +111,17 @@ export class Animation {
 
         const svgElement = this.container.querySelector('svg');
         if (!svgElement) return;
+
+        const section = this.container.closest('section');
+        if (section) {
+            const benefitItems = section.querySelectorAll('.benefit__item');
+            benefitItems.forEach((item, index) => {
+                this.elementsCache.benefitItems.set(`benefit${index + 1}`, {
+                    element: item,
+                    index: index
+                });
+            });
+        }
 
         const linesConfig = [
             {
@@ -338,6 +358,15 @@ export class Animation {
                 'animate-third-panel', 'animate-fourth-panel');
         });
 
+        this.elementsCache.benefitItems.forEach((itemData) => {
+            const item = itemData.element;
+            item.style.transition = 'none';
+            item.style.opacity = '0';
+            item.style.visibility = 'hidden';
+            item.style.transform = 'translateY(20px) scale(0.95)';
+            item.style.filter = 'blur(4px)';
+        });
+
         svgElement.getBoundingClientRect();
     }
 
@@ -401,6 +430,30 @@ export class Animation {
         });
     }
 
+    animateBenefitItem(index) {
+        const benefitData = this.elementsCache.benefitItems.get(`benefit${index}`);
+        if (!benefitData) return;
+
+        const item = benefitData.element;
+
+        requestAnimationFrame(() => {
+            item.style.transition = 'none';
+            item.style.opacity = '0';
+            item.style.visibility = 'visible';
+            item.style.transform = 'translateY(20px) scale(0.95)';
+            item.style.filter = 'blur(4px)';
+
+            item.getBoundingClientRect();
+
+            requestAnimationFrame(() => {
+                item.style.transition = 'all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)';
+                item.style.opacity = '1';
+                item.style.transform = 'translateY(0) scale(1)';
+                item.style.filter = 'blur(0)';
+            });
+        });
+    }
+
     animateFirstLine() {
         const lineData = this.elementsCache.lines.get('line1');
 
@@ -412,7 +465,7 @@ export class Animation {
         this.animateLine(lineData).then(() => {
             setTimeout(() => {
                 this.animateCachedCircle('circle1', this.animateSecondLine.bind(this));
-            }, 100);
+            }, 70);
         });
     }
 
@@ -428,7 +481,7 @@ export class Animation {
             setTimeout(() => {
                 this.animateCachedCircle('circle2', () => {});
                 this.animateFirstRectElement();
-            }, 100);
+            }, 70);
         });
     }
 
@@ -450,9 +503,11 @@ export class Animation {
         rectGroup.classList.add('animate-first-rect');
         panel.classList.add('animate-first-panel');
 
+        this.animateBenefitItem(1);
+
         setTimeout(() => {
             this.animateThirdLine();
-        }, 1000);
+        }, 600);
     }
 
     animateThirdLine() {
@@ -467,7 +522,7 @@ export class Animation {
             setTimeout(() => {
                 this.animateCachedCircle('circle3', () => {});
                 this.animateSecondRectElement();
-            }, 100);
+            }, 70);
         });
     }
 
@@ -489,9 +544,11 @@ export class Animation {
         rectGroup.classList.add('animate-second-rect');
         panel.classList.add('animate-second-panel');
 
+        this.animateBenefitItem(2);
+
         setTimeout(() => {
             this.animateFourthLine();
-        }, 1000);
+        }, 600);
     }
 
     animateFourthLine() {
@@ -505,7 +562,7 @@ export class Animation {
         this.animateLine(lineData).then(() => {
             setTimeout(() => {
                 this.animateCachedCircle('circle4', this.animateFifthLine.bind(this));
-            }, 100);
+            }, 70);
         });
     }
 
@@ -520,7 +577,7 @@ export class Animation {
         this.animateLine(lineData).then(() => {
             setTimeout(() => {
                 this.animateCachedCircle('circle5', this.animateSixthLine.bind(this));
-            }, 100);
+            }, 70);
         });
     }
 
@@ -535,7 +592,7 @@ export class Animation {
         this.animateLine(lineData).then(() => {
             setTimeout(() => {
                 this.animateSixthCircleWithRect();
-            }, 100);
+            }, 70);
         });
     }
 
@@ -584,9 +641,11 @@ export class Animation {
         rectGroup.classList.add('animate-third-rect');
         panel.classList.add('animate-third-panel');
 
+        this.animateBenefitItem(3);
+
         setTimeout(() => {
             this.animateSeventhLine();
-        }, 1000);
+        }, 600);
     }
 
     animateSeventhLine() {
@@ -600,7 +659,7 @@ export class Animation {
         this.animateLine(lineData).then(() => {
             setTimeout(() => {
                 this.animateSeventhCircleWithRect();
-            }, 100);
+            }, 70);
         });
     }
 
@@ -649,9 +708,11 @@ export class Animation {
         rectGroup.classList.add('animate-fourth-rect');
         panel.classList.add('animate-fourth-panel');
 
+        this.animateBenefitItem(4);
+
         setTimeout(() => {
             this.onAnimationComplete();
-        }, 1000);
+        }, 600);
     }
 
     animateCachedCircle(circleId, callback) {
@@ -717,12 +778,12 @@ export class Animation {
 
                 setTimeout(() => {
                     outerCircle.style.opacity = '1';
-                    outerCircle.style.transition = 'opacity 0.3s ease-out';
+                    outerCircle.style.transition = 'opacity 0.25s ease-out';
 
                     setTimeout(() => {
                         circleClone.remove();
                         resolve();
-                    }, 300);
+                    }, 250);
                 }, this.CIRCLE_ANIMATION_SCALE * 1000);
             }, 50);
         });

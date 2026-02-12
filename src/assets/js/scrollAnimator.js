@@ -594,8 +594,8 @@ class ScrollAnimator {
                     scale: 1,
                     duration: 0.5,
                     stagger: 0.1,
-                    ease: 'back.out(1.7)',
-                    clearProps: 'transform,scale,opacity'
+                    ease: 'back.out(1.7)'
+
                 });
             },
             once: true
