@@ -563,7 +563,7 @@
       img {
         max-width: 200%;
         margin-top: -55px;
-        margin-left: 23px;
+        margin-left: 21px;
         margin-bottom: -45px;
         display: block;
       }
@@ -662,6 +662,7 @@
     display: flex;
     gap: 12px;
     align-items: center;
+    border-radius: 20px;
 
     div {
       display: flex;

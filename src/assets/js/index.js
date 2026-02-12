@@ -4,6 +4,7 @@ import "../styles/header.scss";
 import "../styles/footer.scss";
 import "../styles/home.scss";
 import "../styles/news-tabs.scss";
+import "../styles/scroll-animations.scss";
 import LazyLoad from "vanilla-lazyload";
 import Swiper from 'swiper';
 import 'swiper/swiper-bundle.css';
@@ -14,6 +15,7 @@ import { initSearch } from "./search.js";
 import { initAllVideos } from "./video.js";
 import { initNewsTabs } from "./tabs.js";
 import { SlidersInit } from "./sliders.js";
+import ScrollAnimator from "./scrollAnimator.js";
 
 
 Swiper.use([Pagination, Navigation, Autoplay, Thumbs, EffectFade]);
@@ -43,24 +45,63 @@ function initAnimation() {
         });
 }
 
+function initScrollAnimations() {
+        const scrollAnimator = new ScrollAnimator();
+}
+
+function addAnimationClasses() {
+        document.querySelectorAll('section:not(.no-animation)').forEach((section, index) => {
+                if (!section.classList.contains('fade-up') &&
+                    !section.classList.contains('scale-in') &&
+                    !section.classList.contains('fade-down')) {
+                        if (index % 2 === 0) {
+                                section.classList.add('fade-up');
+                        } else {
+                                section.classList.add('scale-in');
+                        }
+                }
+        });
+
+        document.querySelectorAll('.section-title, h2, h3').forEach((title) => {
+                if (!title.classList.contains('fade-up-delay')) {
+                        title.classList.add('fade-up-delay');
+                }
+        });
+
+        document.querySelectorAll('.card, .service-card, .service-item, .portfolio-item, .benefit-card, .team-card').forEach((card, index) => {
+                if (!card.classList.contains('fade-up') && !card.classList.contains('scale-in')) {
+                        if (index % 3 === 0) {
+                                card.classList.add('fade-up');
+                        } else {
+                                card.classList.add('scale-in');
+                        }
+                }
+        });
+
+        document.querySelectorAll('.btn, .button, button:not(.no-animation)').forEach((button) => {
+                if (!button.classList.contains('scale-in')) {
+                        button.classList.add('scale-in');
+                }
+        });
+}
+
 document.addEventListener('DOMContentLoaded', function() {
 
         SlidersInit();
 
-
         initNewsTabs();
-
 
         lazyLoadInstance.update();
         initPhoneMasks();
         initAnimation();
         initSearch();
         initAllVideos();
+        initScrollAnimations();
+
 });
 
 window.addEventListener('load', function() {
         lazyLoadInstance.update();
-
 
         setTimeout(() => {
                 const swipers = document.querySelectorAll('.swiper');
@@ -71,7 +112,6 @@ window.addEventListener('load', function() {
                 });
         }, 100);
 });
-
 
 window.addEventListener('resize', function() {
         const swipers = document.querySelectorAll('.swiper');
@@ -89,5 +129,6 @@ export {
         initSearch,
         initAllVideos,
         initNewsTabs,
-        SlidersInit
+        SlidersInit,
+        initScrollAnimations
 };

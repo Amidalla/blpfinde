@@ -1,0 +1,299 @@
+@use "./colors.scss" as c;
+@use "../styles/mixins.scss" as *;
+@use "./fonts.scss";
+
+
+.hero,
+.tools,
+.technology,
+.dignity,
+.main-about,
+.clients,
+.main-info,
+.bid,
+.tools__item,
+.technology__item,
+.dignity__item,
+.modal-item,
+.main-about__point,
+.clients__media {
+    will-change: transform, opacity;
+}
+
+
+.btn,
+.color-btn,
+.not-color-btn,
+.hero-btn,
+.technology__btn,
+.main-about__btn,
+.clients__btn,
+.bid-btn,
+.submit-btn,
+.header__btn .color-btn,
+.footer .color-btn,
+.download-link {
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+    will-change: transform, opacity;
+
+    &:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(248, 62, 73, 0.3);
+    }
+}
+
+
+.link-btn {
+    &:hover {
+        box-shadow: none !important;
+    }
+}
+
+
+.download-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+
+    svg {
+        transition: transform 0.15s ease;
+    }
+
+    &:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(248, 62, 73, 0.3);
+
+        svg {
+            transform: translateY(-2px);
+        }
+    }
+}
+
+
+.technology__item {
+    transition: transform 0.2s ease;
+
+    .item-bg {
+        transition: box-shadow 0.2s ease, transform 0.2s ease;
+    }
+
+    .item-arrow {
+        transition: transform 0.2s ease;
+
+        span {
+            transition: color 0.15s ease, transform 0.15s ease;
+        }
+
+        svg path {
+            transition: fill 0.15s ease;
+        }
+    }
+
+    &:hover {
+        .item-arrow {
+            transform: translateX(10px);
+
+            span {
+                color: #F83E49;
+                transform: scale(1.3);
+            }
+
+            svg path {
+                fill: #F83E49;
+            }
+        }
+
+        .item-bg {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+    }
+}
+
+
+.tools__item {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+    &:hover {
+        transform: translateY(-5px) scale(1.02);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.08);
+
+        h3, p, span {
+            color: inherit;
+            transform: none;
+        }
+    }
+}
+
+
+.dignity__item {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+    &:hover {
+        transform: translateY(-5px) scale(1.02);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+
+        .dignity__media svg {
+            transform: scale(1.1);
+        }
+    }
+
+    .dignity__media svg {
+        transition: transform 0.3s ease;
+    }
+}
+
+
+.modal-item {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+    &:hover {
+        transform: translateY(-3px) scale(1.02);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+
+        .modal-media {
+            transform: scale(1.05);
+        }
+    }
+
+    .modal-media {
+        transition: transform 0.3s ease;
+    }
+}
+
+
+.clients__media {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+    &:hover {
+        transform: scale(1.02) rotate(1deg);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    }
+}
+
+
+.clients__number {
+    &,
+    &:hover,
+    span,
+    span:hover,
+    span:first-of-type,
+    span:first-of-type:hover {
+        color: white;
+    }
+
+    span {
+        transition: none;
+    }
+}
+
+
+.main-about__point {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+    &:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+
+        .main-about__img img {
+            transform: scale(1.05);
+        }
+    }
+
+    .main-about__img img {
+        transition: transform 0.3s ease;
+    }
+}
+
+
+@media (max-width: 750px) {
+    .hero,
+    .tools,
+    .technology,
+    .dignity,
+    .main-about,
+    .clients,
+    .main-info,
+    .bid,
+    .tools__item,
+    .technology__item,
+    .dignity__item,
+    .modal-item,
+    .main-about__point,
+    .clients__media,
+    .btn,
+    .color-btn,
+    .not-color-btn,
+    .link-btn,
+    .hero-btn,
+    .technology__btn,
+    .main-about__btn,
+    .clients__btn,
+    .bid-btn,
+    .submit-btn,
+    .header__btn .color-btn,
+    .footer .color-btn,
+    .download-link {
+        opacity: 1;
+        transform: none;
+        scale: 1;
+        transition: none;
+        animation: none;
+    }
+
+    .tools__item:hover,
+    .technology__item:hover,
+    .dignity__item:hover,
+    .modal-item:hover,
+    .main-about__point:hover,
+    .clients__media:hover,
+    .btn:hover,
+    .color-btn:hover,
+    .not-color-btn:hover,
+    .link-btn:hover,
+    .hero-btn:hover,
+    .technology__btn:hover,
+    .main-about__btn:hover,
+    .clients__btn:hover,
+    .bid-btn:hover,
+    .submit-btn:hover,
+    .header__btn .color-btn:hover,
+    .footer .color-btn:hover,
+    .download-link:hover {
+        transform: none;
+        box-shadow: none;
+
+        h3, h4, p, span, .link-text {
+            color: inherit;
+            transform: none;
+        }
+
+        .dignity__media svg,
+        .modal-media,
+        .main-about__img img,
+        svg {
+            transform: none;
+        }
+
+        circle, path {
+            stroke: inherit;
+            fill: inherit;
+        }
+
+        .item-arrow {
+            transform: none;
+        }
+    }
+
+
+    .clients__number {
+        &,
+        &:hover,
+        span,
+        span:hover,
+        span:first-of-type,
+        span:first-of-type:hover {
+            color: white;
+        }
+    }
+}
