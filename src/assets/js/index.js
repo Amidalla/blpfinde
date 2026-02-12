@@ -1,6 +1,7 @@
 import "../styles/reset.scss";
 import "../styles/styles.scss";
 import "../styles/header.scss";
+import "../styles/footer.scss";
 import "../styles/home.scss";
 import "../styles/news-tabs.scss";
 import LazyLoad from "vanilla-lazyload";
@@ -14,7 +15,7 @@ import { initAllVideos } from "./video.js";
 import { initNewsTabs } from "./tabs.js";
 import { SlidersInit } from "./sliders.js";
 
-// Регистрируем модули Swiper
+
 Swiper.use([Pagination, Navigation, Autoplay, Thumbs, EffectFade]);
 
 const lazyLoadInstance = new LazyLoad({
@@ -43,13 +44,13 @@ function initAnimation() {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-        // 1. Сначала инициализируем все слайдеры (один раз!)
+
         SlidersInit();
 
-        // 2. Потом инициализируем табы (они будут обновлять слайдеры)
+
         initNewsTabs();
 
-        // 3. Остальные инициализации
+
         lazyLoadInstance.update();
         initPhoneMasks();
         initAnimation();
@@ -60,7 +61,7 @@ document.addEventListener('DOMContentLoaded', function() {
 window.addEventListener('load', function() {
         lazyLoadInstance.update();
 
-        // Обновляем все слайдеры после полной загрузки страницы
+
         setTimeout(() => {
                 const swipers = document.querySelectorAll('.swiper');
                 swipers.forEach(swiperEl => {
@@ -71,7 +72,7 @@ window.addEventListener('load', function() {
         }, 100);
 });
 
-// Обновляем слайдеры при ресайзе
+
 window.addEventListener('resize', function() {
         const swipers = document.querySelectorAll('.swiper');
         swipers.forEach(swiperEl => {

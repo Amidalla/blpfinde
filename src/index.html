@@ -2,45 +2,48 @@
 <html lang="ru">
 <include src="layout/head.html"></include>
 <body>
-<header class="header">
-    <div class="header__inner container">
-        <div class="header__logo">
-            <include src="assets/svg/logo.html"></include>
+    <include src="layout/header.html"></include>
+    <main>
+        <div class="container">
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));gap:30px; margin-top: 250px; margin-bottom: 50px;">
+                <div>
+                    <h3>Основные страницы</h3>
+                    <ul>
+                        <li><a href="home.html" style="color: #2C2C2C; margin-bottom: 10px; display: inline-block;">Главная</a></li>
+                        <!--<li><a href="portfolio.html" style="color: #2C2C2C; margin-bottom: 10px; display: inline-block;">Портфолио</a></li>
+                        <li><a href="about.html" style="color: #2C2C2C; margin-bottom: 10px; display: inline-block;">О компании</a></li>
+                        <li><a href="contacts.html" style="color: #2C2C2C; margin-bottom: 10px; display: inline-block;">Контакты</a></li>-->
+                    </ul>
+                </div>
+                <!--<div>
+                    <h3>Каталог</h3>
+                    <ul>
+                        <li style="margin-bottom: 10px;"><a href="catalog.html" style="color: #2C2C2C">Каталог</a></li>
+                        <li><a href="catalog-lvl2.html" style="color: #2C2C2C; margin-bottom: 10px; display: inline-block;">Каталог второй уровень</a></li>
+                        <li><a href="catalog-lvl3.html" style="color: #2C2C2C; margin-bottom: 10px; display: inline-block;">Каталог третий уровень</a></li>
+                        <li><a href="catalog-lvl4.html" style="color: #2C2C2C; margin-bottom: 10px; display: inline-block;">Каталог четвертый уровень</a></li>
+                        <li><a href="catalog-lvl5.html" style="color: #2C2C2C; margin-bottom: 10px; display: inline-block;">Каталог пятый уровень</a></li>
+                        <li><a href="product-card.html" style="color: #2C2C2C;">Каталог детально</a></li>
+                        <li><a href="catalog-lv2.html">Каталог lv2</a></li>
+                        <li><a href="catalog-lv3.html">Каталог lv3</a></li>
+                        <li><a href="product-card.html">Каталог Детально</a></li>
+                    </ul>
+                </div>-->
+                <!--<div>
+                    <h3>Другие</h3>
+                    <ul>
+                        <li ><a href="comparison.html" style="color: #2C2C2C; margin-bottom: 10px; display: inline-block;">Сравнение</a></li>
+                        <li ><a href="basket.html" style="color: #2C2C2C; margin-bottom: 10px; display: inline-block;">Корзина</a></li>
+                        <li ><a href="personal-account.html" style="color: #2C2C2C; margin-bottom: 10px; display: inline-block;">Личный кабинет</a></li>
+                        <li ><a href="personal-account-detail.html" style="color: #2C2C2C; margin-bottom: 10px; display: inline-block;">Личный кабинет - детальная заказа</a></li>
+                        <li ><a href="personal-account-detail-repeat.html" style="color: #2C2C2C; margin-bottom: 10px; display: inline-block;">Личный кабинет - детальная заказа, повтор выбранных</a></li>
+                        <li ><a href="personal-account-profile.html" style="color: #2C2C2C; margin-bottom: 10px; display: inline-block;">Личный кабинет - профиль</a></li>
+                    </ul>
+                </div>-->
+            </div>
         </div>
-        <div class="header__mail">
-            <a href="mailto:BLP-finder@yandex.ru">BLP-finder@yandex.ru</a>
-        </div>
-    </div>
-</header>
-<main class="main-page">
-     <section class="stub">
-         <div class="container">
-              <div class="stub__name">
-                  <h1>Благодарим за проявленный интерес!</h1>
-                  <p>Сайт на реконструкции - возвращайтесь в скором времени<br>
-                      Обещаем - будет интересно!</p>
-              </div>
-             <div class="stub__right">
-                 <div class="stub__content">
-                     <img class="lazy" data-src="assets/images/stub-img.png" alt="">
-                 </div>
-                 <div class="stub__link">
-                     <p>Попробуйте <span>демо-версию</span></p>
-                     <a href="http://demo.blpfinder.com/" class="stub__btn">
-                         <include src="assets/svg/btn-right.html"></include>
-                         <span>БЕСПЛАТНО</span>
-                         <include src="assets/svg/btn-left.html"></include>
-                     </a>
-                 </div>
-             </div>
-         </div>
-         <div class="stub__left">
-             <div class="svg-animation-container">
-                 <include src="assets/svg/animation.html"></include>
-             </div>
-         </div>
-     </section>
-</main>
+    </main>
+<include src="layout/footer.html"></include>
 </body>
 </html>
-
