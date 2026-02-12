@@ -19,8 +19,8 @@
                       <a href="#" class="hero-btn link-btn">Подробнее о продукте</a>
                   </div>
                   <div class="hero__media">
-                      <div class="download-link">
-                          <a href="#" id="downloadLink">
+                      <div class="download-link" data-file-url="assets/video/video.mp4">
+                          <a href="#">
                               <span class="link-text">Скачать презентацию о продукте</span>
                               <svg xmlns="http://www.w3.org/2000/svg" width="53" height="38" viewBox="0 0 53 38" fill="none">
                                   <circle cx="31.0115" cy="26.0115" r="10.631" stroke="#212529" stroke-width="2.71429"/>
@@ -30,8 +30,8 @@
                                   <path d="M44.8088 8.14453L37.7969 17.4183" stroke="#212529" stroke-width="2.2619"/>
                                   <circle cx="7.39795" cy="18.1606" r="4.52381" transform="rotate(21.1361 7.39795 18.1606)" stroke="#212529" stroke-width="2.71429"/>
                               </svg>
-                              </a>
-                          </div>
+                          </a>
+                      </div>
                       <div class="video-container">
                           <div class="main-video">
                               <video class="media-element" poster="assets/images/poster.png">
@@ -88,7 +88,7 @@
             <h2>Боли управления компанией</h2>
             <div class="control-units__inner">
                 <div class="control-units__item">
-                    <div class="control-units__block active">
+                    <div class="control-units__block">
                         <h4>Запутанные процессы</h4>
                         <p>Когда возникают проблемы, сложно определить их источник</p>
                     </div>
@@ -279,17 +279,398 @@
                         <a href="#" class="technology__btn color-btn">Получить решение</a>
                         <a href="#" class="technology__btn not-color-btn">Демо версия</a>
                         <a href="#" class="technology__btn link-btn">Подробнее о продукте</a>
-                        <div class="download-link">
-                            <a href="#" id="downloadLink">
+                        <div class="download-link" data-file-url="assets/video/video.mp4">
+                            <a href="#">
                                 <span class="link-text">Скачать презентацию о продукте</span>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="53" height="38" viewBox="0 0 53 38" fill="none">
-                                    <circle cx="31.0115" cy="26.0115" r="10.631" stroke="#212529" stroke-width="2.71429"></circle>
-                                    <circle cx="31.0119" cy="26.0119" r="5.65476" stroke="#212529" stroke-width="2.71429"></circle>
-                                    <circle cx="47.0704" cy="5.88095" r="4.52381" stroke="#212529" stroke-width="2.71429"></circle>
-                                    <path d="M11.6191 19.793L19.8471 22.9738" stroke="#212529" stroke-width="1.80952"></path>
-                                    <path d="M44.8088 8.14453L37.7969 17.4183" stroke="#212529" stroke-width="2.2619"></path>
-                                    <circle cx="7.39795" cy="18.1606" r="4.52381" transform="rotate(21.1361 7.39795 18.1606)" stroke="#212529" stroke-width="2.71429"></circle>
+                                    <circle cx="31.0115" cy="26.0115" r="10.631" stroke="#212529" stroke-width="2.71429"/>
+                                    <circle cx="31.0119" cy="26.0119" r="5.65476" stroke="#212529" stroke-width="2.71429"/>
+                                    <circle cx="47.0704" cy="5.88095" r="4.52381" stroke="#212529" stroke-width="2.71429"/>
+                                    <path d="M11.6191 19.793L19.8471 22.9738" stroke="#212529" stroke-width="1.80952"/>
+                                    <path d="M44.8088 8.14453L37.7969 17.4183" stroke="#212529" stroke-width="2.2619"/>
+                                    <circle cx="7.39795" cy="18.1606" r="4.52381" transform="rotate(21.1361 7.39795 18.1606)" stroke="#212529" stroke-width="2.71429"/>
                                 </svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="section main-about">
+        <div class="container">
+            <div class="main-about__inner">
+                <div class="main-about__item">
+                    <h2>О нас</h2>
+                    <p>Ландшафт пути к целям компании (Business Landscape Path – finder или BLP-finder).
+                        Мы создали комплексное решение «Человек + IT»: SaaS-платформа BLP-finder +
+                        технология проведения форсайт-сессий с её помощью. За годы работы мы провели
+                        с использованием этой методики более 200 сессий в самых разных компаниях
+                        – и небольших российских, и больших, и глобальных. Текст на замену/корректировку.</p>
+                </div>
+                <div class="main-about__item">
+                   <div class="main-about__block">
+                       <div class="main-about__number">
+                           <span>2000</span>
+                           <include src="assets/svg/main-about-arrow.html"></include>
+                       </div>
+                       <p>сессий</p>
+                   </div>
+                    <div class="main-about__block">
+                        <div class="main-about__number">
+                            <span>700</span>
+                            <include src="assets/svg/main-about-arrow.html"></include>
+                        </div>
+                        <p>консалтинговых проектов</p>
+                    </div>
+                </div>
+            </div>
+            <div class="main-about__inner">
+                <h3>Создатели</h3>
+                <div class="main-about__content">
+                    <ul class="main-about__list">
+                        <li class="main-about__point">
+                            <div class="main-about__img">
+                                <img class="lazy" data-src="assets/images/main-about3.jpg" alt="">
+                            </div>
+                            <div class="main-about__text">
+                                <h4>Андрей Вахин</h4>
+                                <span>Автор технологии Ландшафт пути к цели, автор инструмента
+                                    BLP finder, ведущий методолог-разработчик, продуктолог</span>
+                            </div>
+                        </li>
+                        <li class="main-about__point">
+                            <div class="main-about__img">
+                                <img class="lazy" data-src="assets/images/main-about4.jpg" alt="">
+                            </div>
+                            <div class="main-about__text">
+                                <h4>Алена Сосновская</h4>
+                                <span>Соавтор инструмента BLP-finder, постановщик задач, методолог
+                                    разработчик, продуктолог</span>
+                            </div>
+                        </li>
+                    </ul>
+                    <div class="main-about__buttons">
+                        <a href="#" class="main-about__btn color-btn">Задать вопрос</a>
+                        <a href="#" class="main-about__btn link-btn">Подробнее о нас</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="section dignity">
+        <div class="dignity__inner">
+            <div class="container">
+                <h2>Достоинства решения</h2>
+                <ul class="dignity__list">
+                    <li class="dignity__item">
+                        <div class="dignity__media">
+                            <include src="assets/svg/dignity1.html"></include>
+                        </div>
+                        <div class="dignity__content">
+                            <h3>Применимость</h3>
+                            <p>Применимость в любой организации (компании, подразделении, проекте и т.п.), где есть коллектив от 2 человек и более (верхней границы нет)</p>
+                        </div>
+                    </li>
+                    <li class="dignity__item">
+                        <div class="dignity__media">
+                            <include src="assets/svg/dignity2.html"></include>
+                        </div>
+                        <div class="dignity__content">
+                            <h3>Уникальность</h3>
+                            <p>Нет навязанных извне «умных бизнес-рецептов»; все решения, рождаемые  в ходе работы, уникальны – их бесполезно красть, копировать</p>
+                        </div>
+                    </li>
+                    <li class="dignity__item">
+                        <div class="dignity__media">
+                            <include src="assets/svg/dignity3.html"></include>
+                        </div>
+                        <div class="dignity__content">
+                            <h3>Вовлеченность</h3>
+                            <p>Не нужно «продавать» создаваемые решения участникам, т.к. они сами  исходно вовлечены в их создание и проработку</p>
+                        </div>
+                    </li>
+                    <li class="dignity__item">
+                        <div class="dignity__media">
+                            <include src="assets/svg/dignity4.html"></include>
+                        </div>
+                        <div class="dignity__content">
+                            <h3>Возможности</h3>
+                            <p>Получаемые решения не взяты из воздуха, а полностью опираются на  возможности и ограничения самой компании, её сотрудников</p>
+                        </div>
+                    </li>
+                    <li class="dignity__item">
+                        <div class="dignity__media">
+                            <include src="assets/svg/dignity5.html"></include>
+                        </div>
+                        <div class="dignity__content">
+                            <h3>Результативность</h3>
+                            <p>Результаты – списки SMART-задач, приоритеты и т.д. – можно немедленно  включать в управленческий процесс без дополнительных доводок</p>
+                        </div>
+                    </li>
+                    <li class="dignity__item">
+                        <div class="dignity__media">
+                            <include src="assets/svg/dignity6.html"></include>
+                        </div>
+                        <div class="dignity__content">
+                            <h3>Опыт</h3>
+                            <p>На рынке консалтинговых услуг более 15 лет. Патент на полезную модель</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </section>
+    <section class="section clients">
+        <div class="clients__inner">
+            <div class="container">
+                <h2>Наши клиенты</h2>
+                <div class="clients__content">
+                    <div class="clients__text">
+                        <p>Помогаем командам достигать высоких результатов, не срывать дедлайны,
+                            правильно оценивать сроки, риски и бюджет. Текст и заголовок на замену/корректировку.</p>
+                        <div class="clients__number">
+                            <include src="assets/svg/clients-line.html"></include>
+                            <span>700</span>
+                            <include src="assets/svg/clients-arrow.html"></include>
+                            <span>компаний успешно применили наш метод</span>
+                        </div>
+                        <div class="clients__buttons">
+                            <a href="#" class="clients__btn color-btn">Кейсы</a>
+                            <a href="#" class="clients__btn not-color-btn">Отзывы</a>
+                        </div>
+                    </div>
+                    <div class="clients__media">
+                        <img class="lazy" data-src="assets/images/clients-img.jpg" alt="">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="main-info">
+        <div class="main-info__inner">
+            <div class="container">
+                <div class="news-tabs">
+                    <div class="news-tabs__header">
+                        <button class="news-tabs__btn active" data-tab="news">
+                            Новости
+                        </button>
+                        <button class="news-tabs__btn" data-tab="events">
+                            События
+                        </button>
+                    </div>
+                    <div class="news-tabs__content">
+
+                        <div id="news" class="news-tabs__pane active">
+                            <div class="news-swiper-wrapper">
+                                <div class="news-swiper swiper">
+                                    <div class="swiper-wrapper">
+                                        <div class="swiper-slide">
+                                            <article class="news-card">
+                                                <div class="media-block">
+                                                    <a href="#"><img class="lazy" data-src="assets/images/news-photo.jpg" alt=""></a>
+                                                </div>
+                                                <div class="text-block">
+                                                    <time class="news-date" datetime="00/00/00">00/00/00</time>
+                                                    <h4 class="news-title"><a href="#">Заголовок новости</a></h4>
+                                                    <p class="news-excerpt">Автор технологии Ландшафт пути к цели, автор инструмента BLP finder, ведущий методолог-разработчик, продуктолог</p>
+                                                    <a href="#" class="news-link">Подробнее <span>→</span></a>
+                                                </div>
+                                            </article>
+                                        </div>
+                                        <div class="swiper-slide">
+                                            <article class="news-card">
+                                                <div class="media-block">
+                                                    <a href="#"><img class="lazy" data-src="assets/images/news-photo.jpg" alt=""></a>
+                                                </div>
+                                                <div class="text-block">
+                                                    <time class="news-date" datetime="00/00/00">00/00/00</time>
+                                                    <h4 class="news-title"><a href="#">Заголовок новости</a></h4>
+                                                    <p class="news-excerpt">Автор технологии Ландшафт пути к цели, автор инструмента BLP finder, ведущий методолог-разработчик, продуктолог</p>
+                                                    <a href="#" class="news-link">Подробнее <span>→</span></a>
+                                                </div>
+                                            </article>
+                                        </div>
+                                        <div class="swiper-slide">
+                                            <article class="news-card">
+                                                <div class="media-block">
+                                                    <a href="#"><img class="lazy" data-src="assets/images/news-photo.jpg" alt=""></a>
+                                                </div>
+                                                <div class="text-block">
+                                                    <time class="news-date" datetime="00/00/00">00/00/00</time>
+                                                    <h4 class="news-title"><a href="#">Заголовок новости</a></h4>
+                                                    <p class="news-excerpt">Автор технологии Ландшафт пути к цели, автор инструмента BLP finder, ведущий методолог-разработчик, продуктолог</p>
+                                                    <a href="#" class="news-link">Подробнее <span>→</span></a>
+                                                </div>
+                                            </article>
+                                        </div>
+                                        <div class="swiper-slide">
+                                            <article class="news-card">
+                                                <div class="media-block">
+                                                    <a href="#"><img class="lazy" data-src="assets/images/news-photo.jpg" alt=""></a>
+                                                </div>
+                                                <div class="text-block">
+                                                    <time class="news-date" datetime="00/00/00">00/00/00</time>
+                                                    <h4 class="news-title"><a href="#">Заголовок новости</a></h4>
+                                                    <p class="news-excerpt">Автор технологии Ландшафт пути к цели, автор инструмента BLP finder, ведущий методолог-разработчик, продуктолог</p>
+                                                    <a href="#" class="news-link">Подробнее <span>→</span></a>
+                                                </div>
+                                            </article>
+                                        </div>
+                                        <div class="swiper-slide">
+                                            <article class="news-card">
+                                                <div class="media-block">
+                                                    <a href="#"><img class="lazy" data-src="assets/images/news-photo.jpg" alt=""></a>
+                                                </div>
+                                                <div class="text-block">
+                                                    <time class="news-date" datetime="00/00/00">00/00/00</time>
+                                                    <h4 class="news-title"><a href="#">Заголовок новости</a></h4>
+                                                    <p class="news-excerpt">Автор технологии Ландшафт пути к цели, автор инструмента BLP finder, ведущий методолог-разработчик, продуктолог</p>
+                                                    <a href="#" class="news-link">Подробнее <span>→</span></a>
+                                                </div>
+                                            </article>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="swiper-button-prev news-swiper-arrow news-swiper-arrow--prev">
+                                    <include src="assets/svg/slider-arrow.html"></include>
+                                </div>
+                                <div class="swiper-button-next news-swiper-arrow news-swiper-arrow--next">
+                                    <include src="assets/svg/slider-arrow.html"></include>
+                                </div>
+                            </div>
+                            <a href="#" class="color-btn main-info__btn">Все новости</a>
+                        </div>
+
+                        <div id="events" class="news-tabs__pane">
+                            <div class="news-swiper-wrapper">
+                                <div class="news-swiper swiper">
+                                    <div class="swiper-wrapper">
+                                        <div class="swiper-slide">
+                                            <article class="news-card">
+                                                <div class="media-block">
+                                                    <a href="#"><img class="lazy" data-src="assets/images/news-photo.jpg" alt=""></a>
+                                                </div>
+                                                <div class="text-block">
+                                                    <time class="news-date" datetime="00/00/00">00/00/00</time>
+                                                    <h4 class="news-title"><a href="#">Заголовок события</a></h4>
+                                                    <p class="news-excerpt">Автор технологии Ландшафт пути к цели, автор инструмента BLP finder, ведущий методолог-разработчик, продуктолог</p>
+                                                    <a href="#" class="news-link">Подробнее <span>→</span></a>
+                                                </div>
+                                            </article>
+                                        </div>
+                                        <div class="swiper-slide">
+                                            <article class="news-card">
+                                                <div class="media-block">
+                                                    <a href="#"><img class="lazy" data-src="assets/images/news-photo.jpg" alt=""></a>
+                                                </div>
+                                                <div class="text-block">
+                                                    <time class="news-date" datetime="00/00/00">00/00/00</time>
+                                                    <h4 class="news-title"><a href="#">Заголовок события</a></h4>
+                                                    <p class="news-excerpt">Автор технологии Ландшафт пути к цели, автор инструмента BLP finder, ведущий методолог-разработчик, продуктолог</p>
+                                                    <a href="#" class="news-link">Подробнее <span>→</span></a>
+                                                </div>
+                                            </article>
+                                        </div>
+                                        <div class="swiper-slide">
+                                            <article class="news-card">
+                                                <div class="media-block">
+                                                    <a href="#"><img class="lazy" data-src="assets/images/news-photo.jpg" alt=""></a>
+                                                </div>
+                                                <div class="text-block">
+                                                    <time class="news-date" datetime="00/00/00">00/00/00</time>
+                                                    <h4 class="news-title"><a href="#">Заголовок события</a></h4>
+                                                    <p class="news-excerpt">Автор технологии Ландшафт пути к цели, автор инструмента BLP finder, ведущий методолог-разработчик, продуктолог</p>
+                                                    <a href="#" class="news-link">Подробнее <span>→</span></a>
+                                                </div>
+                                            </article>
+                                        </div>
+                                        <div class="swiper-slide">
+                                            <article class="news-card">
+                                                <div class="media-block">
+                                                    <a href="#"><img class="lazy" data-src="assets/images/news-photo.jpg" alt=""></a>
+                                                </div>
+                                                <div class="text-block">
+                                                    <time class="news-date" datetime="00/00/00">00/00/00</time>
+                                                    <h4 class="news-title"><a href="#">Заголовок события</a></h4>
+                                                    <p class="news-excerpt">Автор технологии Ландшафт пути к цели, автор инструмента BLP finder, ведущий методолог-разработчик, продуктолог</p>
+                                                    <a href="#" class="news-link">Подробнее <span>→</span></a>
+                                                </div>
+                                            </article>
+                                        </div>
+                                        <div class="swiper-slide">
+                                            <article class="news-card">
+                                                <div class="media-block">
+                                                    <a href="#"><img class="lazy" data-src="assets/images/news-photo.jpg" alt=""></a>
+                                                </div>
+                                                <div class="text-block">
+                                                    <time class="news-date" datetime="00/00/00">00/00/00</time>
+                                                    <h4 class="news-title"><a href="#">Заголовок события</a></h4>
+                                                    <p class="news-excerpt">Автор технологии Ландшафт пути к цели, автор инструмента BLP finder, ведущий методолог-разработчик, продуктолог</p>
+                                                    <a href="#" class="news-link">Подробнее <span>→</span></a>
+                                                </div>
+                                            </article>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="swiper-button-prev news-swiper-arrow news-swiper-arrow--prev">
+                                    <include src="assets/svg/slider-arrow.html"></include>
+                                </div>
+                                <div class="swiper-button-next news-swiper-arrow news-swiper-arrow--next">
+                                    <include src="assets/svg/slider-arrow.html"></include>
+                                </div>
+                            </div>
+                            <a href="#" class="color-btn main-info__btn">Все события</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="bid">
+                    <h2>Заявка</h2>
+                    <div class="bid__inner">
+                        <div class="bid__form">
+                            <h2>Время начать</h2>
+                            <p>Начните поиск путей улучшения для развития и усиления успеха вашей команды и компании</p>
+                            <form id="man-form" class="main-form">
+                                <fieldset>
+                                    <label>
+                                        <input type="text" name="name" placeholder="Имя*" required="">
+                                    </label>
+                                    <label>
+                                        <input type="tel" name="tel" placeholder="Телефон*" data-phone-input="" required="">
+                                    </label>
+                                    <label>
+                                        <input type="email" name="email" placeholder="E-mail*" data-phone-input="" required="">
+                                    </label>
+                                    <label>
+                                        <textarea name="comment" placeholder="Ваше сообщение" required=""></textarea>
+                                    </label>
+                                </fieldset>
+                                <fieldset>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="checkbox" required="">
+                                        <span>
+                                           Согласен c условиями обработки <a href="#">персональных данных</a> и <a href="#">политикой конфиденциальности</a>
+                                        </span>
+                                    </label>
+                                    <button class="submit-btn color-btn">
+                                        Отправить
+                                    </button>
+                                </fieldset>
+                            </form>
+                        </div>
+                        <div class="bid__contacts">
+                            <h4>Или подайте заявку на примерную стоимость услуги под ваши задачи</h4>
+                            <a href="#" class="bid-btn not-color-btn">Заявка на расчет</a>
+                            <a href="mailto:vakhin@yandex.ru" class="bid__item">
+                                <include src="assets/svg/mail.html"></include>
+                                <span>vakhin@yandex.ru</span>
+                            </a>
+                            <div class="bid__title">Есть вопросы?</div>
+                            <p>Пишите в Telegram, вам поможет наш менеджер</p>
+                            <a href="mailto:vakhin@yandex.ru" class="bid__item">
+                                <include src="assets/svg/tg.html"></include>
                             </a>
                         </div>
                     </div>

@@ -139,24 +139,56 @@ export function initAllVideos() {
         });
     });
 
-    initVideoDownload();
+
+    initDownloadLinks();
 }
 
-function initVideoDownload() {
-    const downloadLink = document.getElementById('downloadLink');
-    if (!downloadLink) return;
 
-    downloadLink.addEventListener('click', function(e) {
-        e.preventDefault();
+function initDownloadLinks() {
 
-        const video = document.querySelector('.media-element source');
-        if (!video || !video.src) return;
+    document.querySelectorAll('.download-link').forEach((link) => {
 
-        const link = document.createElement('a');
-        link.href = video.src;
-        link.download = 'video-presentation.mp4';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+        link.removeEventListener('click', handleDownload);
+
+        link.addEventListener('click', handleDownload);
     });
 }
+
+function handleDownload(e) {
+    e.preventDefault();
+
+
+    const fileUrl = e.currentTarget.dataset.fileUrl;
+
+    if (!fileUrl) {
+        console.warn('Файл для скачивания не указан');
+        return;
+    }
+
+
+    const fileName = fileUrl.split('/').pop() || 'presentation.pdf';
+
+
+    const link = document.createElement('a');
+    link.href = fileUrl;
+    link.download = fileName;
+    link.style.display = 'none';
+
+    document.body.appendChild(link);
+    link.click();
+
+    setTimeout(() => {
+        document.body.removeChild(link);
+    }, 100);
+}
+
+
+if (typeof window !== 'undefined') {
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initDownloadLinks);
+    } else {
+        initDownloadLinks();
+    }
+}
+
+export default initAllVideos;

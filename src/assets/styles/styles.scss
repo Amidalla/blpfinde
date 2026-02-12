@@ -3,7 +3,7 @@
 @use "./fonts.scss";
 
 html {
-  scroll-behavior: smooth;
+  //scroll-behavior: smooth;
 }
 
 body {
@@ -357,7 +357,7 @@ main {
   }
 }
 
-// ИСХОДНЫЕ СТИЛИ ИЗ ПЕРВОГО ФАЙЛА - ТОЧНО ТЕ ЖЕ
+
 .svg-animation-container {
   opacity: 0;
   visibility: hidden;
@@ -376,7 +376,7 @@ main {
   pointer-events: auto;
 }
 
-// ВОТ ЭТИ СТИЛИ У ВАС РАБОТАЛИ - ОСТАВЛЯЕМ ИХ БЕЗ ИЗМЕНЕНИЙ
+
 .animate-first-rect,
 .animate-first-panel,
 .animate-second-rect,
@@ -449,3 +449,4 @@ main {
     opacity: 1;
   }
 }
+
