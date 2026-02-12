@@ -6,10 +6,16 @@ gsap.registerPlugin(ScrollTrigger);
 class ScrollAnimator {
     constructor() {
         this.isMobileView = window.innerWidth <= 750;
+        this.isHomePage = document.querySelector('main.home-page') !== null;
         this.init();
     }
 
     init() {
+
+        if (!this.isHomePage) {
+            return;
+        }
+
         if (this.isMobileView) {
             this.setupMobileAnimation();
         } else {
@@ -486,7 +492,7 @@ class ScrollAnimator {
         const buttonsToAnimate = Array.from(buttons).filter(btn => {
             if (btn === headerBtn) return false;
             if (btn.closest('.news-tabs')) return false;
-            if (btn.classList.contains('link-btn')) return false; // Исключаем link-btn
+            if (btn.classList.contains('link-btn')) return false;
             return true;
         });
 
@@ -553,7 +559,6 @@ class ScrollAnimator {
     handleButtonMouseEnter(event) {
         const button = event.currentTarget;
 
-        // Для link-btn - никаких эффектов
         if (button.classList.contains('link-btn')) {
             return;
         }
@@ -583,7 +588,6 @@ class ScrollAnimator {
     handleButtonMouseLeave(event) {
         const button = event.currentTarget;
 
-        // Для link-btn - никаких эффектов
         if (button.classList.contains('link-btn')) {
             return;
         }
@@ -617,7 +621,7 @@ class ScrollAnimator {
             resizeTimer = setTimeout(() => {
                 ScrollTrigger.refresh();
                 this.isMobileView = window.innerWidth <= 750;
-                if (this.isMobileView) {
+                if (this.isHomePage && this.isMobileView) {
                     this.setupMobileAnimation();
                 }
             }, 250);
