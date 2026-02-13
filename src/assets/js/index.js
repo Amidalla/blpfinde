@@ -6,6 +6,8 @@ import "../styles/home.scss";
 import "../styles/news-tabs.scss";
 import "../styles/scroll-animations.scss";
 import "../styles/circle-animation.scss";
+import "../styles/arrow-ball.scss";
+import "../styles/arrow-path.scss";
 
 import LazyLoad from "vanilla-lazyload";
 import Swiper from 'swiper';
@@ -18,18 +20,17 @@ import { initAllVideos } from "./video.js";
 import { initNewsTabs } from "./tabs.js";
 import { SlidersInit } from "./sliders.js";
 import ScrollAnimator from "./scrollAnimator.js";
-import CircleAnimator from "./circleAnimator.js"; // ИСПРАВЛЕНО - импортируем класс
+import CircleAnimator from "./circleAnimator.js";
+import ArrowBallAnimator from "./arrow-ball-animator.js";
+import ArrowPathAnimator from "./arrow-path-animator.js";
 
-// ============= ИНИЦИАЛИЗАЦИЯ SWIPER =============
 Swiper.use([Pagination, Navigation, Autoplay, Thumbs, EffectFade]);
 
-// ============= LAZY LOAD =============
 const lazyLoadInstance = new LazyLoad({
         elements_selector: ".lazy",
         use_native: true
 });
 
-// ============= МАСКИ ДЛЯ ТЕЛЕФОНОВ =============
 function initPhoneMasks() {
         const phoneInputs = document.querySelectorAll('input[type="tel"]');
         phoneInputs.forEach(input => {
@@ -40,7 +41,6 @@ function initPhoneMasks() {
         });
 }
 
-// ============= СТАРЫЕ АНИМАЦИИ =============
 function initAnimation() {
         const svgContainers = document.querySelectorAll('.benefit .svg-animation-container');
         svgContainers.forEach((container) => {
@@ -50,13 +50,11 @@ function initAnimation() {
                         if (!animation.isMobileView) {
                                 animation.setupScrollObserver();
                         }
-                }).catch(err => console.warn('Animation module not loaded:', err));
+                }).catch(() => {});
         });
 }
 
-// ============= ДОБАВЛЕНИЕ КЛАССОВ ДЛЯ SCROLL-АНИМАЦИЙ =============
 function addAnimationClasses() {
-        // Секции
         document.querySelectorAll('section:not(.no-animation)').forEach((section, index) => {
                 if (!section.classList.contains('fade-up') &&
                     !section.classList.contains('scale-in') &&
@@ -69,14 +67,12 @@ function addAnimationClasses() {
                 }
         });
 
-        // Заголовки
         document.querySelectorAll('.section-title, h2, h3').forEach((title) => {
                 if (!title.classList.contains('fade-up-delay')) {
                         title.classList.add('fade-up-delay');
                 }
         });
 
-        // Карточки
         document.querySelectorAll('.card, .service-card, .service-item, .portfolio-item, .benefit-card, .team-card').forEach((card, index) => {
                 if (!card.classList.contains('fade-up') && !card.classList.contains('scale-in')) {
                         if (index % 3 === 0) {
@@ -87,7 +83,6 @@ function addAnimationClasses() {
                 }
         });
 
-        // Кнопки
         document.querySelectorAll('.btn, .button, button:not(.no-animation)').forEach((button) => {
                 if (!button.classList.contains('scale-in')) {
                         button.classList.add('scale-in');
@@ -95,12 +90,13 @@ function addAnimationClasses() {
         });
 }
 
-// ============= ГЛОБАЛЬНЫЙ ОБЪЕКТ ДЛЯ ХРАНЕНИЯ ЭКЗЕМПЛЯРОВ =============
 const App = {
         lazyLoad: lazyLoadInstance,
         swipers: [],
         circleAnimator: null,
         scrollAnimator: null,
+        arrowBallAnimator: null,
+        arrowPathAnimator: null,
 
         init() {
                 this.initCore();
@@ -109,69 +105,80 @@ const App = {
                 this.initEventListeners();
         },
 
-        // Базовые инициализации
         initCore() {
                 SlidersInit();
                 initNewsTabs();
                 initPhoneMasks();
                 initSearch();
                 initAllVideos();
-
-                // Обновляем lazyLoad
                 this.lazyLoad.update();
         },
 
-        // Инициализация модулей анимации
         initModules() {
-                // ScrollAnimator
                 this.scrollAnimator = new ScrollAnimator();
 
-                // CircleAnimator - ИСПРАВЛЕНО: создаем экземпляр класса
                 setTimeout(() => {
                         try {
                                 this.circleAnimator = new CircleAnimator();
                                 this.circleAnimator.init();
-                        } catch (error) {
-                                console.warn('Failed to initialize CircleAnimator:', error);
-                        }
+                        } catch (error) {}
                 }, 200);
+
+                setTimeout(() => {
+                        try {
+                                this.arrowBallAnimator = new ArrowBallAnimator();
+                                this.arrowBallAnimator.init();
+                                window.arrowBallAnimator = this.arrowBallAnimator;
+                        } catch (error) {}
+                }, 300);
+
+                setTimeout(() => {
+                        try {
+                                this.arrowPathAnimator = new ArrowPathAnimator();
+                                this.arrowPathAnimator.init();
+                        } catch (error) {}
+                }, 400);
         },
 
-        // Старые анимации (для обратной совместимости)
         initAnimations() {
                 initAnimation();
                 addAnimationClasses();
         },
 
-        // Обработчики событий
         initEventListeners() {
-                // Load event
                 window.addEventListener('load', () => {
                         this.lazyLoad.update();
                         this.updateSwipers();
 
-                        // Обновляем аниматор кругов
                         if (this.circleAnimator) {
                                 this.circleAnimator.init();
                         }
-                });
-
-                // Resize event
-                window.addEventListener('resize', () => {
-                        this.updateSwipers();
-
-                        // Обновляем CircleAnimator при ресайзе
-                        if (this.circleAnimator) {
-                                this.circleAnimator.handleResize();
+                        if (this.arrowBallAnimator) {
+                                this.arrowBallAnimator.handleResize();
+                        }
+                        if (this.arrowPathAnimator) {
+                                this.arrowPathAnimator.handleResize();
                         }
                 });
 
-                // Scroll event с throttle
+                window.addEventListener('resize', () => {
+                        this.updateSwipers();
+
+                        if (this.circleAnimator) {
+                                this.circleAnimator.handleResize();
+                        }
+                        if (this.arrowBallAnimator) {
+                                this.arrowBallAnimator.handleResize();
+                        }
+                        if (this.arrowPathAnimator) {
+                                this.arrowPathAnimator.handleResize();
+                        }
+                });
+
                 let ticking = false;
                 window.addEventListener('scroll', () => {
                         if (!ticking) {
                                 window.requestAnimationFrame(() => {
-                                        // Дополнительная логика при скролле, если нужна
                                         ticking = false;
                                 });
                                 ticking = true;
@@ -179,7 +186,6 @@ const App = {
                 });
         },
 
-        // Обновление свайперов
         updateSwipers() {
                 const swipers = document.querySelectorAll('.swiper');
                 swipers.forEach(swiperEl => {
@@ -189,7 +195,6 @@ const App = {
                 });
         },
 
-        // Метод для принудительного обновления всех анимаций
         refresh() {
                 this.lazyLoad.update();
                 this.updateSwipers();
@@ -198,18 +203,35 @@ const App = {
                         this.circleAnimator.init();
                         this.circleAnimator.handleResize();
                 }
+                if (this.arrowBallAnimator) {
+                        this.arrowBallAnimator.handleResize();
+                }
+                if (this.arrowPathAnimator) {
+                        this.arrowPathAnimator.handleResize();
+                }
+        },
+
+        destroy() {
+                if (this.circleAnimator) {
+                        this.circleAnimator.destroy();
+                }
+                if (this.arrowBallAnimator) {
+                        this.arrowBallAnimator.destroy();
+                }
+                if (this.arrowPathAnimator) {
+                        this.arrowPathAnimator.destroy();
+                }
+
+                delete window.arrowBallAnimator;
         }
 };
 
-// ============= ЗАПУСК ПРИ ЗАГРУЗКЕ =============
 document.addEventListener('DOMContentLoaded', () => {
         App.init();
 });
 
-// ============= ДИНАМИЧЕСКАЯ ПЕРЕЗАГРУЗКА ДЛЯ SPA/АЯКС =============
 window.AppInstance = App;
 
-// ============= ЭКСПОРТЫ =============
 export {
         lazyLoadInstance,
         initPhoneMasks,
@@ -221,7 +243,6 @@ export {
         App
 };
 
-// ============= HMR ДЛЯ WEBPACK/VITE =============
 if (import.meta.hot) {
         import.meta.hot.accept();
 }

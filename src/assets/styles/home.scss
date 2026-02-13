@@ -387,14 +387,6 @@
       border-radius: 20px;
       background: #45A2FF;
 
-      &:first-child {
-        transform: translateX(-76px);
-      }
-
-      &:last-child {
-        transform: translateX(76px);
-      }
-
       h4,
       p {
         color: c.$white;

@@ -12,9 +12,7 @@ class ScrollAnimator {
     }
 
     setupDesktopAnimation() {
-
         this.setInitialState();
-
 
         if (document.readyState === 'complete') {
             this.delayedStart();
@@ -26,7 +24,6 @@ class ScrollAnimator {
     }
 
     setInitialState() {
-
         const sections = [
             '.hero',
             '.tools',
@@ -70,7 +67,7 @@ class ScrollAnimator {
 
         setTimeout(() => {
             this.startAnimations();
-        }, 300);
+        }, 200);
     }
 
     startAnimations() {
@@ -87,7 +84,6 @@ class ScrollAnimator {
     }
 
     init() {
-
         if (!this.isHomePage) {
             return;
         }
@@ -202,9 +198,9 @@ class ScrollAnimator {
                     gsap.to(section, {
                         opacity: 1,
                         y: 0,
-                        duration: 0.8,
+                        duration: 0.6,
                         ease: 'power2.out',
-                        delay: index * 0.1
+                        delay: index * 0.05
                     });
                 },
                 once: true
@@ -230,8 +226,8 @@ class ScrollAnimator {
                     opacity: 1,
                     y: 0,
                     scale: 1,
-                    duration: 0.8,
-                    stagger: 0.2,
+                    duration: 0.6,
+                    stagger: 0.15,
                     ease: 'power3.out'
                 });
             },
@@ -257,8 +253,8 @@ class ScrollAnimator {
                     opacity: 1,
                     y: 0,
                     scale: 1,
-                    duration: 0.9,
-                    stagger: 0.15,
+                    duration: 0.7,
+                    stagger: 0.1,
                     ease: 'power3.out',
                     onComplete: () => this.addTechnologyHoverEffects()
                 });
@@ -279,8 +275,8 @@ class ScrollAnimator {
                 gsap.to(svg, {
                     opacity: 1,
                     scale: 1,
-                    duration: 0.5,
-                    delay: 0.3 + index * 0.1,
+                    duration: 0.4,
+                    delay: 0.2 + index * 0.05,
                     ease: 'back.out(1.2)'
                 });
             }
@@ -290,8 +286,8 @@ class ScrollAnimator {
                 gsap.to(span, {
                     opacity: 1,
                     scale: 1,
-                    duration: 0.4,
-                    delay: 0.4 + index * 0.1,
+                    duration: 0.3,
+                    delay: 0.25 + index * 0.05,
                     ease: 'back.out(1.2)'
                 });
             }
@@ -319,7 +315,7 @@ class ScrollAnimator {
             gsap.to(bg, {
                 y: -8,
                 scale: 1.02,
-                duration: 0.2,
+                duration: 0.15,
                 ease: 'power2.out',
                 boxShadow: '0 15px 30px rgba(0,0,0,0.1)',
                 overwrite: true
@@ -329,7 +325,7 @@ class ScrollAnimator {
         if (arrow) {
             gsap.to(arrow, {
                 x: 10,
-                duration: 0.2,
+                duration: 0.15,
                 ease: 'power2.out',
                 overwrite: true
             });
@@ -339,7 +335,7 @@ class ScrollAnimator {
             gsap.to(span, {
                 scale: 1.3,
                 color: '#F83E49',
-                duration: 0.15,
+                duration: 0.1,
                 ease: 'back.out(1.5)',
                 overwrite: true
             });
@@ -348,7 +344,7 @@ class ScrollAnimator {
         if (svg) {
             gsap.to(svg, {
                 scale: 1.1,
-                duration: 0.15,
+                duration: 0.1,
                 ease: 'power2.out',
                 overwrite: true
             });
@@ -357,7 +353,7 @@ class ScrollAnimator {
             if (path) {
                 gsap.to(path, {
                     attr: { fill: '#F83E49' },
-                    duration: 0.15,
+                    duration: 0.1,
                     ease: 'power2.out',
                     overwrite: true
                 });
@@ -377,7 +373,7 @@ class ScrollAnimator {
             gsap.to(bg, {
                 y: 0,
                 scale: 1,
-                duration: 0.2,
+                duration: 0.15,
                 ease: 'power2.out',
                 boxShadow: 'none',
                 overwrite: true
@@ -387,7 +383,7 @@ class ScrollAnimator {
         if (arrow) {
             gsap.to(arrow, {
                 x: 0,
-                duration: 0.2,
+                duration: 0.15,
                 ease: 'power2.out',
                 overwrite: true
             });
@@ -397,7 +393,7 @@ class ScrollAnimator {
             gsap.to(span, {
                 scale: 1,
                 color: '',
-                duration: 0.15,
+                duration: 0.1,
                 ease: 'power2.out',
                 overwrite: true
             });
@@ -406,7 +402,7 @@ class ScrollAnimator {
         if (svg) {
             gsap.to(svg, {
                 scale: 1,
-                duration: 0.15,
+                duration: 0.1,
                 ease: 'power2.out',
                 overwrite: true
             });
@@ -415,7 +411,7 @@ class ScrollAnimator {
         if (path) {
             gsap.to(path, {
                 attr: { fill: '#485F86' },
-                duration: 0.15,
+                duration: 0.1,
                 ease: 'power2.out',
                 overwrite: true
             });
@@ -440,8 +436,8 @@ class ScrollAnimator {
                     opacity: 1,
                     y: 0,
                     scale: 1,
-                    duration: 0.7,
-                    stagger: 0.1,
+                    duration: 0.5,
+                    stagger: 0.08,
                     ease: 'back.out(1.2)'
                 });
             },
@@ -467,8 +463,8 @@ class ScrollAnimator {
                     opacity: 1,
                     y: 0,
                     scale: 1,
-                    duration: 0.6,
-                    stagger: 0.1,
+                    duration: 0.5,
+                    stagger: 0.08,
                     ease: 'back.out(1.2)'
                 });
             },
@@ -494,8 +490,8 @@ class ScrollAnimator {
                     opacity: 1,
                     y: 0,
                     scale: 1,
-                    duration: 0.7,
-                    stagger: 0.2,
+                    duration: 0.6,
+                    stagger: 0.15,
                     ease: 'power3.out'
                 });
             },
@@ -521,7 +517,7 @@ class ScrollAnimator {
                     opacity: 1,
                     scale: 1,
                     rotation: 0,
-                    duration: 0.8,
+                    duration: 0.7,
                     ease: 'elastic.out(1, 0.4)'
                 });
             },
@@ -550,8 +546,8 @@ class ScrollAnimator {
             opacity: 1,
             scale: 1,
             y: 0,
-            duration: 0.6,
-            delay: 0.3,
+            duration: 0.5,
+            delay: 0.2,
             ease: 'back.out(1.7)'
         });
     }
@@ -592,10 +588,9 @@ class ScrollAnimator {
                 gsap.to(batch, {
                     opacity: 1,
                     scale: 1,
-                    duration: 0.5,
-                    stagger: 0.1,
+                    duration: 0.4,
+                    stagger: 0.05,
                     ease: 'back.out(1.7)'
-
                 });
             },
             once: true
@@ -641,7 +636,7 @@ class ScrollAnimator {
 
         gsap.to(button, {
             y: -3,
-            duration: 0.15,
+            duration: 0.1,
             ease: 'power2.out',
             boxShadow: '0 8px 20px rgba(248, 62, 73, 0.3)',
             overwrite: true
@@ -653,7 +648,7 @@ class ScrollAnimator {
             if (svg) {
                 gsap.to(svg, {
                     y: -2,
-                    duration: 0.15,
+                    duration: 0.1,
                     ease: 'power2.out',
                     overwrite: true
                 });
@@ -670,7 +665,7 @@ class ScrollAnimator {
 
         gsap.to(button, {
             y: 0,
-            duration: 0.15,
+            duration: 0.1,
             ease: 'power2.out',
             boxShadow: 'none',
             overwrite: true
@@ -682,7 +677,7 @@ class ScrollAnimator {
             if (svg) {
                 gsap.to(svg, {
                     y: 0,
-                    duration: 0.15,
+                    duration: 0.1,
                     ease: 'power2.out',
                     overwrite: true
                 });

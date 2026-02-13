@@ -17,9 +17,11 @@ export class Animation {
         this.SEVENTH_CIRCLE_RX = 5.54134;
         this.SEVENTH_CIRCLE_RY = 6.44785;
 
-        this.LINE_ANIMATION_DURATION = '0.2s';
-        this.LINE_ANIMATION_TIMEOUT = 200;
-        this.CIRCLE_ANIMATION_SCALE = 0.4;
+        // УСКОРЯЕМ: уменьшаем тайминги
+        this.LINE_ANIMATION_DURATION = '0.15s'; // было 0.2s
+        this.LINE_ANIMATION_TIMEOUT = 150; // было 200
+        this.CIRCLE_ANIMATION_SCALE = 0.3; // было 0.4
+        this.RECT_ANIMATION_DELAY = 400; // было 600
 
         this.elementsCache = {
             lines: new Map(),
@@ -446,7 +448,7 @@ export class Animation {
             item.getBoundingClientRect();
 
             requestAnimationFrame(() => {
-                item.style.transition = 'all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)';
+                item.style.transition = 'all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)';
                 item.style.opacity = '1';
                 item.style.transform = 'translateY(0) scale(1)';
                 item.style.filter = 'blur(0)';
@@ -465,7 +467,7 @@ export class Animation {
         this.animateLine(lineData).then(() => {
             setTimeout(() => {
                 this.animateCachedCircle('circle1', this.animateSecondLine.bind(this));
-            }, 70);
+            }, 50);
         });
     }
 
@@ -481,7 +483,7 @@ export class Animation {
             setTimeout(() => {
                 this.animateCachedCircle('circle2', () => {});
                 this.animateFirstRectElement();
-            }, 70);
+            }, 50);
         });
     }
 
@@ -507,7 +509,7 @@ export class Animation {
 
         setTimeout(() => {
             this.animateThirdLine();
-        }, 600);
+        }, this.RECT_ANIMATION_DELAY);
     }
 
     animateThirdLine() {
@@ -522,7 +524,7 @@ export class Animation {
             setTimeout(() => {
                 this.animateCachedCircle('circle3', () => {});
                 this.animateSecondRectElement();
-            }, 70);
+            }, 50);
         });
     }
 
@@ -548,7 +550,7 @@ export class Animation {
 
         setTimeout(() => {
             this.animateFourthLine();
-        }, 600);
+        }, this.RECT_ANIMATION_DELAY);
     }
 
     animateFourthLine() {
@@ -562,7 +564,7 @@ export class Animation {
         this.animateLine(lineData).then(() => {
             setTimeout(() => {
                 this.animateCachedCircle('circle4', this.animateFifthLine.bind(this));
-            }, 70);
+            }, 50);
         });
     }
 
@@ -577,7 +579,7 @@ export class Animation {
         this.animateLine(lineData).then(() => {
             setTimeout(() => {
                 this.animateCachedCircle('circle5', this.animateSixthLine.bind(this));
-            }, 70);
+            }, 50);
         });
     }
 
@@ -592,7 +594,7 @@ export class Animation {
         this.animateLine(lineData).then(() => {
             setTimeout(() => {
                 this.animateSixthCircleWithRect();
-            }, 70);
+            }, 50);
         });
     }
 
@@ -645,7 +647,7 @@ export class Animation {
 
         setTimeout(() => {
             this.animateSeventhLine();
-        }, 600);
+        }, this.RECT_ANIMATION_DELAY);
     }
 
     animateSeventhLine() {
@@ -659,7 +661,7 @@ export class Animation {
         this.animateLine(lineData).then(() => {
             setTimeout(() => {
                 this.animateSeventhCircleWithRect();
-            }, 70);
+            }, 50);
         });
     }
 
@@ -712,7 +714,7 @@ export class Animation {
 
         setTimeout(() => {
             this.onAnimationComplete();
-        }, 600);
+        }, this.RECT_ANIMATION_DELAY);
     }
 
     animateCachedCircle(circleId, callback) {
@@ -778,12 +780,12 @@ export class Animation {
 
                 setTimeout(() => {
                     outerCircle.style.opacity = '1';
-                    outerCircle.style.transition = 'opacity 0.25s ease-out';
+                    outerCircle.style.transition = 'opacity 0.2s ease-out';
 
                     setTimeout(() => {
                         circleClone.remove();
                         resolve();
-                    }, 250);
+                    }, 200);
                 }, this.CIRCLE_ANIMATION_SCALE * 1000);
             }, 50);
         });
