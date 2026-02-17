@@ -10,6 +10,11 @@
     padding-top: 80px;
     padding-bottom: 46px;
     border-radius: 50px;
+
+    @media (max-width: 1600px) {
+      margin: 48px 40px 26px 40px;
+      padding-bottom: 29px;
+    }
   }
 
   &__top {
@@ -32,6 +37,10 @@
       font-style: normal;
       font-weight: 400;
       line-height: normal;
+
+      @media (max-width: 1600px) {
+        font-size: 16px;
+      }
     }
   }
 
@@ -54,6 +63,10 @@
     line-height: normal;
     transition: all 0.3s ease;
 
+    @media (max-width: 1600px) {
+      font-size: 16px;
+    }
+
     span {
       color: var(--Premium-wight, #FFF);
       font-size: 18px;
@@ -61,6 +74,10 @@
       font-weight: 400;
       line-height: normal;
       transition: all 0.3s ease;
+
+      @media (max-width: 1600px) {
+        font-size: 16px;
+      }
     }
 
     &:hover {
@@ -85,6 +102,10 @@
     font-style: normal;
     font-weight: 400;
     line-height: normal;
+
+    @media (max-width: 1600px) {
+      font-size: 16px;
+    }
 
     &:hover {
       text-decoration: underline;
@@ -127,6 +148,10 @@
           line-height: normal;
           transition: all 0.3s ease;
 
+          @media (max-width: 1600px) {
+            font-size: 24px;
+          }
+
           &:hover {
             color: #F83E49;
           }
@@ -139,6 +164,11 @@
           font-weight: 400;
           line-height: normal;
 
+          @media (max-width: 1600px) {
+            font-size: 24px;
+          }
+
+
           &:hover {
             text-decoration: underline;
           }
@@ -150,6 +180,12 @@
   &__bottom {
     display: flex;
 
+    @media (max-width: 1700px) {
+      flex-wrap: wrap;
+      row-gap: 10px;
+      justify-content: end;
+    }
+
     .copyright {
       margin-right: auto;
       color: var(--Premium-wight, #FFF);
@@ -158,6 +194,10 @@
       font-style: normal;
       font-weight: 400;
       line-height: normal;
+
+      @media (max-width: 1600px) {
+        font-size: 16px;
+      }
     }
 
     .user-agreement-policy,
@@ -173,6 +213,10 @@
         font-weight: 400;
         line-height: normal;
 
+        @media (max-width: 1600px) {
+          font-size: 16px;
+        }
+
         &:hover {
           text-decoration: underline;
         }
@@ -180,6 +224,10 @@
     }
 
     .development {
+      
+      @media (max-width: 1700px) {
+        margin-right: 50px;
+      }
 
       a {
         color: #8B8B8B;
@@ -188,6 +236,10 @@
         font-style: normal;
         font-weight: 400;
         line-height: normal;
+
+        @media (max-width: 1600px) {
+          font-size: 16px;
+        }
 
         &:hover {
           text-decoration: underline;

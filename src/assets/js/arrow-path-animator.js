@@ -23,6 +23,30 @@ export default class ArrowPathAnimator {
         this.container = null;
     }
 
+
+    getTranslateValue() {
+
+        if (window.innerWidth <= 1700) {
+            return 14;
+        }
+
+        return 90;
+    }
+
+
+    getArrowDisplayTime() {
+
+        if (window.innerWidth <= 1700) {
+            return 800;
+        }
+        return 600;
+    }
+
+
+    shouldShortenArrows() {
+        return window.innerWidth <= 1700;
+    }
+
     init() {
         this.findTargetBlocks();
         this.getBallCoordinates();
@@ -184,7 +208,9 @@ export default class ArrowPathAnimator {
         arrowDiv.style.zIndex = '10';
         arrowDiv.style.overflow = 'visible';
         arrowDiv.style.opacity = '0';
-        arrowDiv.style.transition = 'opacity 0.2s ease';
+
+        const displayTime = this.getArrowDisplayTime();
+        arrowDiv.style.transition = `opacity ${displayTime * 0.3}ms ease`;
 
         const svg = document.querySelector('.control-units svg');
         const svgRect = svg.getBoundingClientRect();
@@ -194,19 +220,45 @@ export default class ArrowPathAnimator {
         const ballContainerY = svgRect.top - containerRect.top + ballY;
 
         const arrowSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-        arrowSvg.setAttribute('width', '241');
-        arrowSvg.setAttribute('height', '60');
-        arrowSvg.setAttribute('viewBox', '0 0 241 60');
+
+        const shorten = this.shouldShortenArrows();
+
+        if (shorten) {
+
+            arrowSvg.setAttribute('width', '133');
+            arrowSvg.setAttribute('height', '60');
+
+            arrowSvg.setAttribute('viewBox', '0 0 133 60');
+        } else {
+            arrowSvg.setAttribute('width', '241');
+            arrowSvg.setAttribute('height', '60');
+            arrowSvg.setAttribute('viewBox', '0 0 241 60');
+        }
 
         arrowSvg.style.position = 'absolute';
-        arrowSvg.style.left = (ballContainerX - 237.5) + 'px';
-        arrowSvg.style.top = (ballContainerY - 57.2941) + 'px';
+
+
+        if (window.innerWidth <= 1700) {
+            arrowSvg.style.left = (ballContainerX - 131) + 'px';
+            arrowSvg.style.top = (ballContainerY - 57.2941) + 'px';
+        } else {
+            arrowSvg.style.left = (ballContainerX - 237.5) + 'px';
+            arrowSvg.style.top = (ballContainerY - 57.2941) + 'px';
+        }
+
         arrowSvg.style.overflow = 'visible';
         arrowSvg.style.transform = 'none';
         arrowSvg.style.zIndex = '10';
 
         const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-        path.setAttribute('d', 'M234.833 57.2941C234.833 58.7668 236.027 59.9607 237.5 59.9607C238.973 59.9607 240.167 58.7668 240.167 57.2941C240.167 55.8213 238.973 54.6274 237.5 54.6274C236.027 54.6274 234.833 55.8213 234.833 57.2941ZM0.0647185 14.0481C-0.0711593 14.2885 0.0135722 14.5935 0.253972 14.7294L4.17151 16.9436C4.4119 17.0795 4.71694 16.9948 4.85282 16.7544C4.98869 16.514 4.90396 16.2089 4.66356 16.0731L1.18131 14.1048L3.14954 10.6226C3.28541 10.3822 3.20068 10.0771 2.96028 9.94127C2.71988 9.80539 2.41485 9.89012 2.27897 10.1305L0.0647185 14.0481ZM237.5 57.2941L237.85 56.9372C184.696 4.78592 108.499 -16.2246 0.366178 13.8123L0.5 14.2941L0.633822 14.7758C108.501 -15.1873 184.304 5.80215 237.15 57.651L237.5 57.2941Z');
+
+        if (shorten) {
+
+            path.setAttribute('d', 'M126.833 57.2941C126.833 58.7668 128.027 59.9607 129.5 59.9607C130.973 59.9607 132.167 58.7668 132.167 57.2941C132.167 55.8213 130.973 54.6274 129.5 54.6274C128.027 54.6274 126.833 55.8213 126.833 57.2941ZM0.0647185 14.0481C-0.0711593 14.2885 0.0135722 14.5935 0.253972 14.7294L4.17151 16.9436C4.4119 17.0795 4.71694 16.9948 4.85282 16.7544C4.98869 16.514 4.90396 16.2089 4.66356 16.0731L1.18131 14.1048L3.14954 10.6226C3.28541 10.3822 3.20068 10.0771 2.96028 9.94127C2.71988 9.80539 2.41485 9.89012 2.27897 10.1305L0.0647185 14.0481ZM129.5 57.2941L129.85 56.9372C99.196 26.2859 58.999 9.2754 0.366178 13.8123L0.5 14.2941L0.633822 14.7758C58.901 10.3127 98.804 27.1021 129.15 57.651L129.5 57.2941Z');
+        } else {
+            path.setAttribute('d', 'M234.833 57.2941C234.833 58.7668 236.027 59.9607 237.5 59.9607C238.973 59.9607 240.167 58.7668 240.167 57.2941C240.167 55.8213 238.973 54.6274 237.5 54.6274C236.027 54.6274 234.833 55.8213 234.833 57.2941ZM0.0647185 14.0481C-0.0711593 14.2885 0.0135722 14.5935 0.253972 14.7294L4.17151 16.9436C4.4119 17.0795 4.71694 16.9948 4.85282 16.7544C4.98869 16.514 4.90396 16.2089 4.66356 16.0731L1.18131 14.1048L3.14954 10.6226C3.28541 10.3822 3.20068 10.0771 2.96028 9.94127C2.71988 9.80539 2.41485 9.89012 2.27897 10.1305L0.0647185 14.0481ZM237.5 57.2941L237.85 56.9372C184.696 4.78592 108.499 -16.2246 0.366178 13.8123L0.5 14.2941L0.633822 14.7758C108.501 -15.1873 184.304 5.80215 237.15 57.651L237.5 57.2941Z');
+        }
+
         path.setAttribute('fill', '#BBDFFD');
 
         arrowSvg.appendChild(path);
@@ -235,15 +287,33 @@ export default class ArrowPathAnimator {
         arrowDiv.style.zIndex = '10';
         arrowDiv.style.overflow = 'visible';
         arrowDiv.style.opacity = '0';
-        arrowDiv.style.transition = 'opacity 0.2s ease';
 
-        const arrowLeft = ballContainerX - 3.5;
-        const arrowTop = ballContainerY - 57.2941;
+        const displayTime = this.getArrowDisplayTime();
+        arrowDiv.style.transition = `opacity ${displayTime * 0.3}ms ease`;
+
+        let arrowLeft, arrowTop;
+
+        if (window.innerWidth <= 1700) {
+            arrowLeft = ballContainerX - 2;
+            arrowTop = ballContainerY - 57.2941;
+        } else {
+            arrowLeft = ballContainerX - 3.5;
+            arrowTop = ballContainerY - 57.2941;
+        }
 
         const arrowSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-        arrowSvg.setAttribute('width', '241');
-        arrowSvg.setAttribute('height', '60');
-        arrowSvg.setAttribute('viewBox', '0 0 241 60');
+
+        const shorten = this.shouldShortenArrows();
+
+        if (shorten) {
+            arrowSvg.setAttribute('width', '133');
+            arrowSvg.setAttribute('height', '60');
+            arrowSvg.setAttribute('viewBox', '0 0 133 60');
+        } else {
+            arrowSvg.setAttribute('width', '241');
+            arrowSvg.setAttribute('height', '60');
+            arrowSvg.setAttribute('viewBox', '0 0 241 60');
+        }
 
         arrowSvg.style.position = 'absolute';
         arrowSvg.style.left = arrowLeft + 'px';
@@ -253,7 +323,13 @@ export default class ArrowPathAnimator {
         arrowSvg.style.transform = 'scaleX(-1)';
 
         const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-        path.setAttribute('d', 'M234.833 57.2941C234.833 58.7668 236.027 59.9607 237.5 59.9607C238.973 59.9607 240.167 58.7668 240.167 57.2941C240.167 55.8213 238.973 54.6274 237.5 54.6274C236.027 54.6274 234.833 55.8213 234.833 57.2941ZM0.0647185 14.0481C-0.0711593 14.2885 0.0135722 14.5935 0.253972 14.7294L4.17151 16.9436C4.4119 17.0795 4.71694 16.9948 4.85282 16.7544C4.98869 16.514 4.90396 16.2089 4.66356 16.0731L1.18131 14.1048L3.14954 10.6226C3.28541 10.3822 3.20068 10.0771 2.96028 9.94127C2.71988 9.80539 2.41485 9.89012 2.27897 10.1305L0.0647185 14.0481ZM237.5 57.2941L237.85 56.9372C184.696 4.78592 108.499 -16.2246 0.366178 13.8123L0.5 14.2941L0.633822 14.7758C108.501 -15.1873 184.304 5.80215 237.15 57.651L237.5 57.2941Z');
+
+        if (shorten) {
+            path.setAttribute('d', 'M126.833 57.2941C126.833 58.7668 128.027 59.9607 129.5 59.9607C130.973 59.9607 132.167 58.7668 132.167 57.2941C132.167 55.8213 130.973 54.6274 129.5 54.6274C128.027 54.6274 126.833 55.8213 126.833 57.2941ZM0.0647185 14.0481C-0.0711593 14.2885 0.0135722 14.5935 0.253972 14.7294L4.17151 16.9436C4.4119 17.0795 4.71694 16.9948 4.85282 16.7544C4.98869 16.514 4.90396 16.2089 4.66356 16.0731L1.18131 14.1048L3.14954 10.6226C3.28541 10.3822 3.20068 10.0771 2.96028 9.94127C2.71988 9.80539 2.41485 9.89012 2.27897 10.1305L0.0647185 14.0481ZM129.5 57.2941L129.85 56.9372C99.196 26.2859 58.999 9.2754 0.366178 13.8123L0.5 14.2941L0.633822 14.7758C58.901 10.3127 98.804 27.1021 129.15 57.651L129.5 57.2941Z');
+        } else {
+            path.setAttribute('d', 'M234.833 57.2941C234.833 58.7668 236.027 59.9607 237.5 59.9607C238.973 59.9607 240.167 58.7668 240.167 57.2941C240.167 55.8213 238.973 54.6274 237.5 54.6274C236.027 54.6274 234.833 55.8213 234.833 57.2941ZM0.0647185 14.0481C-0.0711593 14.2885 0.0135722 14.5935 0.253972 14.7294L4.17151 16.9436C4.4119 17.0795 4.71694 16.9948 4.85282 16.7544C4.98869 16.514 4.90396 16.2089 4.66356 16.0731L1.18131 14.1048L3.14954 10.6226C3.28541 10.3822 3.20068 10.0771 2.96028 9.94127C2.71988 9.80539 2.41485 9.89012 2.27897 10.1305L0.0647185 14.0481ZM237.5 57.2941L237.85 56.9372C184.696 4.78592 108.499 -16.2246 0.366178 13.8123L0.5 14.2941L0.633822 14.7758C108.501 -15.1873 184.304 5.80215 237.15 57.651L237.5 57.2941Z');
+        }
+
         path.setAttribute('fill', '#BBDFFD');
 
         arrowSvg.appendChild(path);
@@ -284,15 +360,33 @@ export default class ArrowPathAnimator {
         arrowDiv.style.zIndex = '10';
         arrowDiv.style.overflow = 'visible';
         arrowDiv.style.opacity = '0';
-        arrowDiv.style.transition = 'opacity 0.2s ease';
 
-        const arrowLeft = ballContainerX - 0;
-        const arrowTop = ballContainerY - 4;
+        const displayTime = this.getArrowDisplayTime();
+        arrowDiv.style.transition = `opacity ${displayTime * 0.3}ms ease`;
+
+        let arrowLeft, arrowTop;
+
+        if (window.innerWidth <= 1700) {
+            arrowLeft = ballContainerX - 0;
+            arrowTop = ballContainerY - 4;
+        } else {
+            arrowLeft = ballContainerX - 0;
+            arrowTop = ballContainerY - 4;
+        }
 
         const arrowSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-        arrowSvg.setAttribute('width', '120');
-        arrowSvg.setAttribute('height', '8');
-        arrowSvg.setAttribute('viewBox', '0 0 120 8');
+
+        const shorten = this.shouldShortenArrows();
+
+        if (shorten) {
+            arrowSvg.setAttribute('width', '66');
+            arrowSvg.setAttribute('height', '8');
+            arrowSvg.setAttribute('viewBox', '0 0 66 8');
+        } else {
+            arrowSvg.setAttribute('width', '120');
+            arrowSvg.setAttribute('height', '8');
+            arrowSvg.setAttribute('viewBox', '0 0 120 8');
+        }
 
         arrowSvg.style.position = 'absolute';
         arrowSvg.style.left = arrowLeft + 'px';
@@ -302,7 +396,13 @@ export default class ArrowPathAnimator {
         arrowSvg.style.transform = 'scaleX(-1)';
 
         const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-        path.setAttribute('d', 'M0.146447 3.33004C-0.0488155 3.5253 -0.0488155 3.84189 0.146447 4.03715L3.32843 7.21913C3.52369 7.41439 3.84027 7.41439 4.03553 7.21913C4.2308 7.02387 4.2308 6.70728 4.03553 6.51202L1.20711 3.68359L4.03553 0.855167C4.2308 0.659904 4.2308 0.343322 4.03553 0.14806C3.84027 -0.0472023 3.52369 -0.0472023 3.32843 0.14806L0.146447 3.33004ZM120 3.68359V3.18359H0.5V3.68359V4.18359H120V3.68359Z');
+
+        if (shorten) {
+            path.setAttribute('d', 'M0.146447 3.33004C-0.0488155 3.5253 -0.0488155 3.84189 0.146447 4.03715L3.32843 7.21913C3.52369 7.41439 3.84027 7.41439 4.03553 7.21913C4.2308 7.02387 4.2308 6.70728 4.03553 6.51202L1.20711 3.68359L4.03553 0.855167C4.2308 0.659904 4.2308 0.343322 4.03553 0.14806C3.84027 -0.0472023 3.52369 -0.0472023 3.32843 0.14806L0.146447 3.33004ZM66 3.68359V3.18359H0.5V3.68359V4.18359H66V3.68359Z');
+        } else {
+            path.setAttribute('d', 'M0.146447 3.33004C-0.0488155 3.5253 -0.0488155 3.84189 0.146447 4.03715L3.32843 7.21913C3.52369 7.41439 3.84027 7.41439 4.03553 7.21913C4.2308 7.02387 4.2308 6.70728 4.03553 6.51202L1.20711 3.68359L4.03553 0.855167C4.2308 0.659904 4.2308 0.343322 4.03553 0.14806C3.84027 -0.0472023 3.52369 -0.0472023 3.32843 0.14806L0.146447 3.33004ZM120 3.68359V3.18359H0.5V3.68359V4.18359H120V3.68359Z');
+        }
+
         path.setAttribute('fill', '#BBDFFD');
 
         arrowSvg.appendChild(path);
@@ -333,15 +433,33 @@ export default class ArrowPathAnimator {
         arrowDiv.style.zIndex = '10';
         arrowDiv.style.overflow = 'visible';
         arrowDiv.style.opacity = '0';
-        arrowDiv.style.transition = 'opacity 0.2s ease';
 
-        const arrowLeft = ballContainerX - 3.5;
-        const arrowTop = ballContainerY - 2.7059;
+        const displayTime = this.getArrowDisplayTime();
+        arrowDiv.style.transition = `opacity ${displayTime * 0.3}ms ease`;
+
+        let arrowLeft, arrowTop;
+
+        if (window.innerWidth <= 1700) {
+            arrowLeft = ballContainerX - 2;
+            arrowTop = ballContainerY - 2.7059;
+        } else {
+            arrowLeft = ballContainerX - 3.5;
+            arrowTop = ballContainerY - 2.7059;
+        }
 
         const arrowSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-        arrowSvg.setAttribute('width', '241');
-        arrowSvg.setAttribute('height', '60');
-        arrowSvg.setAttribute('viewBox', '0 0 241 60');
+
+        const shorten = this.shouldShortenArrows();
+
+        if (shorten) {
+            arrowSvg.setAttribute('width', '133');
+            arrowSvg.setAttribute('height', '60');
+            arrowSvg.setAttribute('viewBox', '0 0 133 60');
+        } else {
+            arrowSvg.setAttribute('width', '241');
+            arrowSvg.setAttribute('height', '60');
+            arrowSvg.setAttribute('viewBox', '0 0 241 60');
+        }
 
         arrowSvg.style.position = 'absolute';
         arrowSvg.style.left = arrowLeft + 'px';
@@ -351,7 +469,13 @@ export default class ArrowPathAnimator {
         arrowSvg.style.transform = 'scaleX(-1) scaleY(-1)';
 
         const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-        path.setAttribute('d', 'M234.833 57.2941C234.833 58.7668 236.027 59.9607 237.5 59.9607C238.973 59.9607 240.167 58.7668 240.167 57.2941C240.167 55.8213 238.973 54.6274 237.5 54.6274C236.027 54.6274 234.833 55.8213 234.833 57.2941ZM0.0647185 14.0481C-0.0711593 14.2885 0.0135722 14.5935 0.253972 14.7294L4.17151 16.9436C4.4119 17.0795 4.71694 16.9948 4.85282 16.7544C4.98869 16.514 4.90396 16.2089 4.66356 16.0731L1.18131 14.1048L3.14954 10.6226C3.28541 10.3822 3.20068 10.0771 2.96028 9.94127C2.71988 9.80539 2.41485 9.89012 2.27897 10.1305L0.0647185 14.0481ZM237.5 57.2941L237.85 56.9372C184.696 4.78592 108.499 -16.2246 0.366178 13.8123L0.5 14.2941L0.633822 14.7758C108.501 -15.1873 184.304 5.80215 237.15 57.651L237.5 57.2941Z');
+
+        if (shorten) {
+            path.setAttribute('d', 'M126.833 57.2941C126.833 58.7668 128.027 59.9607 129.5 59.9607C130.973 59.9607 132.167 58.7668 132.167 57.2941C132.167 55.8213 130.973 54.6274 129.5 54.6274C128.027 54.6274 126.833 55.8213 126.833 57.2941ZM0.0647185 14.0481C-0.0711593 14.2885 0.0135722 14.5935 0.253972 14.7294L4.17151 16.9436C4.4119 17.0795 4.71694 16.9948 4.85282 16.7544C4.98869 16.514 4.90396 16.2089 4.66356 16.0731L1.18131 14.1048L3.14954 10.6226C3.28541 10.3822 3.20068 10.0771 2.96028 9.94127C2.71988 9.80539 2.41485 9.89012 2.27897 10.1305L0.0647185 14.0481ZM129.5 57.2941L129.85 56.9372C99.196 26.2859 58.999 9.2754 0.366178 13.8123L0.5 14.2941L0.633822 14.7758C58.901 10.3127 98.804 27.1021 129.15 57.651L129.5 57.2941Z');
+        } else {
+            path.setAttribute('d', 'M234.833 57.2941C234.833 58.7668 236.027 59.9607 237.5 59.9607C238.973 59.9607 240.167 58.7668 240.167 57.2941C240.167 55.8213 238.973 54.6274 237.5 54.6274C236.027 54.6274 234.833 55.8213 234.833 57.2941ZM0.0647185 14.0481C-0.0711593 14.2885 0.0135722 14.5935 0.253972 14.7294L4.17151 16.9436C4.4119 17.0795 4.71694 16.9948 4.85282 16.7544C4.98869 16.514 4.90396 16.2089 4.66356 16.0731L1.18131 14.1048L3.14954 10.6226C3.28541 10.3822 3.20068 10.0771 2.96028 9.94127C2.71988 9.80539 2.41485 9.89012 2.27897 10.1305L0.0647185 14.0481ZM237.5 57.2941L237.85 56.9372C184.696 4.78592 108.499 -16.2246 0.366178 13.8123L0.5 14.2941L0.633822 14.7758C108.501 -15.1873 184.304 5.80215 237.15 57.651L237.5 57.2941Z');
+        }
+
         path.setAttribute('fill', '#BBDFFD');
 
         arrowSvg.appendChild(path);
@@ -382,15 +506,33 @@ export default class ArrowPathAnimator {
         arrowDiv.style.zIndex = '10';
         arrowDiv.style.overflow = 'visible';
         arrowDiv.style.opacity = '0';
-        arrowDiv.style.transition = 'opacity 0.2s ease';
 
-        const arrowLeft = ballContainerX - 237.5;
-        const arrowTop = ballContainerY - 2.7059;
+        const displayTime = this.getArrowDisplayTime();
+        arrowDiv.style.transition = `opacity ${displayTime * 0.3}ms ease`;
+
+        let arrowLeft, arrowTop;
+
+        if (window.innerWidth <= 1700) {
+            arrowLeft = ballContainerX - 131;
+            arrowTop = ballContainerY - 2.7059;
+        } else {
+            arrowLeft = ballContainerX - 237.5;
+            arrowTop = ballContainerY - 2.7059;
+        }
 
         const arrowSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-        arrowSvg.setAttribute('width', '241');
-        arrowSvg.setAttribute('height', '60');
-        arrowSvg.setAttribute('viewBox', '0 0 241 60');
+
+        const shorten = this.shouldShortenArrows();
+
+        if (shorten) {
+            arrowSvg.setAttribute('width', '133');
+            arrowSvg.setAttribute('height', '60');
+            arrowSvg.setAttribute('viewBox', '0 0 133 60');
+        } else {
+            arrowSvg.setAttribute('width', '241');
+            arrowSvg.setAttribute('height', '60');
+            arrowSvg.setAttribute('viewBox', '0 0 241 60');
+        }
 
         arrowSvg.style.position = 'absolute';
         arrowSvg.style.left = arrowLeft + 'px';
@@ -400,7 +542,13 @@ export default class ArrowPathAnimator {
         arrowSvg.style.transform = 'scaleY(-1)';
 
         const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-        path.setAttribute('d', 'M234.833 57.2941C234.833 58.7668 236.027 59.9607 237.5 59.9607C238.973 59.9607 240.167 58.7668 240.167 57.2941C240.167 55.8213 238.973 54.6274 237.5 54.6274C236.027 54.6274 234.833 55.8213 234.833 57.2941ZM0.0647185 14.0481C-0.0711593 14.2885 0.0135722 14.5935 0.253972 14.7294L4.17151 16.9436C4.4119 17.0795 4.71694 16.9948 4.85282 16.7544C4.98869 16.514 4.90396 16.2089 4.66356 16.0731L1.18131 14.1048L3.14954 10.6226C3.28541 10.3822 3.20068 10.0771 2.96028 9.94127C2.71988 9.80539 2.41485 9.89012 2.27897 10.1305L0.0647185 14.0481ZM237.5 57.2941L237.85 56.9372C184.696 4.78592 108.499 -16.2246 0.366178 13.8123L0.5 14.2941L0.633822 14.7758C108.501 -15.1873 184.304 5.80215 237.15 57.651L237.5 57.2941Z');
+
+        if (shorten) {
+            path.setAttribute('d', 'M126.833 57.2941C126.833 58.7668 128.027 59.9607 129.5 59.9607C130.973 59.9607 132.167 58.7668 132.167 57.2941C132.167 55.8213 130.973 54.6274 129.5 54.6274C128.027 54.6274 126.833 55.8213 126.833 57.2941ZM0.0647185 14.0481C-0.0711593 14.2885 0.0135722 14.5935 0.253972 14.7294L4.17151 16.9436C4.4119 17.0795 4.71694 16.9948 4.85282 16.7544C4.98869 16.514 4.90396 16.2089 4.66356 16.0731L1.18131 14.1048L3.14954 10.6226C3.28541 10.3822 3.20068 10.0771 2.96028 9.94127C2.71988 9.80539 2.41485 9.89012 2.27897 10.1305L0.0647185 14.0481ZM129.5 57.2941L129.85 56.9372C99.196 26.2859 58.999 9.2754 0.366178 13.8123L0.5 14.2941L0.633822 14.7758C58.901 10.3127 98.804 27.1021 129.15 57.651L129.5 57.2941Z');
+        } else {
+            path.setAttribute('d', 'M234.833 57.2941C234.833 58.7668 236.027 59.9607 237.5 59.9607C238.973 59.9607 240.167 58.7668 240.167 57.2941C240.167 55.8213 238.973 54.6274 237.5 54.6274C236.027 54.6274 234.833 55.8213 234.833 57.2941ZM0.0647185 14.0481C-0.0711593 14.2885 0.0135722 14.5935 0.253972 14.7294L4.17151 16.9436C4.4119 17.0795 4.71694 16.9948 4.85282 16.7544C4.98869 16.514 4.90396 16.2089 4.66356 16.0731L1.18131 14.1048L3.14954 10.6226C3.28541 10.3822 3.20068 10.0771 2.96028 9.94127C2.71988 9.80539 2.41485 9.89012 2.27897 10.1305L0.0647185 14.0481ZM237.5 57.2941L237.85 56.9372C184.696 4.78592 108.499 -16.2246 0.366178 13.8123L0.5 14.2941L0.633822 14.7758C108.501 -15.1873 184.304 5.80215 237.15 57.651L237.5 57.2941Z');
+        }
+
         path.setAttribute('fill', '#BBDFFD');
 
         arrowSvg.appendChild(path);
@@ -431,15 +579,33 @@ export default class ArrowPathAnimator {
         arrowDiv.style.zIndex = '10';
         arrowDiv.style.overflow = 'visible';
         arrowDiv.style.opacity = '0';
-        arrowDiv.style.transition = 'opacity 0.2s ease';
 
-        const arrowLeft = ballContainerX - 120;
-        const arrowTop = ballContainerY - 4;
+        const displayTime = this.getArrowDisplayTime();
+        arrowDiv.style.transition = `opacity ${displayTime * 0.3}ms ease`;
+
+        let arrowLeft, arrowTop;
+
+        if (window.innerWidth <= 1700) {
+            arrowLeft = ballContainerX - 66;
+            arrowTop = ballContainerY - 4;
+        } else {
+            arrowLeft = ballContainerX - 120;
+            arrowTop = ballContainerY - 4;
+        }
 
         const arrowSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-        arrowSvg.setAttribute('width', '120');
-        arrowSvg.setAttribute('height', '8');
-        arrowSvg.setAttribute('viewBox', '0 0 120 8');
+
+        const shorten = this.shouldShortenArrows();
+
+        if (shorten) {
+            arrowSvg.setAttribute('width', '66');
+            arrowSvg.setAttribute('height', '8');
+            arrowSvg.setAttribute('viewBox', '0 0 66 8');
+        } else {
+            arrowSvg.setAttribute('width', '120');
+            arrowSvg.setAttribute('height', '8');
+            arrowSvg.setAttribute('viewBox', '0 0 120 8');
+        }
 
         arrowSvg.style.position = 'absolute';
         arrowSvg.style.left = arrowLeft + 'px';
@@ -449,7 +615,13 @@ export default class ArrowPathAnimator {
         arrowSvg.style.transform = 'scaleY(-1)';
 
         const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-        path.setAttribute('d', 'M0.146447 3.33004C-0.0488155 3.5253 -0.0488155 3.84189 0.146447 4.03715L3.32843 7.21913C3.52369 7.41439 3.84027 7.41439 4.03553 7.21913C4.2308 7.02387 4.2308 6.70728 4.03553 6.51202L1.20711 3.68359L4.03553 0.855167C4.2308 0.659904 4.2308 0.343322 4.03553 0.14806C3.84027 -0.0472023 3.52369 -0.0472023 3.32843 0.14806L0.146447 3.33004ZM120 3.68359V3.18359H0.5V3.68359V4.18359H120V3.68359Z');
+
+        if (shorten) {
+            path.setAttribute('d', 'M0.146447 3.33004C-0.0488155 3.5253 -0.0488155 3.84189 0.146447 4.03715L3.32843 7.21913C3.52369 7.41439 3.84027 7.41439 4.03553 7.21913C4.2308 7.02387 4.2308 6.70728 4.03553 6.51202L1.20711 3.68359L4.03553 0.855167C4.2308 0.659904 4.2308 0.343322 4.03553 0.14806C3.84027 -0.0472023 3.52369 -0.0472023 3.32843 0.14806L0.146447 3.33004ZM66 3.68359V3.18359H0.5V3.68359V4.18359H66V3.68359Z');
+        } else {
+            path.setAttribute('d', 'M0.146447 3.33004C-0.0488155 3.5253 -0.0488155 3.84189 0.146447 4.03715L3.32843 7.21913C3.52369 7.41439 3.84027 7.41439 4.03553 7.21913C4.2308 7.02387 4.2308 6.70728 4.03553 6.51202L1.20711 3.68359L4.03553 0.855167C4.2308 0.659904 4.2308 0.343322 4.03553 0.14806C3.84027 -0.0472023 3.52369 -0.0472023 3.32843 0.14806L0.146447 3.33004ZM120 3.68359V3.18359H0.5V3.68359V4.18359H120V3.68359Z');
+        }
+
         path.setAttribute('fill', '#BBDFFD');
 
         arrowSvg.appendChild(path);
@@ -482,9 +654,13 @@ export default class ArrowPathAnimator {
             return;
         }
 
+        const displayTime = this.getArrowDisplayTime();
+
         this.firstArrow.div.style.opacity = '1';
         this.firstBlock.classList.add('active');
-        this.firstBlock.style.transform = 'translateX(-90px)';
+
+        const translateValue = this.getTranslateValue();
+        this.firstBlock.style.transform = `translateX(-${translateValue}px)`;
 
         setTimeout(() => {
             this.firstArrow.div.style.opacity = '0';
@@ -505,7 +681,7 @@ export default class ArrowPathAnimator {
                     this.startSecondArrow();
                 }, 600);
             }, 200);
-        }, 600);
+        }, displayTime);
     }
 
     startSecondArrow() {
@@ -517,9 +693,13 @@ export default class ArrowPathAnimator {
         this.secondArrow = this.createSecondArrow(ballContainer.x, ballContainer.y);
         if (!this.secondArrow) return;
 
+        const displayTime = this.getArrowDisplayTime();
+
         this.secondArrow.div.style.opacity = '1';
         this.secondBlock.classList.add('active');
-        this.secondBlock.style.transform = 'translateX(90px)';
+
+        const translateValue = this.getTranslateValue();
+        this.secondBlock.style.transform = `translateX(${translateValue}px)`;
 
         setTimeout(() => {
             this.secondArrow.div.style.opacity = '0';
@@ -536,7 +716,7 @@ export default class ArrowPathAnimator {
                 this.isAnimating = false;
                 this.animationStage = 0;
             }
-        }, 600);
+        }, displayTime);
     }
 
     startThirdArrow() {
@@ -558,9 +738,13 @@ export default class ArrowPathAnimator {
             return;
         }
 
+        const displayTime = this.getArrowDisplayTime();
+
         this.thirdArrow.div.style.opacity = '1';
         this.thirdBlock.classList.add('active');
-        this.thirdBlock.style.transform = 'translateX(90px)';
+
+        const translateValue = this.getTranslateValue();
+        this.thirdBlock.style.transform = `translateX(${translateValue}px)`;
 
         setTimeout(() => {
             this.thirdArrow.div.style.opacity = '0';
@@ -577,7 +761,7 @@ export default class ArrowPathAnimator {
                 this.isAnimating = false;
                 this.animationStage = 0;
             }
-        }, 600);
+        }, displayTime);
     }
 
     startFourthArrow() {
@@ -599,9 +783,13 @@ export default class ArrowPathAnimator {
             return;
         }
 
+        const displayTime = this.getArrowDisplayTime();
+
         this.fourthArrow.div.style.opacity = '1';
         this.fourthBlock.classList.add('active');
-        this.fourthBlock.style.transform = 'translateX(90px)';
+
+        const translateValue = this.getTranslateValue();
+        this.fourthBlock.style.transform = `translateX(${translateValue}px)`;
 
         setTimeout(() => {
             this.fourthArrow.div.style.opacity = '0';
@@ -618,7 +806,7 @@ export default class ArrowPathAnimator {
                 this.isAnimating = false;
                 this.animationStage = 0;
             }
-        }, 600);
+        }, displayTime);
     }
 
     startFifthArrow() {
@@ -640,9 +828,13 @@ export default class ArrowPathAnimator {
             return;
         }
 
+        const displayTime = this.getArrowDisplayTime();
+
         this.fifthArrow.div.style.opacity = '1';
         this.fifthBlock.classList.add('active');
-        this.fifthBlock.style.transform = 'translateX(-90px)';
+
+        const translateValue = this.getTranslateValue();
+        this.fifthBlock.style.transform = `translateX(-${translateValue}px)`;
 
         setTimeout(() => {
             this.fifthArrow.div.style.opacity = '0';
@@ -659,7 +851,7 @@ export default class ArrowPathAnimator {
                 this.isAnimating = false;
                 this.animationStage = 0;
             }
-        }, 600);
+        }, displayTime);
     }
 
     startSixthArrow() {
@@ -681,9 +873,13 @@ export default class ArrowPathAnimator {
             return;
         }
 
+        const displayTime = this.getArrowDisplayTime();
+
         this.sixthArrow.div.style.opacity = '1';
         this.sixthBlock.classList.add('active');
-        this.sixthBlock.style.transform = 'translateX(-90px)';
+
+        const translateValue = this.getTranslateValue();
+        this.sixthBlock.style.transform = `translateX(-${translateValue}px)`;
 
         setTimeout(() => {
             this.sixthArrow.div.style.opacity = '0';
@@ -696,7 +892,7 @@ export default class ArrowPathAnimator {
                 this.isAnimating = false;
                 this.animationStage = 0;
             }
-        }, 600);
+        }, displayTime);
     }
 
     scaleBallToZero() {
@@ -763,12 +959,14 @@ export default class ArrowPathAnimator {
     }
 
     showImmediately() {
-        if (this.firstBlock) this.firstBlock.style.transform = 'translateX(-90px)';
-        if (this.secondBlock) this.secondBlock.style.transform = 'translateX(90px)';
-        if (this.thirdBlock) this.thirdBlock.style.transform = 'translateX(90px)';
-        if (this.fourthBlock) this.fourthBlock.style.transform = 'translateX(90px)';
-        if (this.fifthBlock) this.fifthBlock.style.transform = 'translateX(-90px)';
-        if (this.sixthBlock) this.sixthBlock.style.transform = 'translateX(-90px)';
+        const translateValue = this.getTranslateValue();
+
+        if (this.firstBlock) this.firstBlock.style.transform = `translateX(-${translateValue}px)`;
+        if (this.secondBlock) this.secondBlock.style.transform = `translateX(${translateValue}px)`;
+        if (this.thirdBlock) this.thirdBlock.style.transform = `translateX(${translateValue}px)`;
+        if (this.fourthBlock) this.fourthBlock.style.transform = `translateX(${translateValue}px)`;
+        if (this.fifthBlock) this.fifthBlock.style.transform = `translateX(-${translateValue}px)`;
+        if (this.sixthBlock) this.sixthBlock.style.transform = `translateX(-${translateValue}px)`;
         this.hasAnimated = true;
     }
 
@@ -795,30 +993,32 @@ export default class ArrowPathAnimator {
         const wasMobile = this.isMobile;
         this.isMobile = window.innerWidth <= 768;
 
+        const translateValue = this.getTranslateValue();
+
         if (this.hasAnimated) {
             this.destroyArrow();
             if (this.firstBlock) {
-                this.firstBlock.style.transform = 'translateX(-90px)';
+                this.firstBlock.style.transform = `translateX(-${translateValue}px)`;
                 this.firstBlock.classList.remove('active');
             }
             if (this.secondBlock) {
-                this.secondBlock.style.transform = 'translateX(90px)';
+                this.secondBlock.style.transform = `translateX(${translateValue}px)`;
                 this.secondBlock.classList.remove('active');
             }
             if (this.thirdBlock) {
-                this.thirdBlock.style.transform = 'translateX(90px)';
+                this.thirdBlock.style.transform = `translateX(${translateValue}px)`;
                 this.thirdBlock.classList.remove('active');
             }
             if (this.fourthBlock) {
-                this.fourthBlock.style.transform = 'translateX(90px)';
+                this.fourthBlock.style.transform = `translateX(${translateValue}px)`;
                 this.fourthBlock.classList.remove('active');
             }
             if (this.fifthBlock) {
-                this.fifthBlock.style.transform = 'translateX(-90px)';
+                this.fifthBlock.style.transform = `translateX(-${translateValue}px)`;
                 this.fifthBlock.classList.remove('active');
             }
             if (this.sixthBlock) {
-                this.sixthBlock.style.transform = 'translateX(-90px)';
+                this.sixthBlock.style.transform = `translateX(-${translateValue}px)`;
                 this.sixthBlock.classList.remove('active');
             }
         }
