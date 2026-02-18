@@ -87,45 +87,59 @@
         <div class="container">
             <h2>Боли управления компанией</h2>
             <div class="control-units__inner">
+                <!-- Левая колонка (6 блоков) -->
                 <div class="control-units__item">
-                    <div class="control-units__block">
+                    <!-- Основные блоки (всегда видимые на десктопе) -->
+                    <div class="control-units__block" data-block="processes" data-position="left">
                         <h4>Запутанные процессы</h4>
                         <p>Когда возникают проблемы, сложно определить их источник</p>
                     </div>
-                    <div class="control-units__block">
+
+                    <div class="control-units__block" data-block="understanding-no-solution" data-position="left">
                         <h4>Понимание проблем не дает видения решения</h4>
                         <p>Даже выявленниее ключевой проблемы не помогает в ее решении</p>
                     </div>
-                    <div class="control-units__block">
+
+                    <div class="control-units__block" data-block="weak-involvement" data-position="left">
                         <h4>Слабое вовлечение сотрудников</h4>
                         <p>Даже выявленниее ключевой проблемы не помогает в ее решении</p>
                     </div>
-                    <div class="control-units__block mobile">
+
+                    <!-- Блоки с классом mobile (появляются на планшетах) -->
+                    <div class="control-units__block mobile" data-block="employee-inefficiency" data-position="left-mobile">
                         <h4>Неэффективная работа сотрудников</h4>
                         <p>Сотрудники не понимают свои роли и задачи.</p>
                     </div>
-                    <div class="control-units__block mobile">
+
+                    <div class="control-units__block mobile" data-block="where-to-start" data-position="left-mobile">
                         <h4>Нет понимания с чего начать</h4>
                         <p>Нет отправной точки для начала улучшений</p>
                     </div>
-                    <div class="control-units__block mobile">
+
+                    <div class="control-units__block mobile" data-block="no-vision" data-position="left-mobile">
                         <h4>Отсутствие четкого видения изменений</h4>
                         <p>Нет понимания, как исправить ситуацию</p>
                     </div>
                 </div>
+
+                <!-- Центральная колонка с SVG -->
                 <div class="control-units__item">
                     <include src="assets/svg/control-units_img.html"></include>
                 </div>
-                <div class="control-units__item">
-                    <div class="control-units__block">
+
+                <!-- Правая колонка (скрывается на планшетах) -->
+                <div class="control-units__item" data-column="right">
+                    <div class="control-units__block" data-block="employee-inefficiency" data-position="right">
                         <h4>Неэффективная работа сотрудников</h4>
                         <p>Сотрудники не понимают свои роли и задачи.</p>
                     </div>
-                    <div class="control-units__block">
+
+                    <div class="control-units__block" data-block="where-to-start" data-position="right">
                         <h4>Нет понимания с чего начать</h4>
                         <p>Нет отправной точки для начала улучшений</p>
                     </div>
-                    <div class="control-units__block">
+
+                    <div class="control-units__block" data-block="no-vision" data-position="right">
                         <h4>Отсутствие четкого видения изменений</h4>
                         <p>Нет понимания, как исправить ситуацию</p>
                     </div>
@@ -190,61 +204,76 @@
                         <li class="technology__item">
                             <div class="item-bg">
                                 <img class="lazy" data-src="assets/images/technology1.png" alt="">
-                                <p class="item-title">Форсайт-сессии
-                                    для Ландшафтов</p>
-                                <p>с группами участников</p>
+                                <div class="item-bg-text">
+                                    <p class="item-title">Форсайт-сессии
+                                        для Ландшафтов</p>
+                                    <p>с группами участников</p>
+                                </div>
                             </div>
                             <div class="item-arrow">
                                 <span>01</span>
                                 <include src="assets/svg/technology-arrow1.html"></include>
+                                <include src="assets/svg/technology-arrow1-mob.html"></include>
                             </div>
                         </li>
                         <li class="technology__item">
                             <div class="item-arrow">
                                 <include src="assets/svg/technology-arrow2.html"></include>
+                                <include src="assets/svg/technology-arrow2-mob.html"></include>
                                 <span>02</span>
                             </div>
                             <div class="item-bg">
                                 <img class="lazy" data-src="assets/images/technology2.png" alt="">
-                                <p class="item-title">Обработка данных
-                                    в BLP-finder</p>
-                                <p>с ИИ-помощником</p>
+                                <div class="item-bg-text">
+                                    <p class="item-title">Обработка данных
+                                        в BLP-finder</p>
+                                    <p>с ИИ-помощником</p>
+                                </div>
                             </div>
                         </li>
                         <li class="technology__item">
                             <div class="item-bg">
                                 <img class="lazy" data-src="assets/images/technology3.png" alt="">
-                                <p class="item-title">Обсуждение
-                                    результатов</p>
-                                <p>с участниками и руководством</p>
+                                <div class="item-bg-text">
+                                    <p class="item-title">Обсуждение
+                                        результатов</p>
+                                    <p>с участниками и руководством</p>
+                                </div>
                             </div>
                             <div class="item-arrow">
                                 <span>03</span>
                                 <include src="assets/svg/technology-arrow1.html"></include>
+                                <include src="assets/svg/technology-arrow1-mob.html"></include>
                             </div>
                         </li>
                         <li class="technology__item">
                             <div class="item-arrow">
                                 <include src="assets/svg/technology-arrow2.html"></include>
+                                <include src="assets/svg/technology-arrow2-mob.html"></include>
                                 <span>04</span>
                             </div>
                             <div class="item-bg">
                                 <img class="lazy" data-src="assets/images/technology4.png" alt="">
-                                <p class="item-title">Поиск идей + их
-                                    проработка</p>
-                                <p>с участниками</p>
+                                <div class="item-bg-text">
+                                    <p class="item-title">Поиск идей + их
+                                        проработка</p>
+                                    <p>с участниками</p>
+                                </div>
                             </div>
                         </li>
                         <li class="technology__item">
                             <div class="item-bg">
                                 <img class="lazy" data-src="assets/images/technology5.png" alt="">
-                                <p class="item-title">Форсайт-сессии
-                                    для Ландшафтов</p>
-                                <p>с группами участников</p>
+                                <div class="item-bg-text">
+                                    <p class="item-title">Форсайт-сессии
+                                        для Ландшафтов</p>
+                                    <p>с группами участников</p>
+                                </div>
                             </div>
                             <div class="item-arrow">
                                 <span>05</span>
                                 <include src="assets/svg/technology-arrow1.html"></include>
+                                <include src="assets/svg/technology-arrow1-mob.html"></include>
                             </div>
                         </li>
                     </ul>
@@ -655,11 +684,11 @@
                                     <label>
                                         <input type="email" name="email" placeholder="E-mail*" data-phone-input="" required="">
                                     </label>
+                                </fieldset>
+                                <fieldset>
                                     <label>
                                         <textarea name="comment" placeholder="Ваше сообщение" required=""></textarea>
                                     </label>
-                                </fieldset>
-                                <fieldset>
                                     <label class="checkbox-label">
                                         <input type="checkbox" name="checkbox" required="">
                                         <span>
@@ -667,23 +696,29 @@
                                         </span>
                                     </label>
                                     <button class="submit-btn color-btn">
-                                        Отправить
+                                        Отправить заявку
                                     </button>
                                 </fieldset>
                             </form>
                         </div>
                         <div class="bid__contacts">
                             <h4>Или подайте заявку на примерную стоимость услуги под ваши задачи</h4>
-                            <a href="#" class="bid-btn not-color-btn">Заявка на расчет</a>
-                            <a href="mailto:vakhin@yandex.ru" class="bid__item">
-                                <include src="assets/svg/mail.html"></include>
-                                <span>vakhin@yandex.ru</span>
-                            </a>
-                            <div class="bid__title">Есть вопросы?</div>
-                            <p>Пишите в Telegram, вам поможет наш менеджер</p>
-                            <a href="mailto:vakhin@yandex.ru" class="bid__item">
-                                <include src="assets/svg/tg.html"></include>
-                            </a>
+                            <div class="bid__links">
+                                <a href="#" class="bid-btn not-color-btn">Заявка на расчет</a>
+                                <a href="mailto:vakhin@yandex.ru" class="bid__item">
+                                    <include src="assets/svg/mail.html"></include>
+                                    <span>vakhin@yandex.ru</span>
+                                </a>
+                            </div>
+                            <div class="bid__info">
+                                <div class="bid__text">
+                                <div class="bid__title">Есть вопросы?</div>
+                                <p>Пишите в Telegram, вам поможет наш менеджер</p>
+                                </div>
+                                <a href="mailto:vakhin@yandex.ru" class="bid__item">
+                                    <include src="assets/svg/tg.html"></include>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>

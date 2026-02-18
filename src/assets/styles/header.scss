@@ -8,9 +8,27 @@
   top: 51px;
   z-index: 10;
 
+  @media (max-width: 1600px) {
+    top: 42px;
+  }
+
+  @media (max-width: 1350px) {
+    top: 19px;
+  }
+
+  @media (max-width: 600px) {
+    top: 7px;
+  }
+
   &__top {
     display: flex;
     justify-content: left;
+
+    .access-container {
+      @media (max-width: 600px) {
+        margin-left: -20px;
+      }
+    }
   }
 
   &__bottom {
@@ -18,7 +36,7 @@
     margin-top: 18px;
     
     @media (max-width: 1350px) {
-      margin-top: 13px;
+      margin-top: 0;
     }
   }
 
@@ -37,6 +55,11 @@
     @media (max-width: 1350px) {
       max-width: 203px;
     }
+    @media (max-width: 600px) {
+      max-width: 150px;
+      margin-right: auto;
+    }
+
 
     svg {
       margin-bottom: 6px;
@@ -50,6 +73,19 @@
     @media (max-width: 1350px) {
       display: flex;
       align-items: center;
+    }
+
+    @media (max-width: 600px) {
+      display: none;
+    }
+
+    &.mobile {
+      display: none;
+
+      @media (max-width: 600px) {
+        display: flex;
+        margin-left: auto;
+      }
     }
   }
 
@@ -207,6 +243,14 @@
   @media (max-width: 1350px) {
     max-width: 500px;
   }
+
+  @media (max-width: 760px) {
+    max-width: 330px;
+  }
+
+  @media (max-width: 600px) {
+    margin-left: -260px;
+  }
 }
 
 .search-toggle {
@@ -231,6 +275,11 @@
     svg {
       fill: #F83E49;
     }
+  }
+
+  @media (max-width: 600px) {
+    right: 10px;
+    padding: 15px 28px 15px 15px;
   }
 }
 
@@ -258,6 +307,16 @@
     height: 43px;
   }
 
+  @media (max-width: 600px) {
+    transform-origin: left center;
+    left: 77%;
+    right: auto;
+
+    @media (max-width: 600px) {
+      padding-left: 50px;
+    }
+  }
+
   &.active {
     width: calc(100% - 20px);
     transform: translateY(-50%) scaleX(1);
@@ -278,6 +337,18 @@
   padding: 0 15px;
   font-weight: 500;
   min-width: 0;
+
+  @media (max-width: 1350px) {
+    font-size: 15px;
+  }
+
+  @media (max-width: 750px) {
+    padding: 0;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 }
 
 .search-input::placeholder {
@@ -298,6 +369,14 @@
   justify-content: center;
   transition: all 0.3s ease;
   flex-shrink: 0;
+
+  @media (max-width: 760px) {
+    margin-right: 0;
+  }
+
+  @media (max-width: 600px) {
+    order: 2;
+  }
 
   &:hover {
     color: #F83E49;

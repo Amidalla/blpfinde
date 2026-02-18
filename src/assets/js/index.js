@@ -23,6 +23,7 @@ import ScrollAnimator from "./scrollAnimator.js";
 import CircleAnimator from "./circleAnimator.js";
 import ArrowBallAnimator from "./arrow-ball-animator.js";
 import ArrowPathAnimator from "./arrow-path-animator.js";
+import tabletArrowAnimator from "./tabletArrowAnimator.js";
 
 Swiper.use([Pagination, Navigation, Autoplay, Thumbs, EffectFade]);
 
@@ -97,12 +98,14 @@ const App = {
         scrollAnimator: null,
         arrowBallAnimator: null,
         arrowPathAnimator: null,
+        tabletArrowAnimator: null,
 
         init() {
                 this.initCore();
                 this.initModules();
                 this.initAnimations();
                 this.initEventListeners();
+                this.initTabletAnimator();
         },
 
         initCore() {
@@ -140,6 +143,21 @@ const App = {
                 }, 400);
         },
 
+        initTabletAnimator() {
+
+                if (window.innerWidth <= 1230) {
+                        setTimeout(() => {
+                                try {
+                                        this.tabletArrowAnimator = new tabletArrowAnimator();
+                                        this.tabletArrowAnimator.init();
+                                        window.tabletArrowAnimator = this.tabletArrowAnimator;
+                                } catch (error) {
+                                        console.log('Tablet animator init error:', error);
+                                }
+                        }, 600);
+                }
+        },
+
         initAnimations() {
                 initAnimation();
                 addAnimationClasses();
@@ -163,6 +181,23 @@ const App = {
 
                 window.addEventListener('resize', () => {
                         this.updateSwipers();
+
+
+                        const isTablet = window.innerWidth <= 1230;
+
+                        if (isTablet && !this.tabletArrowAnimator) {
+                                try {
+                                        this.tabletArrowAnimator = new tabletArrowAnimator();
+                                        this.tabletArrowAnimator.init();
+                                        window.tabletArrowAnimator = this.tabletArrowAnimator;
+                                } catch (error) {}
+                        } else if (!isTablet && this.tabletArrowAnimator) {
+                                if (this.tabletArrowAnimator.destroy) {
+                                        this.tabletArrowAnimator.destroy();
+                                }
+                                this.tabletArrowAnimator = null;
+                                delete window.tabletArrowAnimator;
+                        }
 
                         if (this.circleAnimator) {
                                 this.circleAnimator.handleResize();
@@ -209,6 +244,17 @@ const App = {
                 if (this.arrowPathAnimator) {
                         this.arrowPathAnimator.handleResize();
                 }
+                if (this.tabletArrowAnimator) {
+                        this.tabletArrowAnimator.destroy();
+                        this.tabletArrowAnimator = null;
+                        if (window.innerWidth <= 1230) {
+                                try {
+                                        this.tabletArrowAnimator = new tabletArrowAnimator();
+                                        this.tabletArrowAnimator.init();
+                                        window.tabletArrowAnimator = this.tabletArrowAnimator;
+                                } catch (error) {}
+                        }
+                }
         },
 
         destroy() {
@@ -221,8 +267,12 @@ const App = {
                 if (this.arrowPathAnimator) {
                         this.arrowPathAnimator.destroy();
                 }
+                if (this.tabletArrowAnimator) {
+                        this.tabletArrowAnimator.destroy();
+                }
 
                 delete window.arrowBallAnimator;
+                delete window.tabletArrowAnimator;
         }
 };
 

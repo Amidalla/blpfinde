@@ -15,7 +15,19 @@ export default class ArrowBallAnimator {
 
         this.radius = 191.83;
 
-        this.currentAngle = this.timeToAngle(11, 0);
+
+        this.isTablet = window.innerWidth <= 1230 && window.innerWidth > 750;
+        this.isMobile = window.innerWidth <= 750;
+
+
+        if (this.isMobile) {
+            this.currentAngle = this.timeToAngle(12, 0);
+        } else if (this.isTablet) {
+            this.currentAngle = this.timeToAngle(9, 0);
+        } else {
+            this.currentAngle = this.timeToAngle(11, 0);
+        }
+
         this.firstTargetAngle = this.timeToAngle(1, 0);
         this.secondTargetAngle = this.timeToAngle(3, 0);
         this.thirdTargetAngle = this.timeToAngle(5, 0);
@@ -51,6 +63,8 @@ export default class ArrowBallAnimator {
 
     timeToAngle(hours, minutes) {
         let hourValue = hours % 12;
+
+        if (hourValue === 0) hourValue = 12;
         let angle = hourValue * 30 + minutes * 0.5;
         return angle * Math.PI / 180;
     }
@@ -111,239 +125,83 @@ export default class ArrowBallAnimator {
         this.ball = group;
     }
 
+
     moveToOneOClock() {
+
+        if (this.isMobile || this.isTablet) return;
+
         if (!this.blueCircle || !this.whiteCircle) return;
-
-        if (this.animationFrame) {
-            cancelAnimationFrame(this.animationFrame);
-            this.animationFrame = null;
-        }
-
-        const startAngle = this.currentAngle;
-        const targetAngle = this.firstTargetAngle;
-        const distance = this.getClockwiseDistance(startAngle, targetAngle);
-        const startTime = performance.now();
-        const duration = 600;
-
-        const animate = (currentTime) => {
-            const elapsed = currentTime - startTime;
-            const progress = Math.min(elapsed / duration, 1);
-            const easeProgress = 1 - Math.pow(1 - progress, 3);
-
-            this.currentAngle = this.normalizeAngle(startAngle + distance * easeProgress);
-
-            const ballX = this.centerX + this.radius * Math.sin(this.currentAngle);
-            const ballY = this.centerY - this.radius * Math.cos(this.currentAngle);
-
-            this.blueCircle.setAttribute('cx', ballX);
-            this.blueCircle.setAttribute('cy', ballY);
-            this.whiteCircle.setAttribute('cx', ballX);
-            this.whiteCircle.setAttribute('cy', ballY);
-
-            if (progress < 1) {
-                this.animationFrame = requestAnimationFrame(animate);
-            } else {
-                this.currentAngle = targetAngle;
-                this.animationFrame = null;
-
-                const finalX = this.centerX + this.radius * Math.sin(targetAngle);
-                const finalY = this.centerY - this.radius * Math.cos(targetAngle);
-                this.blueCircle.setAttribute('cx', finalX);
-                this.blueCircle.setAttribute('cy', finalY);
-                this.whiteCircle.setAttribute('cx', finalX);
-                this.whiteCircle.setAttribute('cy', finalY);
-            }
-        };
-
-        this.animationFrame = requestAnimationFrame(animate);
+        this.animateTo(this.firstTargetAngle);
     }
 
     moveToThreeOClock(callback) {
-        if (!this.blueCircle || !this.whiteCircle) {
+
+        if (this.isMobile || this.isTablet) {
             if (callback) callback();
             return;
         }
 
-        if (this.animationFrame) {
-            cancelAnimationFrame(this.animationFrame);
-            this.animationFrame = null;
+        if (!this.blueCircle || !this.whiteCircle) {
+            if (callback) callback();
+            return;
         }
-
         this.onFinalComplete = callback;
-
-        const startAngle = this.currentAngle;
-        const targetAngle = this.secondTargetAngle;
-        const distance = this.getClockwiseDistance(startAngle, targetAngle);
-        const startTime = performance.now();
-        const duration = 600;
-
-        const animate = (currentTime) => {
-            const elapsed = currentTime - startTime;
-            const progress = Math.min(elapsed / duration, 1);
-            const easeProgress = 1 - Math.pow(1 - progress, 3);
-
-            this.currentAngle = this.normalizeAngle(startAngle + distance * easeProgress);
-
-            const ballX = this.centerX + this.radius * Math.sin(this.currentAngle);
-            const ballY = this.centerY - this.radius * Math.cos(this.currentAngle);
-
-            this.blueCircle.setAttribute('cx', ballX);
-            this.blueCircle.setAttribute('cy', ballY);
-            this.whiteCircle.setAttribute('cx', ballX);
-            this.whiteCircle.setAttribute('cy', ballY);
-
-            if (progress < 1) {
-                this.animationFrame = requestAnimationFrame(animate);
-            } else {
-                this.currentAngle = targetAngle;
-                this.animationFrame = null;
-
-                const finalX = this.centerX + this.radius * Math.sin(targetAngle);
-                const finalY = this.centerY - this.radius * Math.cos(targetAngle);
-                this.blueCircle.setAttribute('cx', finalX);
-                this.blueCircle.setAttribute('cy', finalY);
-                this.whiteCircle.setAttribute('cx', finalX);
-                this.whiteCircle.setAttribute('cy', finalY);
-
-                if (this.onFinalComplete) {
-                    this.onFinalComplete();
-                    this.onFinalComplete = null;
-                }
-            }
-        };
-
-        this.animationFrame = requestAnimationFrame(animate);
+        this.animateTo(this.secondTargetAngle);
     }
 
     moveToFiveOClock(callback) {
-        if (!this.blueCircle || !this.whiteCircle) {
+
+        if (this.isMobile || this.isTablet) {
             if (callback) callback();
             return;
         }
 
-        if (this.animationFrame) {
-            cancelAnimationFrame(this.animationFrame);
-            this.animationFrame = null;
+        if (!this.blueCircle || !this.whiteCircle) {
+            if (callback) callback();
+            return;
         }
-
         this.onFinalComplete = callback;
-
-        const startAngle = this.currentAngle;
-        const targetAngle = this.thirdTargetAngle;
-        const distance = this.getClockwiseDistance(startAngle, targetAngle);
-        const startTime = performance.now();
-        const duration = 600;
-
-        const animate = (currentTime) => {
-            const elapsed = currentTime - startTime;
-            const progress = Math.min(elapsed / duration, 1);
-            const easeProgress = 1 - Math.pow(1 - progress, 3);
-
-            this.currentAngle = this.normalizeAngle(startAngle + distance * easeProgress);
-
-            const ballX = this.centerX + this.radius * Math.sin(this.currentAngle);
-            const ballY = this.centerY - this.radius * Math.cos(this.currentAngle);
-
-            this.blueCircle.setAttribute('cx', ballX);
-            this.blueCircle.setAttribute('cy', ballY);
-            this.whiteCircle.setAttribute('cx', ballX);
-            this.whiteCircle.setAttribute('cy', ballY);
-
-            if (progress < 1) {
-                this.animationFrame = requestAnimationFrame(animate);
-            } else {
-                this.currentAngle = targetAngle;
-                this.animationFrame = null;
-
-                const finalX = this.centerX + this.radius * Math.sin(targetAngle);
-                const finalY = this.centerY - this.radius * Math.cos(targetAngle);
-                this.blueCircle.setAttribute('cx', finalX);
-                this.blueCircle.setAttribute('cy', finalY);
-                this.whiteCircle.setAttribute('cx', finalX);
-                this.whiteCircle.setAttribute('cy', finalY);
-
-                if (this.onFinalComplete) {
-                    this.onFinalComplete();
-                    this.onFinalComplete = null;
-                }
-            }
-        };
-
-        this.animationFrame = requestAnimationFrame(animate);
+        this.animateTo(this.thirdTargetAngle);
     }
 
     moveToSevenOClock(callback) {
-        if (!this.blueCircle || !this.whiteCircle) {
+
+        if (this.isMobile || this.isTablet) {
             if (callback) callback();
             return;
         }
 
-        if (this.animationFrame) {
-            cancelAnimationFrame(this.animationFrame);
-            this.animationFrame = null;
+        if (!this.blueCircle || !this.whiteCircle) {
+            if (callback) callback();
+            return;
         }
-
         this.onFinalComplete = callback;
-
-        const startAngle = this.currentAngle;
-        const targetAngle = this.fourthTargetAngle;
-        const distance = this.getClockwiseDistance(startAngle, targetAngle);
-        const startTime = performance.now();
-        const duration = 600;
-
-        const animate = (currentTime) => {
-            const elapsed = currentTime - startTime;
-            const progress = Math.min(elapsed / duration, 1);
-            const easeProgress = 1 - Math.pow(1 - progress, 3);
-
-            this.currentAngle = this.normalizeAngle(startAngle + distance * easeProgress);
-
-            const ballX = this.centerX + this.radius * Math.sin(this.currentAngle);
-            const ballY = this.centerY - this.radius * Math.cos(this.currentAngle);
-
-            this.blueCircle.setAttribute('cx', ballX);
-            this.blueCircle.setAttribute('cy', ballY);
-            this.whiteCircle.setAttribute('cx', ballX);
-            this.whiteCircle.setAttribute('cy', ballY);
-
-            if (progress < 1) {
-                this.animationFrame = requestAnimationFrame(animate);
-            } else {
-                this.currentAngle = targetAngle;
-                this.animationFrame = null;
-
-                const finalX = this.centerX + this.radius * Math.sin(targetAngle);
-                const finalY = this.centerY - this.radius * Math.cos(targetAngle);
-                this.blueCircle.setAttribute('cx', finalX);
-                this.blueCircle.setAttribute('cy', finalY);
-                this.whiteCircle.setAttribute('cx', finalX);
-                this.whiteCircle.setAttribute('cy', finalY);
-
-                if (this.onFinalComplete) {
-                    this.onFinalComplete();
-                    this.onFinalComplete = null;
-                }
-            }
-        };
-
-        this.animationFrame = requestAnimationFrame(animate);
+        this.animateTo(this.fourthTargetAngle);
     }
 
     moveToNineOClock(callback) {
-        if (!this.blueCircle || !this.whiteCircle) {
+
+        if (this.isMobile || this.isTablet) {
             if (callback) callback();
             return;
         }
 
+        if (!this.blueCircle || !this.whiteCircle) {
+            if (callback) callback();
+            return;
+        }
+        this.onFinalComplete = callback;
+        this.animateTo(this.fifthTargetAngle);
+    }
+
+
+    animateTo(targetAngle) {
         if (this.animationFrame) {
             cancelAnimationFrame(this.animationFrame);
             this.animationFrame = null;
         }
 
-        this.onFinalComplete = callback;
-
         const startAngle = this.currentAngle;
-        const targetAngle = this.fifthTargetAngle;
         const distance = this.getClockwiseDistance(startAngle, targetAngle);
         const startTime = performance.now();
         const duration = 600;
@@ -387,26 +245,40 @@ export default class ArrowBallAnimator {
     }
 
     handleResize() {
+        const wasTablet = this.isTablet;
+        const wasMobile = this.isMobile;
+
+        this.isTablet = window.innerWidth <= 1230 && window.innerWidth > 750;
+        this.isMobile = window.innerWidth <= 750;
+
         this.disableClipping();
 
-        const currentAngle = this.currentAngle;
+
+        let newAngle;
+        if (this.isMobile) {
+            newAngle = this.timeToAngle(12, 0);
+        } else if (this.isTablet) {
+            newAngle = this.timeToAngle(9, 0);
+        } else {
+            newAngle = this.timeToAngle(11, 0);
+        }
+
+
+        if (wasMobile !== this.isMobile || wasTablet !== this.isTablet) {
+            this.currentAngle = newAngle;
+        }
+
         this.destroy();
         this.addBallToSVG();
-        this.currentAngle = currentAngle;
 
-        if (this.currentAngle === this.firstTargetAngle ||
-            this.currentAngle === this.secondTargetAngle ||
-            this.currentAngle === this.thirdTargetAngle ||
-            this.currentAngle === this.fourthTargetAngle ||
-            this.currentAngle === this.fifthTargetAngle) {
-            const ballX = this.centerX + this.radius * Math.sin(this.currentAngle);
-            const ballY = this.centerY - this.radius * Math.cos(this.currentAngle);
-            if (this.blueCircle && this.whiteCircle) {
-                this.blueCircle.setAttribute('cx', ballX);
-                this.blueCircle.setAttribute('cy', ballY);
-                this.whiteCircle.setAttribute('cx', ballX);
-                this.whiteCircle.setAttribute('cy', ballY);
-            }
+
+        const ballX = this.centerX + this.radius * Math.sin(this.currentAngle);
+        const ballY = this.centerY - this.radius * Math.cos(this.currentAngle);
+        if (this.blueCircle && this.whiteCircle) {
+            this.blueCircle.setAttribute('cx', ballX);
+            this.blueCircle.setAttribute('cy', ballY);
+            this.whiteCircle.setAttribute('cx', ballX);
+            this.whiteCircle.setAttribute('cy', ballY);
         }
     }
 

@@ -17,11 +17,11 @@ export class Animation {
         this.SEVENTH_CIRCLE_RX = 5.54134;
         this.SEVENTH_CIRCLE_RY = 6.44785;
 
-        // УСКОРЯЕМ: уменьшаем тайминги
-        this.LINE_ANIMATION_DURATION = '0.15s'; // было 0.2s
-        this.LINE_ANIMATION_TIMEOUT = 150; // было 200
-        this.CIRCLE_ANIMATION_SCALE = 0.3; // было 0.4
-        this.RECT_ANIMATION_DELAY = 400; // было 600
+
+        this.LINE_ANIMATION_DURATION = '0.15s';
+        this.LINE_ANIMATION_TIMEOUT = 150;
+        this.CIRCLE_ANIMATION_SCALE = 0.3;
+        this.RECT_ANIMATION_DELAY = 400;
 
         this.elementsCache = {
             lines: new Map(),
@@ -32,7 +32,7 @@ export class Animation {
             benefitItems: new Map()
         };
 
-        this.isMobileView = window.innerWidth <= 750;
+        this.isMobileView = window.innerWidth <= 1230;
 
         if (this.isMobileView) {
             this.showAllElementsImmediately();

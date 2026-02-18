@@ -57,9 +57,9 @@ export default class CircleAnimator {
             circle.element.style.transformOrigin = `${this.svgCenter.x}px ${this.svgCenter.y}px`;
 
             if (circle.class === 'circle-rotate-right') {
-                circle.element.style.transform = 'scale(1.025)'; // Наружу 5px
+                circle.element.style.transform = 'scale(1.025)';
             } else {
-                circle.element.style.transform = 'scale(0.975)'; // Внутрь 5px
+                circle.element.style.transform = 'scale(0.975)';
             }
         });
 

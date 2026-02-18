@@ -14,6 +14,7 @@ export default class ArrowPathAnimator {
         this.sixthBlock = null;
         this.arrowBallAnimator = null;
         this.isMobile = window.innerWidth <= 768;
+        this.isTablet = window.innerWidth <= 1230;
         this.hasAnimated = false;
         this.isAnimating = false;
         this.observer = null;
@@ -23,25 +24,19 @@ export default class ArrowPathAnimator {
         this.container = null;
     }
 
-
     getTranslateValue() {
-
         if (window.innerWidth <= 1700) {
             return 14;
         }
-
         return 90;
     }
 
-
     getArrowDisplayTime() {
-
         if (window.innerWidth <= 1700) {
             return 800;
         }
         return 600;
     }
-
 
     shouldShortenArrows() {
         return window.innerWidth <= 1700;
@@ -55,7 +50,9 @@ export default class ArrowPathAnimator {
 
         this.setupZIndex();
 
-        if (this.isMobile) {
+        if (this.isTablet) {
+            this.prepareForTablet();
+        } else if (this.isMobile) {
             this.showImmediately();
         } else {
             this.hide();
@@ -64,6 +61,21 @@ export default class ArrowPathAnimator {
 
         window.addEventListener('resize', this.handleResize.bind(this));
         return this;
+    }
+
+    prepareForTablet() {
+        const blocks = [this.firstBlock, this.secondBlock, this.thirdBlock,
+            this.fourthBlock, this.fifthBlock, this.sixthBlock];
+
+        blocks.forEach(block => {
+            if (block) {
+                block.style.transform = '';
+                block.style.transition = 'background 0.2s ease, color 0.2s ease';
+                block.classList.remove('active');
+            }
+        });
+
+        this.destroyArrow();
     }
 
     setupZIndex() {
@@ -151,52 +163,47 @@ export default class ArrowPathAnimator {
         const section = document.querySelector('.control-units');
         if (!section) return;
 
-        const blocks = section.querySelectorAll('.control-units__block');
-        blocks.forEach((block) => {
-            const title = block.querySelector('h4');
-            if (title) {
-                if (title.textContent.includes('Запутанные процессы')) {
-                    this.firstBlock = block;
+        this.isTablet = window.innerWidth <= 1230;
+
+        const leftColumn = document.querySelector('.control-units__item:first-child');
+        const rightColumn = document.querySelector('.control-units__item:last-child');
+
+        if (leftColumn) {
+            this.firstBlock = leftColumn.querySelector('[data-block="processes"]');
+            this.fifthBlock = leftColumn.querySelector('[data-block="weak-involvement"]');
+            this.sixthBlock = leftColumn.querySelector('[data-block="understanding-no-solution"]');
+
+            if (this.isTablet) {
+                this.secondBlock = leftColumn.querySelector('[data-block="employee-inefficiency"]');
+                this.thirdBlock = leftColumn.querySelector('[data-block="where-to-start"]');
+                this.fourthBlock = leftColumn.querySelector('[data-block="no-vision"]');
+            }
+        }
+
+        if (!this.isTablet && rightColumn) {
+            this.secondBlock = rightColumn.querySelector('[data-block="employee-inefficiency"]');
+            this.thirdBlock = rightColumn.querySelector('[data-block="where-to-start"]');
+            this.fourthBlock = rightColumn.querySelector('[data-block="no-vision"]');
+        }
+
+        const blocks = [this.firstBlock, this.secondBlock, this.thirdBlock,
+            this.fourthBlock, this.fifthBlock, this.sixthBlock];
+
+        blocks.forEach(block => {
+            if (block) {
+                if (this.isTablet) {
+                    block.style.transition = 'background 0.2s ease, color 0.2s ease';
                     block.style.transform = '';
+                } else {
                     block.style.transition = 'transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.2s ease, color 0.2s ease';
-                    block.classList.remove('active');
                 }
-                if (title.textContent.includes('Неэффективная работа сотрудников')) {
-                    this.secondBlock = block;
-                    block.style.transform = '';
-                    block.style.transition = 'transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.2s ease, color 0.2s ease';
-                    block.classList.remove('active');
-                }
-                if (title.textContent.includes('Нет понимания с чего начать')) {
-                    this.thirdBlock = block;
-                    block.style.transform = '';
-                    block.style.transition = 'transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.2s ease, color 0.2s ease';
-                    block.classList.remove('active');
-                }
-                if (title.textContent.includes('Отсутствие четкого видения изменений')) {
-                    this.fourthBlock = block;
-                    block.style.transform = '';
-                    block.style.transition = 'transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.2s ease, color 0.2s ease';
-                    block.classList.remove('active');
-                }
-                if (title.textContent.includes('Слабое вовлечение сотрудников')) {
-                    this.fifthBlock = block;
-                    block.style.transform = '';
-                    block.style.transition = 'transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.2s ease, color 0.2s ease';
-                    block.classList.remove('active');
-                }
-                if (title.textContent.includes('Понимание проблем не дает видения решения')) {
-                    this.sixthBlock = block;
-                    block.style.transform = '';
-                    block.style.transition = 'transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.2s ease, color 0.2s ease';
-                    block.classList.remove('active');
-                }
+                block.classList.remove('active');
             }
         });
     }
 
     createFirstArrow(ballX, ballY) {
-        if (!this.firstBlock) return null;
+        if (this.isTablet || !this.firstBlock) return null;
 
         const arrowDiv = document.createElement('div');
         arrowDiv.style.position = 'absolute';
@@ -224,10 +231,8 @@ export default class ArrowPathAnimator {
         const shorten = this.shouldShortenArrows();
 
         if (shorten) {
-
             arrowSvg.setAttribute('width', '133');
             arrowSvg.setAttribute('height', '60');
-
             arrowSvg.setAttribute('viewBox', '0 0 133 60');
         } else {
             arrowSvg.setAttribute('width', '241');
@@ -236,7 +241,6 @@ export default class ArrowPathAnimator {
         }
 
         arrowSvg.style.position = 'absolute';
-
 
         if (window.innerWidth <= 1700) {
             arrowSvg.style.left = (ballContainerX - 131) + 'px';
@@ -253,7 +257,6 @@ export default class ArrowPathAnimator {
         const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
 
         if (shorten) {
-
             path.setAttribute('d', 'M126.833 57.2941C126.833 58.7668 128.027 59.9607 129.5 59.9607C130.973 59.9607 132.167 58.7668 132.167 57.2941C132.167 55.8213 130.973 54.6274 129.5 54.6274C128.027 54.6274 126.833 55.8213 126.833 57.2941ZM0.0647185 14.0481C-0.0711593 14.2885 0.0135722 14.5935 0.253972 14.7294L4.17151 16.9436C4.4119 17.0795 4.71694 16.9948 4.85282 16.7544C4.98869 16.514 4.90396 16.2089 4.66356 16.0731L1.18131 14.1048L3.14954 10.6226C3.28541 10.3822 3.20068 10.0771 2.96028 9.94127C2.71988 9.80539 2.41485 9.89012 2.27897 10.1305L0.0647185 14.0481ZM129.5 57.2941L129.85 56.9372C99.196 26.2859 58.999 9.2754 0.366178 13.8123L0.5 14.2941L0.633822 14.7758C58.901 10.3127 98.804 27.1021 129.15 57.651L129.5 57.2941Z');
         } else {
             path.setAttribute('d', 'M234.833 57.2941C234.833 58.7668 236.027 59.9607 237.5 59.9607C238.973 59.9607 240.167 58.7668 240.167 57.2941C240.167 55.8213 238.973 54.6274 237.5 54.6274C236.027 54.6274 234.833 55.8213 234.833 57.2941ZM0.0647185 14.0481C-0.0711593 14.2885 0.0135722 14.5935 0.253972 14.7294L4.17151 16.9436C4.4119 17.0795 4.71694 16.9948 4.85282 16.7544C4.98869 16.514 4.90396 16.2089 4.66356 16.0731L1.18131 14.1048L3.14954 10.6226C3.28541 10.3822 3.20068 10.0771 2.96028 9.94127C2.71988 9.80539 2.41485 9.89012 2.27897 10.1305L0.0647185 14.0481ZM237.5 57.2941L237.85 56.9372C184.696 4.78592 108.499 -16.2246 0.366178 13.8123L0.5 14.2941L0.633822 14.7758C108.501 -15.1873 184.304 5.80215 237.15 57.651L237.5 57.2941Z');
@@ -275,7 +278,7 @@ export default class ArrowPathAnimator {
     }
 
     createSecondArrow(ballContainerX, ballContainerY) {
-        if (!this.secondBlock) return null;
+        if (this.isTablet || !this.secondBlock) return null;
 
         const arrowDiv = document.createElement('div');
         arrowDiv.style.position = 'absolute';
@@ -348,7 +351,7 @@ export default class ArrowPathAnimator {
     }
 
     createThirdArrow(ballContainerX, ballContainerY) {
-        if (!this.thirdBlock) return null;
+        if (this.isTablet || !this.thirdBlock) return null;
 
         const arrowDiv = document.createElement('div');
         arrowDiv.style.position = 'absolute';
@@ -421,7 +424,7 @@ export default class ArrowPathAnimator {
     }
 
     createFourthArrow(ballContainerX, ballContainerY) {
-        if (!this.fourthBlock) return null;
+        if (this.isTablet || !this.fourthBlock) return null;
 
         const arrowDiv = document.createElement('div');
         arrowDiv.style.position = 'absolute';
@@ -494,7 +497,7 @@ export default class ArrowPathAnimator {
     }
 
     createFifthArrow(ballContainerX, ballContainerY) {
-        if (!this.fifthBlock) return null;
+        if (this.isTablet || !this.fifthBlock) return null;
 
         const arrowDiv = document.createElement('div');
         arrowDiv.style.position = 'absolute';
@@ -567,7 +570,7 @@ export default class ArrowPathAnimator {
     }
 
     createSixthArrow(ballContainerX, ballContainerY) {
-        if (!this.sixthBlock) return null;
+        if (this.isTablet || !this.sixthBlock) return null;
 
         const arrowDiv = document.createElement('div');
         arrowDiv.style.position = 'absolute';
@@ -640,7 +643,7 @@ export default class ArrowPathAnimator {
     }
 
     startAnimation() {
-        if (this.isMobile || this.hasAnimated || this.isAnimating) return;
+        if (this.isTablet || this.isMobile || this.hasAnimated || this.isAnimating) return;
 
         this.isAnimating = true;
         this.animationStage = 1;
@@ -663,8 +666,12 @@ export default class ArrowPathAnimator {
         this.firstBlock.style.transform = `translateX(-${translateValue}px)`;
 
         setTimeout(() => {
-            this.firstArrow.div.style.opacity = '0';
-            this.firstBlock.classList.remove('active');
+            if (this.firstArrow) {
+                this.firstArrow.div.style.opacity = '0';
+            }
+            if (this.firstBlock) {
+                this.firstBlock.classList.remove('active');
+            }
 
             setTimeout(() => {
                 if (this.arrowBallAnimator) {
@@ -672,7 +679,7 @@ export default class ArrowPathAnimator {
                 }
 
                 setTimeout(() => {
-                    if (this.secondArrow?.div) {
+                    if (this.secondArrow && this.secondArrow.div) {
                         this.secondArrow.div.remove();
                         this.secondArrow = null;
                     }
@@ -685,6 +692,12 @@ export default class ArrowPathAnimator {
     }
 
     startSecondArrow() {
+        if (this.isTablet) {
+            this.hasAnimated = true;
+            this.isAnimating = false;
+            return;
+        }
+
         this.animationStage = 2;
 
         const ballContainer = this.getBallContainerCoordinates();
@@ -702,8 +715,12 @@ export default class ArrowPathAnimator {
         this.secondBlock.style.transform = `translateX(${translateValue}px)`;
 
         setTimeout(() => {
-            this.secondArrow.div.style.opacity = '0';
-            this.secondBlock.classList.remove('active');
+            if (this.secondArrow) {
+                this.secondArrow.div.style.opacity = '0';
+            }
+            if (this.secondBlock) {
+                this.secondBlock.classList.remove('active');
+            }
 
             if (this.arrowBallAnimator) {
                 this.arrowBallAnimator.moveToThreeOClock(() => {
@@ -720,6 +737,12 @@ export default class ArrowPathAnimator {
     }
 
     startThirdArrow() {
+        if (this.isTablet) {
+            this.hasAnimated = true;
+            this.isAnimating = false;
+            return;
+        }
+
         this.animationStage = 3;
 
         const ballContainer = this.getBallContainerCoordinates();
@@ -747,8 +770,12 @@ export default class ArrowPathAnimator {
         this.thirdBlock.style.transform = `translateX(${translateValue}px)`;
 
         setTimeout(() => {
-            this.thirdArrow.div.style.opacity = '0';
-            this.thirdBlock.classList.remove('active');
+            if (this.thirdArrow) {
+                this.thirdArrow.div.style.opacity = '0';
+            }
+            if (this.thirdBlock) {
+                this.thirdBlock.classList.remove('active');
+            }
 
             if (this.arrowBallAnimator) {
                 this.arrowBallAnimator.moveToFiveOClock(() => {
@@ -765,6 +792,12 @@ export default class ArrowPathAnimator {
     }
 
     startFourthArrow() {
+        if (this.isTablet) {
+            this.hasAnimated = true;
+            this.isAnimating = false;
+            return;
+        }
+
         this.animationStage = 4;
 
         const ballContainer = this.getBallContainerCoordinates();
@@ -792,8 +825,12 @@ export default class ArrowPathAnimator {
         this.fourthBlock.style.transform = `translateX(${translateValue}px)`;
 
         setTimeout(() => {
-            this.fourthArrow.div.style.opacity = '0';
-            this.fourthBlock.classList.remove('active');
+            if (this.fourthArrow) {
+                this.fourthArrow.div.style.opacity = '0';
+            }
+            if (this.fourthBlock) {
+                this.fourthBlock.classList.remove('active');
+            }
 
             if (this.arrowBallAnimator) {
                 this.arrowBallAnimator.moveToSevenOClock(() => {
@@ -810,6 +847,12 @@ export default class ArrowPathAnimator {
     }
 
     startFifthArrow() {
+        if (this.isTablet) {
+            this.hasAnimated = true;
+            this.isAnimating = false;
+            return;
+        }
+
         this.animationStage = 5;
 
         const ballContainer = this.getBallContainerCoordinates();
@@ -837,8 +880,12 @@ export default class ArrowPathAnimator {
         this.fifthBlock.style.transform = `translateX(-${translateValue}px)`;
 
         setTimeout(() => {
-            this.fifthArrow.div.style.opacity = '0';
-            this.fifthBlock.classList.remove('active');
+            if (this.fifthArrow) {
+                this.fifthArrow.div.style.opacity = '0';
+            }
+            if (this.fifthBlock) {
+                this.fifthBlock.classList.remove('active');
+            }
 
             if (this.arrowBallAnimator) {
                 this.arrowBallAnimator.moveToNineOClock(() => {
@@ -855,6 +902,12 @@ export default class ArrowPathAnimator {
     }
 
     startSixthArrow() {
+        if (this.isTablet) {
+            this.hasAnimated = true;
+            this.isAnimating = false;
+            return;
+        }
+
         this.animationStage = 6;
 
         const ballContainer = this.getBallContainerCoordinates();
@@ -882,8 +935,12 @@ export default class ArrowPathAnimator {
         this.sixthBlock.style.transform = `translateX(-${translateValue}px)`;
 
         setTimeout(() => {
-            this.sixthArrow.div.style.opacity = '0';
-            this.sixthBlock.classList.remove('active');
+            if (this.sixthArrow) {
+                this.sixthArrow.div.style.opacity = '0';
+            }
+            if (this.sixthBlock) {
+                this.sixthBlock.classList.remove('active');
+            }
 
             if (this.arrowBallAnimator) {
                 this.scaleBallToZero();
@@ -896,6 +953,13 @@ export default class ArrowPathAnimator {
     }
 
     scaleBallToZero() {
+        if (this.isTablet) {
+            this.hasAnimated = true;
+            this.isAnimating = false;
+            this.animationStage = 0;
+            return;
+        }
+
         const ballGroup = document.querySelector('.static-ball-group');
         if (!ballGroup) {
             this.hasAnimated = true;
@@ -926,39 +990,27 @@ export default class ArrowPathAnimator {
     }
 
     hide() {
-        if (this.firstArrow) this.firstArrow.div.style.opacity = '0';
-        if (this.secondArrow) this.secondArrow.div.style.opacity = '0';
-        if (this.thirdArrow) this.thirdArrow.div.style.opacity = '0';
-        if (this.fourthArrow) this.fourthArrow.div.style.opacity = '0';
-        if (this.fifthArrow) this.fifthArrow.div.style.opacity = '0';
-        if (this.sixthArrow) this.sixthArrow.div.style.opacity = '0';
-        if (this.firstBlock) {
-            this.firstBlock.style.transform = '';
-            this.firstBlock.classList.remove('active');
-        }
-        if (this.secondBlock) {
-            this.secondBlock.style.transform = '';
-            this.secondBlock.classList.remove('active');
-        }
-        if (this.thirdBlock) {
-            this.thirdBlock.style.transform = '';
-            this.thirdBlock.classList.remove('active');
-        }
-        if (this.fourthBlock) {
-            this.fourthBlock.style.transform = '';
-            this.fourthBlock.classList.remove('active');
-        }
-        if (this.fifthBlock) {
-            this.fifthBlock.style.transform = '';
-            this.fifthBlock.classList.remove('active');
-        }
-        if (this.sixthBlock) {
-            this.sixthBlock.style.transform = '';
-            this.sixthBlock.classList.remove('active');
-        }
+        if (this.firstArrow?.div) this.firstArrow.div.style.opacity = '0';
+        if (this.secondArrow?.div) this.secondArrow.div.style.opacity = '0';
+        if (this.thirdArrow?.div) this.thirdArrow.div.style.opacity = '0';
+        if (this.fourthArrow?.div) this.fourthArrow.div.style.opacity = '0';
+        if (this.fifthArrow?.div) this.fifthArrow.div.style.opacity = '0';
+        if (this.sixthArrow?.div) this.sixthArrow.div.style.opacity = '0';
+
+        const blocks = [this.firstBlock, this.secondBlock, this.thirdBlock,
+            this.fourthBlock, this.fifthBlock, this.sixthBlock];
+
+        blocks.forEach(block => {
+            if (block) {
+                block.style.transform = '';
+                block.classList.remove('active');
+            }
+        });
     }
 
     showImmediately() {
+        if (this.isTablet) return;
+
         const translateValue = this.getTranslateValue();
 
         if (this.firstBlock) this.firstBlock.style.transform = `translateX(-${translateValue}px)`;
@@ -967,6 +1019,7 @@ export default class ArrowPathAnimator {
         if (this.fourthBlock) this.fourthBlock.style.transform = `translateX(${translateValue}px)`;
         if (this.fifthBlock) this.fifthBlock.style.transform = `translateX(-${translateValue}px)`;
         if (this.sixthBlock) this.sixthBlock.style.transform = `translateX(-${translateValue}px)`;
+
         this.hasAnimated = true;
     }
 
@@ -991,36 +1044,30 @@ export default class ArrowPathAnimator {
 
     handleResize() {
         const wasMobile = this.isMobile;
+        const wasTablet = this.isTablet;
+
         this.isMobile = window.innerWidth <= 768;
+        this.isTablet = window.innerWidth <= 1230;
 
-        const translateValue = this.getTranslateValue();
+        if (wasTablet !== this.isTablet) {
+            this.findTargetBlocks();
 
-        if (this.hasAnimated) {
-            this.destroyArrow();
-            if (this.firstBlock) {
-                this.firstBlock.style.transform = `translateX(-${translateValue}px)`;
-                this.firstBlock.classList.remove('active');
+            if (this.isTablet) {
+                this.destroyArrow();
+                this.prepareForTablet();
+                this.hasAnimated = false;
+                this.isAnimating = false;
+                this.animationStage = 0;
+                if (this.observer) this.observer.disconnect();
+            } else {
+                this.hide();
+                this.hasAnimated = false;
+                this.isAnimating = false;
+                this.animationStage = 0;
+                if (this.observer) this.observer.disconnect();
+                this.setupScrollObserver();
             }
-            if (this.secondBlock) {
-                this.secondBlock.style.transform = `translateX(${translateValue}px)`;
-                this.secondBlock.classList.remove('active');
-            }
-            if (this.thirdBlock) {
-                this.thirdBlock.style.transform = `translateX(${translateValue}px)`;
-                this.thirdBlock.classList.remove('active');
-            }
-            if (this.fourthBlock) {
-                this.fourthBlock.style.transform = `translateX(${translateValue}px)`;
-                this.fourthBlock.classList.remove('active');
-            }
-            if (this.fifthBlock) {
-                this.fifthBlock.style.transform = `translateX(-${translateValue}px)`;
-                this.fifthBlock.classList.remove('active');
-            }
-            if (this.sixthBlock) {
-                this.sixthBlock.style.transform = `translateX(-${translateValue}px)`;
-                this.sixthBlock.classList.remove('active');
-            }
+            return;
         }
 
         if (wasMobile !== this.isMobile) {
@@ -1055,30 +1102,18 @@ export default class ArrowPathAnimator {
 
     destroy() {
         this.destroyArrow();
-        if (this.firstBlock) {
-            this.firstBlock.style.transform = '';
-            this.firstBlock.classList.remove('active');
-        }
-        if (this.secondBlock) {
-            this.secondBlock.style.transform = '';
-            this.secondBlock.classList.remove('active');
-        }
-        if (this.thirdBlock) {
-            this.thirdBlock.style.transform = '';
-            this.thirdBlock.classList.remove('active');
-        }
-        if (this.fourthBlock) {
-            this.fourthBlock.style.transform = '';
-            this.fourthBlock.classList.remove('active');
-        }
-        if (this.fifthBlock) {
-            this.fifthBlock.style.transform = '';
-            this.fifthBlock.classList.remove('active');
-        }
-        if (this.sixthBlock) {
-            this.sixthBlock.style.transform = '';
-            this.sixthBlock.classList.remove('active');
-        }
+
+        const blocks = [this.firstBlock, this.secondBlock, this.thirdBlock,
+            this.fourthBlock, this.fifthBlock, this.sixthBlock];
+
+        blocks.forEach(block => {
+            if (block) {
+                block.style.transform = '';
+                block.style.transition = '';
+                block.classList.remove('active');
+            }
+        });
+
         if (this.observer) this.observer.disconnect();
         window.removeEventListener('resize', this.handleResize.bind(this));
     }
