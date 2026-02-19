@@ -28,6 +28,10 @@
 
     }
 
+    @media (max-width: 750px) {
+      background-position: top 40px right 0;
+    }
+
     @media (max-width: 675px) {
       padding-bottom: 260px;
     }
