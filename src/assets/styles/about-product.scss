@@ -219,7 +219,7 @@
       font-size: 15px;
     }
 
-    svg {
+    img {
       width: 150px;
 
       @media (max-width: 1600px) {
@@ -468,7 +468,7 @@
       padding: 15px;
     }
 
-   img {
+   svg {
       transition: transform 0.3s ease;
 
       @media (max-width: 1600px) {
@@ -501,14 +501,14 @@
     &:hover {
       box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
 
-      img {
+      svg {
         transform: scale(1.1);
       }
 
       @media (max-width: 750px) {
         box-shadow: none;
 
-        img {
+        svg {
           transform: none;
         }
       }
