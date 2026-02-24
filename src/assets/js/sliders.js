@@ -1,16 +1,19 @@
 import Swiper from 'swiper';
-import { Navigation, Autoplay } from 'swiper/modules';
+import { Navigation, Autoplay, Pagination, Scrollbar } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
+import 'swiper/css/pagination';
+import 'swiper/css/scrollbar';
 
 let newsSliders = [];
 let leftColumnSliders = [];
+let historySlider = null;
 
 export function SlidersInit() {
     initNewsSliders();
     initLeftColumnSlider();
+    initHistorySlider();
 }
-
 
 function initNewsSliders() {
     const sliderWrappers = document.querySelectorAll(".news-swiper-wrapper");
@@ -46,15 +49,15 @@ function initNewsSliders() {
             autoHeight: false,
             breakpoints: {
                 0: {
-                    slidesPerView: 1,
-                    spaceBetween: 20
+                    slidesPerView: 1.2,
+                    spaceBetween: 16
                 },
-                481: {
+                751: {
                     slidesPerView: 2,
                     spaceBetween: 24
                 },
-                1200: {
-                    slidesPerView: 3,
+                1351: {
+                    slidesPerView: 4,
                     spaceBetween: 30
                 }
             },
@@ -76,33 +79,23 @@ function initNewsSliders() {
     });
 }
 
-
 function initLeftColumnSlider() {
     const leftColumn = document.querySelector('.control-units__item:first-child');
     if (!leftColumn) return;
 
     const windowWidth = window.innerWidth;
 
-
     if (windowWidth > 1230) {
-
         if (leftColumn.swiper) {
             destroyLeftColumnSlider();
         }
         return;
-    }
-
-
-    else if (windowWidth > 750 && windowWidth <= 1230) {
-
+    } else if (windowWidth > 750 && windowWidth <= 1230) {
         if (leftColumn.swiper) {
             destroyLeftColumnSlider();
         }
         initTabletSlider(leftColumn);
-    }
-
-    else if (windowWidth <= 750) {
-
+    } else if (windowWidth <= 750) {
         if (leftColumn.swiper) {
             destroyLeftColumnSlider();
         }
@@ -110,9 +103,7 @@ function initLeftColumnSlider() {
     }
 }
 
-
 function initTabletSlider(leftColumn) {
-
     if (!leftColumn.dataset.originalContent) {
         leftColumn.dataset.originalContent = leftColumn.innerHTML;
     }
@@ -120,24 +111,19 @@ function initTabletSlider(leftColumn) {
     const blocks = Array.from(leftColumn.children);
     if (blocks.length === 0) return;
 
-
     const containerHeight = 400;
     leftColumn.style.height = containerHeight + 'px';
     leftColumn.style.overflow = 'hidden';
     leftColumn.style.position = 'relative';
 
-
     const swiperWrapper = document.createElement('div');
     swiperWrapper.className = 'swiper-wrapper';
     swiperWrapper.style.transitionTimingFunction = 'cubic-bezier(0.4, 0, 0.2, 1)';
 
-
     const spaceBetween = 11;
     const slideHeight = (containerHeight - (2 * spaceBetween)) / 3;
 
-
     const allSlides = [];
-
 
     for (let i = blocks.length - 3; i < blocks.length; i++) {
         if (blocks[i]) {
@@ -146,14 +132,12 @@ function initTabletSlider(leftColumn) {
         }
     }
 
-
     blocks.forEach((block) => {
         if (block) {
             const slideDiv = createTabletSlide(block, slideHeight, spaceBetween);
             allSlides.push(slideDiv);
         }
     });
-
 
     for (let i = 0; i < 3; i++) {
         if (blocks[i]) {
@@ -162,15 +146,12 @@ function initTabletSlider(leftColumn) {
         }
     }
 
-
     allSlides.forEach(slide => {
         swiperWrapper.appendChild(slide);
     });
 
-
     leftColumn.innerHTML = '';
     leftColumn.appendChild(swiperWrapper);
-
 
     function updateCenterSlide(swiper) {
         const slides = swiper.slides;
@@ -182,7 +163,6 @@ function initTabletSlider(leftColumn) {
             if (centralSlide) centralSlide.classList.add('center-slide');
         }
     }
-
 
     const slider = new Swiper(leftColumn, {
         modules: [Autoplay],
@@ -224,7 +204,6 @@ function initTabletSlider(leftColumn) {
     leftColumnSliders.push(slider);
 }
 
-
 function createTabletSlide(block, height, spaceBetween) {
     const slideDiv = document.createElement('div');
     slideDiv.className = 'swiper-slide';
@@ -240,9 +219,7 @@ function createTabletSlide(block, height, spaceBetween) {
     return slideDiv;
 }
 
-
 function initMobileSlider(leftColumn) {
-
     if (!leftColumn.dataset.originalContent) {
         leftColumn.dataset.originalContent = leftColumn.innerHTML;
     }
@@ -250,12 +227,10 @@ function initMobileSlider(leftColumn) {
     const blocks = Array.from(leftColumn.children);
     if (blocks.length === 0) return;
 
-
     leftColumn.style.height = 'auto';
     leftColumn.style.overflow = 'hidden';
     leftColumn.style.position = 'relative';
     leftColumn.style.width = '100%';
-
 
     const swiperWrapper = document.createElement('div');
     swiperWrapper.className = 'swiper-wrapper';
@@ -263,14 +238,11 @@ function initMobileSlider(leftColumn) {
     swiperWrapper.style.display = 'flex';
     swiperWrapper.style.alignItems = 'stretch';
 
-
     const spaceBetween = 16;
     const containerWidth = leftColumn.offsetWidth;
     const slideWidth = containerWidth * 0.8;
 
-
     const allSlides = [];
-
 
     for (let i = blocks.length - 3; i < blocks.length; i++) {
         if (blocks[i]) {
@@ -279,14 +251,12 @@ function initMobileSlider(leftColumn) {
         }
     }
 
-
     blocks.forEach((block) => {
         if (block) {
             const slideDiv = createMobileSlide(block, slideWidth, spaceBetween);
             allSlides.push(slideDiv);
         }
     });
-
 
     for (let i = 0; i < 3; i++) {
         if (blocks[i]) {
@@ -295,15 +265,12 @@ function initMobileSlider(leftColumn) {
         }
     }
 
-
     allSlides.forEach(slide => {
         swiperWrapper.appendChild(slide);
     });
 
-
     leftColumn.innerHTML = '';
     leftColumn.appendChild(swiperWrapper);
-
 
     function updateCenterSlide(swiper) {
         const slides = swiper.slides;
@@ -317,7 +284,6 @@ function initMobileSlider(leftColumn) {
             visibleSlides[0].classList.add('center-slide');
         }
     }
-
 
     const slider = new Swiper(leftColumn, {
         modules: [Autoplay],
@@ -369,7 +335,6 @@ function initMobileSlider(leftColumn) {
     leftColumnSliders.push(slider);
 }
 
-
 function createMobileSlide(block, width, spaceBetween) {
     const slideDiv = document.createElement('div');
     slideDiv.className = 'swiper-slide';
@@ -411,6 +376,285 @@ function destroyLeftColumnSlider() {
     }
 }
 
+function initHistorySlider() {
+    const historySliderElement = document.querySelector('.history__slider .swiper');
+    if (!historySliderElement) return;
+
+    if (historySlider && !historySlider.destroyed) {
+        return;
+    }
+
+    if (historySlider) {
+        historySlider.destroy(true, true);
+        historySlider = null;
+    }
+
+    const historySection = document.querySelector('.history__slider');
+    const scrollbarContainer = historySection.querySelector('.swiper-custom-scrollbar');
+
+    function getVisibleSlidesCount() {
+        const width = window.innerWidth;
+        if (width <= 750) return 1;
+        if (width <= 1350) return 2;
+        return 4;
+    }
+
+    function createScrollbar(visibleCount) {
+        scrollbarContainer.innerHTML = '';
+
+        const trackContainer = document.createElement('div');
+        trackContainer.className = 'scrollbar-track';
+
+
+        const lineSvg = document.createElement('div');
+        lineSvg.className = 'scrollbar-line';
+        lineSvg.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="2" viewBox="0 0 1370 2" fill="none" preserveAspectRatio="none">
+            <path d="M0 1H1369.5" stroke="#77C5F5" stroke-width="2"/>
+        </svg>`;
+        trackContainer.appendChild(lineSvg);
+
+        const circlesContainer = document.createElement('div');
+        circlesContainer.className = 'scrollbar-circles';
+
+
+        const leftSmallCircle = document.createElement('span');
+        leftSmallCircle.className = 'scrollbar-circle scrollbar-circle-small scrollbar-circle-left';
+        leftSmallCircle.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <foreignObject x="-24" y="-24" width="62" height="62"><div xmlns="http://www.w3.org/1999/xhtml" style="backdrop-filter:blur(12px);clip-path:url(#bgblur_0_567_19990_clip_path);height:100%;width:100%"></div></foreignObject>
+            <circle data-figma-bg-blur-radius="24" cx="7" cy="7" r="6.5" fill="url(#paint0_radial_567_19990)" stroke="url(#paint1_linear_567_19990)" stroke-linecap="round" stroke-linejoin="round"/>
+            <defs>
+                <clipPath id="bgblur_0_567_19990_clip_path" transform="translate(24 24)"><circle cx="7" cy="7" r="6.5"/></clipPath>
+                <radialGradient id="paint0_radial_567_19990" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(5.17391 4.65217) rotate(74.9315) scale(7.02413)">
+                    <stop stop-color="#C5E9FF"/>
+                    <stop offset="1" stop-color="#77C5F5"/>
+                </radialGradient>
+                <linearGradient id="paint1_linear_567_19990" x1="2.9102" y1="2.39802" x2="10.5649" y2="11.8786" gradientUnits="userSpaceOnUse">
+                    <stop stop-color="white" stop-opacity="0.25"/>
+                    <stop offset="1" stop-color="white" stop-opacity="0"/>
+                </linearGradient>
+            </defs>
+        </svg>`;
+        circlesContainer.appendChild(leftSmallCircle);
+
+
+        for (let i = 0; i < visibleCount; i++) {
+            const bigCircle = document.createElement('span');
+            bigCircle.className = `scrollbar-circle scrollbar-circle-big ${i === 0 ? 'active' : ''}`;
+            bigCircle.dataset.index = i;
+
+            if (i === 0) {
+                bigCircle.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="43" height="43" viewBox="0 0 43 43" fill="none">
+                    <foreignObject x="-24" y="-24" width="91" height="91"><div xmlns="http://www.w3.org/1999/xhtml" style="backdrop-filter:blur(12px);height:100%;width:100%"></div></foreignObject>
+                    <circle data-figma-bg-blur-radius="24" cx="21.5" cy="21.5" r="21" stroke="url(#paint0_linear_567_20355)" stroke-opacity="0.83" stroke-linecap="round" stroke-linejoin="round"/>
+                    <foreignObject x="-15" y="-15" width="73" height="73"><div xmlns="http://www.w3.org/1999/xhtml" style="backdrop-filter:blur(12px);clip-path:url(#bgblur_0_567_20355_clip_path);height:100%;width:100%"></div></foreignObject>
+                    <circle data-figma-bg-blur-radius="24" cx="21.5" cy="21.5" r="12" fill="url(#paint1_radial_567_20355)" stroke="url(#paint2_linear_567_20355)" stroke-linecap="round" stroke-linejoin="round"/>
+                    <defs>
+                        <clipPath id="bgblur_0_567_20355_clip_path" transform="translate(15 15)"><circle cx="21.5" cy="21.5" r="12"/></clipPath>
+                        <linearGradient id="paint0_linear_567_20355" x1="21.5152" y1="14.6667" x2="21.4949" y2="42" gradientUnits="userSpaceOnUse">
+                            <stop stop-color="#62B6EA"/>
+                            <stop offset="0.426133" stop-color="#77C5F5"/>
+                            <stop offset="1" stop-color="#E2F4FF" stop-opacity="0.1"/>
+                        </linearGradient>
+                        <radialGradient id="paint1_radial_567_20355" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(18 17) rotate(74.9315) scale(13.4629)">
+                            <stop stop-color="#C5E9FF"/>
+                            <stop offset="1" stop-color="#77C5F5"/>
+                        </radialGradient>
+                        <linearGradient id="paint2_linear_567_20355" x1="13.6612" y1="12.6795" x2="28.3328" y2="30.8506" gradientUnits="userSpaceOnUse">
+                            <stop stop-color="white" stop-opacity="0.25"/>
+                            <stop offset="1" stop-color="white" stop-opacity="0"/>
+                        </linearGradient>
+                    </defs>
+                </svg>`;
+            } else {
+                bigCircle.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 25 25" fill="none">
+                    <foreignObject x="-24" y="-24" width="73" height="73"><div xmlns="http://www.w3.org/1999/xhtml" style="backdrop-filter:blur(12px);clip-path:url(#bgblur_0_567_19992_clip_path);height:100%;width:100%"></div></foreignObject>
+                    <circle data-figma-bg-blur-radius="24" cx="12.5" cy="12.5" r="12" fill="url(#paint0_radial_567_19992)" stroke="url(#paint1_linear_567_19992)" stroke-linecap="round" stroke-linejoin="round"/>
+                    <defs>
+                        <clipPath id="bgblur_0_567_19992_clip_path" transform="translate(24 24)"><circle cx="12.5" cy="12.5" r="12"/></clipPath>
+                        <radialGradient id="paint0_radial_567_19992" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(9 8) rotate(74.9315) scale(13.4629)">
+                            <stop stop-color="#C5E9FF"/>
+                            <stop offset="1" stop-color="#77C5F5"/>
+                        </radialGradient>
+                        <linearGradient id="paint1_linear_567_19992" x1="4.66122" y1="3.67953" x2="19.3328" y2="21.8506" gradientUnits="userSpaceOnUse">
+                            <stop stop-color="white" stop-opacity="0.25"/>
+                            <stop offset="1" stop-color="white" stop-opacity="0"/>
+                        </linearGradient>
+                    </defs>
+                </svg>`;
+            }
+            circlesContainer.appendChild(bigCircle);
+        }
+
+
+        const rightSmallCircle = document.createElement('span');
+        rightSmallCircle.className = 'scrollbar-circle scrollbar-circle-small scrollbar-circle-right';
+        rightSmallCircle.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <foreignObject x="-24" y="-24" width="62" height="62"><div xmlns="http://www.w3.org/1999/xhtml" style="backdrop-filter:blur(12px);clip-path:url(#bgblur_0_567_19990_clip_path);height:100%;width:100%"></div></foreignObject>
+            <circle data-figma-bg-blur-radius="24" cx="7" cy="7" r="6.5" fill="url(#paint0_radial_567_19990)" stroke="url(#paint1_linear_567_19990)" stroke-linecap="round" stroke-linejoin="round"/>
+            <defs>
+                <clipPath id="bgblur_0_567_19990_clip_path" transform="translate(24 24)"><circle cx="7" cy="7" r="6.5"/></clipPath>
+                <radialGradient id="paint0_radial_567_19990" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(5.17391 4.65217) rotate(74.9315) scale(7.02413)">
+                    <stop stop-color="#C5E9FF"/>
+                    <stop offset="1" stop-color="#77C5F5"/>
+                </radialGradient>
+                <linearGradient id="paint1_linear_567_19990" x1="2.9102" y1="2.39802" x2="10.5649" y2="11.8786" gradientUnits="userSpaceOnUse">
+                    <stop stop-color="white" stop-opacity="0.25"/>
+                    <stop offset="1" stop-color="white" stop-opacity="0"/>
+                </linearGradient>
+            </defs>
+        </svg>`;
+        circlesContainer.appendChild(rightSmallCircle);
+
+        trackContainer.appendChild(circlesContainer);
+        scrollbarContainer.appendChild(trackContainer);
+    }
+
+
+    const initialVisibleCount = getVisibleSlidesCount();
+    createScrollbar(initialVisibleCount);
+
+    historySlider = new Swiper(historySliderElement, {
+        modules: [Navigation],
+        slidesPerView: 1,
+        spaceBetween: 30,
+        loop: true,
+        speed: 500,
+        navigation: {
+            nextEl: historySection.querySelector('.swiper-button-next'),
+            prevEl: historySection.querySelector('.swiper-button-prev'),
+        },
+        breakpoints: {
+            0: {
+                slidesPerView: 1.2,
+                spaceBetween: 16
+            },
+            751: {
+                slidesPerView: 2,
+                spaceBetween: 24
+            },
+            1351: {
+                slidesPerView: 4,
+                spaceBetween: 30
+            }
+        },
+        on: {
+            init: function() {
+                updateHistoryArrowStates(this);
+                updateCustomScrollbar(this);
+            },
+            slideChange: function() {
+                updateHistoryArrowStates(this);
+                updateCustomScrollbar(this);
+            },
+            resize: function() {
+
+                const newVisibleCount = getVisibleSlidesCount();
+                const currentBigCircles = historySection.querySelectorAll('.scrollbar-circle-big').length;
+
+                if (newVisibleCount !== currentBigCircles) {
+
+                    createScrollbar(newVisibleCount);
+                }
+
+                updateCustomScrollbar(this);
+            }
+        }
+    });
+}
+
+function updateCustomScrollbar(swiper) {
+    const historySection = document.querySelector('.history__slider');
+    if (!historySection) return;
+
+    const bigCircles = historySection.querySelectorAll('.scrollbar-circle-big');
+
+    let activeIndex = swiper.activeIndex;
+
+    if (swiper.params.loop) {
+        activeIndex = swiper.realIndex;
+    }
+
+
+    const visibleCount = bigCircles.length;
+    if (visibleCount === 2) {
+
+        activeIndex = activeIndex % 2;
+    } else if (visibleCount === 1) {
+        activeIndex = 0;
+    }
+
+    bigCircles.forEach((circle, index) => {
+        if (index === activeIndex) {
+            circle.classList.add('active');
+            circle.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="43" height="43" viewBox="0 0 43 43" fill="none">
+                <foreignObject x="-24" y="-24" width="91" height="91"><div xmlns="http://www.w3.org/1999/xhtml" style="backdrop-filter:blur(12px);height:100%;width:100%"></div></foreignObject>
+                <circle data-figma-bg-blur-radius="24" cx="21.5" cy="21.5" r="21" stroke="url(#paint0_linear_567_20355)" stroke-opacity="0.83" stroke-linecap="round" stroke-linejoin="round"/>
+                <foreignObject x="-15" y="-15" width="73" height="73"><div xmlns="http://www.w3.org/1999/xhtml" style="backdrop-filter:blur(12px);clip-path:url(#bgblur_0_567_20355_clip_path);height:100%;width:100%"></div></foreignObject>
+                <circle data-figma-bg-blur-radius="24" cx="21.5" cy="21.5" r="12" fill="url(#paint1_radial_567_20355)" stroke="url(#paint2_linear_567_20355)" stroke-linecap="round" stroke-linejoin="round"/>
+                <defs>
+                    <clipPath id="bgblur_0_567_20355_clip_path" transform="translate(15 15)"><circle cx="21.5" cy="21.5" r="12"/></clipPath>
+                    <linearGradient id="paint0_linear_567_20355" x1="21.5152" y1="14.6667" x2="21.4949" y2="42" gradientUnits="userSpaceOnUse">
+                        <stop stop-color="#62B6EA"/>
+                        <stop offset="0.426133" stop-color="#77C5F5"/>
+                        <stop offset="1" stop-color="#E2F4FF" stop-opacity="0.1"/>
+                    </linearGradient>
+                    <radialGradient id="paint1_radial_567_20355" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(18 17) rotate(74.9315) scale(13.4629)">
+                        <stop stop-color="#C5E9FF"/>
+                        <stop offset="1" stop-color="#77C5F5"/>
+                    </radialGradient>
+                    <linearGradient id="paint2_linear_567_20355" x1="13.6612" y1="12.6795" x2="28.3328" y2="30.8506" gradientUnits="userSpaceOnUse">
+                        <stop stop-color="white" stop-opacity="0.25"/>
+                        <stop offset="1" stop-color="white" stop-opacity="0"/>
+                    </linearGradient>
+                </defs>
+            </svg>`;
+        } else {
+            circle.classList.remove('active');
+            circle.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 25 25" fill="none">
+                <foreignObject x="-24" y="-24" width="73" height="73"><div xmlns="http://www.w3.org/1999/xhtml" style="backdrop-filter:blur(12px);clip-path:url(#bgblur_0_567_19992_clip_path);height:100%;width:100%"></div></foreignObject>
+                <circle data-figma-bg-blur-radius="24" cx="12.5" cy="12.5" r="12" fill="url(#paint0_radial_567_19992)" stroke="url(#paint1_linear_567_19992)" stroke-linecap="round" stroke-linejoin="round"/>
+                <defs>
+                    <clipPath id="bgblur_0_567_19992_clip_path" transform="translate(24 24)"><circle cx="12.5" cy="12.5" r="12"/></clipPath>
+                    <radialGradient id="paint0_radial_567_19992" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(9 8) rotate(74.9315) scale(13.4629)">
+                        <stop stop-color="#C5E9FF"/>
+                        <stop offset="1" stop-color="#77C5F5"/>
+                    </radialGradient>
+                    <linearGradient id="paint1_linear_567_19992" x1="4.66122" y1="3.67953" x2="19.3328" y2="21.8506" gradientUnits="userSpaceOnUse">
+                        <stop stop-color="white" stop-opacity="0.25"/>
+                        <stop offset="1" stop-color="white" stop-opacity="0"/>
+                    </linearGradient>
+                </defs>
+            </svg>`;
+        }
+    });
+}
+
+function updateHistoryArrowStates(swiperInstance) {
+    const historySection = document.querySelector('.history__slider');
+    if (!historySection) return;
+
+    const prevButton = historySection.querySelector('.swiper-button-prev');
+    const nextButton = historySection.querySelector('.swiper-button-next');
+
+    if (!prevButton || !nextButton) return;
+
+    if (swiperInstance.isBeginning) {
+        prevButton.classList.add('disabled');
+        prevButton.setAttribute('disabled', 'disabled');
+    } else {
+        prevButton.classList.remove('disabled');
+        prevButton.removeAttribute('disabled');
+    }
+
+    if (swiperInstance.isEnd) {
+        nextButton.classList.add('disabled');
+        nextButton.setAttribute('disabled', 'disabled');
+    } else {
+        nextButton.classList.remove('disabled');
+        nextButton.removeAttribute('disabled');
+    }
+}
+
 export function updateAllSliders() {
     newsSliders.forEach(slider => {
         if (slider && !slider.destroyed) {
@@ -447,6 +691,11 @@ export function updateAllSliders() {
             }
         }
     });
+
+    if (historySlider && !historySlider.destroyed) {
+        historySlider.update();
+        updateHistoryArrowStates(historySlider);
+    }
 }
 
 export function destroyAllSliders() {
@@ -463,10 +712,15 @@ export function destroyAllSliders() {
         }
     });
     leftColumnSliders = [];
+
+    if (historySlider && !historySlider.destroyed) {
+        historySlider.destroy(true, true);
+        historySlider = null;
+    }
 }
 
 export function getSlidersCount() {
-    return newsSliders.length + leftColumnSliders.length;
+    return newsSliders.length + leftColumnSliders.length + (historySlider ? 1 : 0);
 }
 
 function updateArrowStates(swiperInstance, prevButton, nextButton) {

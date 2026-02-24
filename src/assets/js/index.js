@@ -9,6 +9,7 @@ import "../styles/circle-animation.scss";
 import "../styles/arrow-ball.scss";
 import "../styles/arrow-path.scss";
 import "../styles/about-product.scss";
+import "../styles/about.scss";
 
 import LazyLoad from "vanilla-lazyload";
 import Swiper from 'swiper';

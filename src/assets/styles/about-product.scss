@@ -10,17 +10,33 @@
       .breadcrumb {
         &__inner {
           margin-bottom: 44px;
+          
+          @media (max-width: 1600px) {
+            margin-bottom: 17px;
+          }
+          @media (max-width: 1350px) {
+            margin-bottom: 8px;
+          }
+          @media (max-width: 750px) {
+            margin-bottom: 14px;
+          }
         }
 
         &__list {
           display: flex;
           align-items: center;
+
+          @media(max-width: 768px) {
+            display: none;
+          }
         }
 
         &__item {
           &:not(.active) {
             padding-right: 20px;
             position: relative;
+
+
 
             &::after {
               content: "/";
@@ -60,6 +76,16 @@
 
         .back-link {
           display: none;
+
+          @media (max-width: 768px) {
+            display: flex;
+            gap: 8px;
+            color: #DC3B4F;
+            font-size: 15px;
+            font-style: normal;
+            font-weight: 400;
+            line-height: 150%;
+          }
         }
       }
 
@@ -108,7 +134,7 @@
 
     @media (max-width: 1350px) {
       margin: 0 0 32px 0;
-      padding-top: 197px;
+      padding-top: 145px;
       border-radius: 0;
       background-color: var(--Secondary-bg, #F2F5F8);
       background-image: url("../images/about-product-tablet.png");
@@ -206,6 +232,7 @@
     height: 131px;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     will-change: transform, opacity;
+    gap: 22.08px;
 
 
     @media (max-width: 1600px) {
@@ -220,7 +247,7 @@
     }
 
     img {
-      width: 150px;
+      width: 110px;
 
       @media (max-width: 1600px) {
         width: 83.18px;
