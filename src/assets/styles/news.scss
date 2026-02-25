@@ -312,15 +312,10 @@
       cursor: not-allowed;
     }
 
-    svg {
-      width: 45px;
-      height: 45px;
-      display: block;
-
-      @media (max-width: 1350px) {
-        width: 38px;
-        height: 38px;
-      }
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
   }
 }
