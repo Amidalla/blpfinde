@@ -10,6 +10,7 @@ import "../styles/arrow-ball.scss";
 import "../styles/arrow-path.scss";
 import "../styles/about-product.scss";
 import "../styles/about.scss";
+import "../styles/questions.scss";
 
 import LazyLoad from "vanilla-lazyload";
 import Swiper from 'swiper';
@@ -26,6 +27,7 @@ import CircleAnimator from "./circleAnimator.js";
 import ArrowBallAnimator from "./arrow-ball-animator.js";
 import ArrowPathAnimator from "./arrow-path-animator.js";
 import tabletArrowAnimator from "./tabletArrowAnimator.js";
+import Accordion from "./accordion.js";
 
 Swiper.use([Pagination, Navigation, Autoplay, Thumbs, EffectFade]);
 
@@ -101,6 +103,7 @@ const App = {
         arrowBallAnimator: null,
         arrowPathAnimator: null,
         tabletArrowAnimator: null,
+        accordion: null,
 
         init() {
                 this.initCore();
@@ -108,6 +111,7 @@ const App = {
                 this.initAnimations();
                 this.initEventListeners();
                 this.initTabletAnimator();
+                this.initAccordion();
         },
 
         initCore() {
@@ -158,6 +162,28 @@ const App = {
                                 }
                         }, 600);
                 }
+        },
+
+        initAccordion() {
+
+                setTimeout(() => {
+                        try {
+
+                                this.accordion = new Accordion('.questions-accordion .accordion');
+
+
+                                setTimeout(() => {
+                                        if (this.accordion) {
+                                                const icons = document.querySelectorAll('.icon-plus svg, .icon-minus svg');
+                                                if (icons.length > 0) {
+                                                        this.accordion.fixSvgIds();
+                                                }
+                                        }
+                                }, 200);
+                        } catch (error) {
+                                console.log('Accordion init error:', error);
+                        }
+                }, 300);
         },
 
         initAnimations() {
@@ -257,6 +283,9 @@ const App = {
                                 } catch (error) {}
                         }
                 }
+                if (this.accordion) {
+                        this.accordion.refresh();
+                }
         },
 
         destroy() {
@@ -271,6 +300,9 @@ const App = {
                 }
                 if (this.tabletArrowAnimator) {
                         this.tabletArrowAnimator.destroy();
+                }
+                if (this.accordion) {
+                        this.accordion.destroy();
                 }
 
                 delete window.arrowBallAnimator;

@@ -49,15 +49,15 @@ function initNewsSliders() {
             autoHeight: false,
             breakpoints: {
                 0: {
-                    slidesPerView: 1.2,
+                    slidesPerView: 1,
                     spaceBetween: 16
                 },
-                751: {
+                500: {
                     slidesPerView: 2,
                     spaceBetween: 24
                 },
-                1351: {
-                    slidesPerView: 4,
+                1000: {
+                    slidesPerView: 3,
                     spaceBetween: 30
                 }
             },
