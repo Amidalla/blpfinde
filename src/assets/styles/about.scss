@@ -411,6 +411,7 @@
   &__inner {
     padding-top: 80px;
     padding-bottom: 80px;
+    overflow: hidden;
 
     @media (max-width: 1600px) {
       padding-top: 64px;
