@@ -1086,3 +1086,10 @@
     }
   }
 }
+
+@media (max-width: 500px) {
+  .scrollbar-circle-big.active svg foreignObject div {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+}

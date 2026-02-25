@@ -1,0 +1,148 @@
+@use "./colors.scss" as c;
+@use "../styles/mixins.scss" as *;
+@use "./fonts.scss";
+
+.article-page {
+  .page-header__inner {
+    padding-top: 170px;
+    margin-top: 30px;
+
+    @media (max-width: 1600px) {
+      margin-top: 42px;
+    }
+
+
+    @media (max-width: 1350px) {
+      padding-top: 145px;
+      margin-top: 0;
+    }
+
+    @media (max-width: 600px) {
+      padding-top: 127px;
+    }
+  }
+}
+
+.oll-articles {
+  
+  &__inner {
+    @media (max-width: 1350px) {
+      margin-top: 24px;
+    }
+  }
+
+  &__item {
+    &:first-child {
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+
+      @media (max-width: 750px) {
+        gap: 15px;
+      }
+    }
+
+    .news-card {
+      border-radius: 50px;
+      background: #F6F8FA;
+      backdrop-filter: blur(14.350000381469727px);
+      padding: 26px 30px;
+      transition: all 0.3s ease;
+
+      @media (max-width: 1600px) {
+        border-radius: 20px;
+        padding: 15px;
+      }
+
+      &:hover {
+        box-shadow: 0 15px 30px rgba(0, 0, 0, .08);
+
+        @media (max-width: 750px) {
+          box-shadow: none;
+        }
+      }
+
+      .news-date {
+        color: #AAA;
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: normal;
+      }
+
+      h4 {
+        margin-top: 12px;
+        margin-bottom: 12px;
+
+        a {
+          color: #000;
+          font-size: 18px;
+          font-style: normal;
+          font-weight: 700;
+          line-height: normal;
+          transition: all 0.3s ease;
+
+          @media (max-width: 1600px) {
+            font-size: 16px;
+          }
+
+          @media (max-width: 1350px) {
+            font-size: 15px;
+          }
+
+          &:hover {
+            color: #F83E49;
+          }
+        }
+      }
+
+      p {
+        color: #212529;
+        font-size: 18px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: normal;
+        margin-bottom: 12px;
+
+        @media (max-width: 1600px) {
+          font-size: 16px;
+        }
+
+        @media (max-width: 1350px) {
+          font-size: 15px;
+        }
+      }
+
+
+      .news-link {
+        color: #45A2FF;
+        font-size: 18px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: normal;
+        display: inline-block;
+        margin-top: auto;
+        flex-shrink: 0;
+        align-self: flex-start;
+        text-decoration: none;
+
+        @media (max-width: 1600px) {
+          font-size: 16px;
+        }
+
+        @media (max-width: 1350px) {
+          font-size: 15px;
+        }
+
+        span {
+          display: inline-block;
+          transition: transform 0.3s ease;
+        }
+
+        &:hover span {
+          transform: translateX(5px);
+        }
+      }
+    }
+  }
+}
