@@ -1,0 +1,352 @@
+@use "./colors.scss" as c;
+@use "../styles/mixins.scss" as *;
+@use "./fonts.scss";
+
+.consultants-page {
+  .page-header__inner {
+    padding-top: 170px;
+    margin-top: 30px;
+
+    @media (max-width: 1600px) {
+      margin-top: 42px;
+    }
+
+
+    @media (max-width: 1350px) {
+      padding-top: 145px;
+      margin-top: 0;
+    }
+
+    @media (max-width: 600px) {
+      padding-top: 127px;
+    }
+
+    .main-title {
+      max-width: 100%;
+    }
+  }
+}
+
+.inside-page.consultants-page {
+  .main-info {
+    &__inner {
+      padding-top: 0;
+      background: none;
+      padding-bottom: 0;
+    }
+
+    .bid {
+      &__inner {
+        mask: none;
+        background: url("../images/mask.png") no-repeat center;
+        background-size: contain;
+
+        @media (max-width: 1700px) {
+          background-size: 99% 99%;
+        }
+
+        @media (max-width: 1350px) {
+          background: url("../images/mask2.png") no-repeat center;
+          background-size: 110% 100%;
+        }
+
+        @media (max-width: 1000px) {
+          background-image: url("../images/mask3.png");
+          background-repeat: no-repeat;
+          background-size: 110% 100%;
+        }
+
+        @media (max-width: 750px) {
+          padding-top: 150px;
+        }
+
+        @media (max-width: 600px) {
+          background-image: url("../images/mask4.png");
+          background-repeat: no-repeat;
+          background-size: 110% 100%;
+          background-position: top 20px center;
+          padding-top: 95px;
+        }
+      }
+    }
+  }
+}
+
+.consultants {
+
+  .container {
+    @media (max-width: 1350px) {
+      margin-top: 16px;
+    }
+  }
+
+  &__inner {
+    margin-top: 28px;
+    display: grid;
+    grid-template-columns: 1fr 514px;
+    gap: 33px;
+    
+    @media (max-width: 1600px) {
+      margin-top: 56px;
+      grid-template-columns: 1fr 357px;
+      gap: 30px;
+    }
+
+    @media (max-width: 1350px) {
+      margin-top: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 31px;
+    }
+
+    @media (max-width: 750px) {
+      gap: 24px;
+    }
+  }
+
+  &__text {
+    color: var(--Premium-black, #212529);
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 150%;
+    max-width: 843px;
+
+    @media (max-width: 1600px) {
+      max-width: 100%;
+      font-size: 16px;
+    }
+
+    @media (max-width: 1350px) {
+      max-width: 100%;
+      font-size: 15px;
+    }
+  }
+
+  &__item {
+
+  }
+
+  &__list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    
+    @media (max-width: 1350px) {
+      column-gap: 15px;
+      row-gap: 22px;
+    }
+
+    @media (max-width: 600px) {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+  }
+
+  &__point {
+    border-radius: 30px;
+    border: 1px solid #FFF;
+    background: #F6F8FA;
+    backdrop-filter: blur(14.350000381469727px);
+    padding: 26px 30px;
+    transition: all 0.3s ease;
+
+    @media (max-width: 1600px) {
+      padding: 15px;
+    }
+
+    &:hover {
+      box-shadow: 0 15px 30px rgba(0, 0, 0, .08);
+
+      @media (max-width: 750px) {
+        box-shadow: none;
+      }
+    }
+  }
+
+  &__wrapper {
+
+    .certificates__list {
+      display: flex;
+      gap: 19.52px;
+      flex-wrap: wrap;
+      justify-content: space-between;
+
+
+      @media (max-width: 750px) {
+        gap: 15px;
+      }
+
+      .certificates__item {
+        border-radius: 15px;
+        border: 0.49px solid var(--Premium-dark-gray-blue, #485F86);
+        background: #FFF;
+        overflow: hidden;
+        width: calc(50% - 9.76px);
+
+        @media (max-width: 1350px) {
+          width: 22.5%;
+        }
+
+        @media (max-width: 750px) {
+          width: calc(50% - 7.5px);
+        }
+
+
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+      }
+    }
+
+    &:first-child {
+      border-radius: 30px;
+      background: #212529;
+      margin-bottom: 35px;
+      padding: 30px;
+
+      @media (max-width: 1600px) {
+        margin-bottom: 22.2px;
+        border-radius: 20px;
+        padding: 15px;
+      }
+
+      @media (max-width: 1350px) {
+        margin-bottom: 24px;
+      }
+
+      p {
+        color: #FFF;
+        font-size: 18px;
+        font-style: normal;
+        font-weight: 700;
+        line-height: normal;
+        margin-bottom: 24px;
+        
+        @media (max-width: 1600px) {
+          font-size: 16px;
+          font-weight: 400;
+
+          &:first-child {
+            font-weight: 700;
+          }
+        }
+
+        @media (max-width: 1350px) {
+          font-size: 15px;
+        }
+      }
+    }
+  }
+}
+
+.consultants-card {
+  &__header {
+    display: flex;
+    gap: 26px;
+    align-items: center;
+    margin-bottom: 15px;
+  }
+
+  &__media {
+    width: 109px;
+    height: 109px;
+    border-radius: 50%;
+    overflow: hidden;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  &__body {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  &__name {
+    color: #000;
+    font-size: 26px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    margin-bottom: 12px;
+    
+    @media (max-width: 1600px) {
+      font-size: 23px;
+    }
+
+    @media (max-width: 1350px) {
+      font-size: 20px;
+    }
+  }
+
+  &__info {
+    span {
+      color: #212529;
+      font-size: 15px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: normal;
+    }
+  }
+
+  &__item {
+    border-radius: 20px;
+    background: #FFF;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    &:last-child {
+      span {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+    }
+
+    @media (max-width: 1600px) {
+      padding: 10px;
+    }
+
+    span {
+      color: #212529;
+      font-size: 18px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: normal;
+
+      @media (max-width: 1600px) {
+        font-size: 16px;
+      }
+
+      @media (max-width: 1350px) {
+        font-size: 15px;
+      }
+    }
+  }
+
+  &__title {
+    color: #212529;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+
+    @media (max-width: 1600px) {
+      font-size: 16px;
+    }
+
+    @media (max-width: 1350px) {
+      font-size: 15px;
+    }
+  }
+}
