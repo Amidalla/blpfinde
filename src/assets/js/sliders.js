@@ -9,12 +9,14 @@ let newsSliders = [];
 let leftColumnSliders = [];
 let historySlider = null;
 let casesSliders = [];
+let partnersSlider = null;
 
 export function SlidersInit() {
     initNewsSliders();
     initLeftColumnSlider();
     initHistorySlider();
     initCasesSliders();
+    initPartnersSlider();
 }
 
 function initNewsSliders() {
@@ -82,13 +84,16 @@ function initNewsSliders() {
 }
 
 function initCasesSliders() {
-    const casesSlidersElements = document.querySelectorAll('.cases-tabs .cases-slider.swiper');
+    const casesSlidersElements = document.querySelectorAll('.cases-tabs .cases-slider-container');
 
-    casesSlidersElements.forEach((sliderElement) => {
+    casesSlidersElements.forEach((container) => {
+        if (!container) return;
+
+        const sliderElement = container.querySelector('.cases-slider.swiper');
         if (!sliderElement) return;
 
-        const prevButton = sliderElement.querySelector('.swiper-button-prev');
-        const nextButton = sliderElement.querySelector('.swiper-button-next');
+        const prevButton = container.querySelector('.swiper-button-prev');
+        const nextButton = container.querySelector('.swiper-button-next');
 
         if (!prevButton || !nextButton) return;
 
@@ -725,6 +730,63 @@ function updateHistoryArrowStates(swiperInstance) {
     }
 }
 
+function initPartnersSlider() {
+    const partnersSliderElement = document.querySelector('.partners__slider.swiper');
+    if (!partnersSliderElement) return;
+
+    if (partnersSlider && !partnersSlider.destroyed) {
+        return;
+    }
+
+    if (partnersSlider) {
+        partnersSlider.destroy(true, true);
+        partnersSlider = null;
+    }
+
+    partnersSlider = new Swiper(partnersSliderElement, {
+        modules: [Autoplay],
+        slidesPerView: 10,
+        spaceBetween: 20,
+        loop: true,
+        speed: 500,
+        autoplay: {
+            delay: 3000,
+            disableOnInteraction: false,
+            pauseOnMouseEnter: true
+        },
+        breakpoints: {
+            0: {
+                slidesPerView: 3,
+                spaceBetween: 16
+            },
+            450: {
+                slidesPerView: 4,
+                spaceBetween: 20
+            },
+            751: {
+                slidesPerView: 5,
+                spaceBetween: 20
+            },
+            800: {
+                slidesPerView: 6,
+                spaceBetween: 20
+            },
+            1000: {
+                slidesPerView: 7,
+                spaceBetween: 20
+            },
+            1200: {
+                slidesPerView: 8,
+                spaceBetween: 20
+            },
+            1601: {
+                slidesPerView: 10,
+                spaceBetween: 20
+            }
+        }
+    });
+}
+
 export function updateAllSliders() {
     newsSliders.forEach(slider => {
         if (slider && !slider.destroyed) {
@@ -775,6 +837,10 @@ export function updateAllSliders() {
         historySlider.update();
         updateHistoryArrowStates(historySlider);
     }
+
+    if (partnersSlider && !partnersSlider.destroyed) {
+        partnersSlider.update();
+    }
 }
 
 export function destroyAllSliders() {
@@ -803,10 +869,15 @@ export function destroyAllSliders() {
         historySlider.destroy(true, true);
         historySlider = null;
     }
+
+    if (partnersSlider && !partnersSlider.destroyed) {
+        partnersSlider.destroy(true, true);
+        partnersSlider = null;
+    }
 }
 
 export function getSlidersCount() {
-    return newsSliders.length + casesSliders.length + leftColumnSliders.length + (historySlider ? 1 : 0);
+    return newsSliders.length + casesSliders.length + leftColumnSliders.length + (historySlider ? 1 : 0) + (partnersSlider ? 1 : 0);
 }
 
 function updateArrowStates(swiperInstance, prevButton, nextButton) {
