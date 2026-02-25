@@ -8,11 +8,13 @@ import 'swiper/css/scrollbar';
 let newsSliders = [];
 let leftColumnSliders = [];
 let historySlider = null;
+let casesSliders = [];
 
 export function SlidersInit() {
     initNewsSliders();
     initLeftColumnSlider();
     initHistorySlider();
+    initCasesSliders();
 }
 
 function initNewsSliders() {
@@ -77,6 +79,74 @@ function initNewsSliders() {
 
         newsSliders.push(slider);
     });
+}
+
+function initCasesSliders() {
+    const casesSlidersElements = document.querySelectorAll('.cases-tabs .cases-slider.swiper');
+
+    casesSlidersElements.forEach((sliderElement) => {
+        if (!sliderElement) return;
+
+        const prevButton = sliderElement.querySelector('.swiper-button-prev');
+        const nextButton = sliderElement.querySelector('.swiper-button-next');
+
+        if (!prevButton || !nextButton) return;
+
+        if (sliderElement.swiper) {
+            if (!casesSliders.includes(sliderElement.swiper)) {
+                casesSliders.push(sliderElement.swiper);
+            }
+            return;
+        }
+
+        const slider = new Swiper(sliderElement, {
+            modules: [Navigation],
+            autoplay: false,
+            speed: 600,
+            slidesPerView: 1,
+            spaceBetween: 30,
+            loop: false,
+            pagination: false,
+            navigation: {
+                nextEl: nextButton,
+                prevEl: prevButton
+            },
+            on: {
+                init: function() {
+                    updateCasesArrowStates(this, prevButton, nextButton);
+                },
+                slideChange: function() {
+                    updateCasesArrowStates(this, prevButton, nextButton);
+                },
+                resize: function() {
+                    this.update();
+                    updateCasesArrowStates(this, prevButton, nextButton);
+                }
+            }
+        });
+
+        casesSliders.push(slider);
+    });
+}
+
+function updateCasesArrowStates(swiperInstance, prevButton, nextButton) {
+    if (!prevButton || !nextButton) return;
+
+    if (swiperInstance.isBeginning) {
+        prevButton.classList.add('disabled');
+        prevButton.setAttribute('disabled', 'disabled');
+    } else {
+        prevButton.classList.remove('disabled');
+        prevButton.removeAttribute('disabled');
+    }
+
+    if (swiperInstance.isEnd) {
+        nextButton.classList.add('disabled');
+        nextButton.setAttribute('disabled', 'disabled');
+    } else {
+        nextButton.classList.remove('disabled');
+        nextButton.removeAttribute('disabled');
+    }
 }
 
 function initLeftColumnSlider() {
@@ -668,6 +738,15 @@ export function updateAllSliders() {
         }
     });
 
+    casesSliders.forEach(slider => {
+        if (slider && !slider.destroyed) {
+            slider.update();
+            const prevButton = slider.el.querySelector('.swiper-button-prev');
+            const nextButton = slider.el.querySelector('.swiper-button-next');
+            updateCasesArrowStates(slider, prevButton, nextButton);
+        }
+    });
+
     leftColumnSliders.forEach(slider => {
         if (slider && !slider.destroyed) {
             slider.update();
@@ -706,6 +785,13 @@ export function destroyAllSliders() {
     });
     newsSliders = [];
 
+    casesSliders.forEach(slider => {
+        if (slider && !slider.destroyed) {
+            slider.destroy(true, true);
+        }
+    });
+    casesSliders = [];
+
     leftColumnSliders.forEach(slider => {
         if (slider && !slider.destroyed) {
             slider.destroy(true, true);
@@ -720,7 +806,7 @@ export function destroyAllSliders() {
 }
 
 export function getSlidersCount() {
-    return newsSliders.length + leftColumnSliders.length + (historySlider ? 1 : 0);
+    return newsSliders.length + casesSliders.length + leftColumnSliders.length + (historySlider ? 1 : 0);
 }
 
 function updateArrowStates(swiperInstance, prevButton, nextButton) {

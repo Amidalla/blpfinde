@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="ru">
+<include src="layout/head.html"></include>
+<body>
+<include src="layout/header.html"></include>
+<main class="inside-page cases-page">
+    <section class="page-header cases-page">
+        <div class="page-header__inner">
+            <div class="container">
+                <div class="breadcrumb">
+                    <nav class="breadcrumb__inner">
+                        <ul class="breadcrumb__list">
+                            <li class="breadcrumb__item">
+                                <a href="#" class="breadcrumb__link">Главная</a>
+                            </li>
+                            <li class="breadcrumb__item active">
+                                <span>Кейсы</span>
+                            </li>
+                        </ul>
+                        <a href="#" class="back-link">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22" fill="none">
+                                <path d="M14 3L6 11L14 19" stroke="#717D89" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            <span>Назад</span>
+                        </a>
+                    </nav>
+                </div>
+                <div class="main-title">
+                    <h1>Кейсы</h1>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="cases-tabs">
+        <div class="container">
+             <h2>Нам доверяют</h2>
+            <!-- Табы для кейсов -->
+            <div class="news-tabs cases-tabs">
+                <!-- Навигация табов -->
+                <div class="news-tabs__nav cases-tabs__nav">
+                    <!-- Основные кнопки (всегда видны) -->
+                    <button class="news-tabs__btn cases-tabs__btn active" data-tab="logistics">
+                        Логистический оператор
+                    </button>
+                    <button class="news-tabs__btn cases-tabs__btn" data-tab="auto">
+                        Автоконцерн
+                    </button>
+                    <button class="news-tabs__btn cases-tabs__btn" data-tab="it">
+                        IT и Технологии
+                    </button>
+                    <button class="news-tabs__btn cases-tabs__btn" data-tab="construction">
+                        Строительная компания
+                    </button>
+
+                    <!-- Скрытые кнопки (появляются при клике на "...") -->
+                    <button class="news-tabs__btn cases-tabs__btn news-tabs__btn--hidden hidden" data-tab="retail">
+                        Розничная сеть
+                    </button>
+                    <button class="news-tabs__btn cases-tabs__btn news-tabs__btn--hidden hidden" data-tab="finance">
+                        Финансовый сектор
+                    </button>
+                    <button class="news-tabs__btn cases-tabs__btn news-tabs__btn--hidden hidden" data-tab="medicine">
+                        Медицина
+                    </button>
+                    <button class="news-tabs__btn cases-tabs__btn news-tabs__btn--hidden hidden" data-tab="education">
+                        Образование
+                    </button>
+
+                    <!-- Кнопка с многоточием -->
+                    <button class="news-tabs__btn cases-tabs__btn news-tabs__more" aria-label="Показать все категории">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="34" height="10" viewBox="0 0 34 10" fill="none">
+                            <circle cx="5" cy="5" r="5" fill="#212529"/>
+                            <circle cx="17" cy="5" r="5" fill="#212529"/>
+                            <circle cx="29" cy="5" r="5" fill="#212529"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Контент табов -->
+                <div class="news-tabs__content cases-tabs__content">
+                    <!-- Пейн для логистического оператора -->
+                    <div class="news-tabs__pane cases-tabs__pane active" id="logistics">
+                        <div class="cases-grid">
+                             <div class="cases-slider swiper">
+                                 <div class="swiper-wrapper">
+                                     <div class="swiper-slide">
+                                         <div class="cases-slider__inner">
+                                             <div class="cases-slider__media">
+                                                 <img class="lazy" data-src="assets/images/cases1.jpg" alt="">
+                                                 <h3>Логистический оператор</h3>
+                                             </div>
+                                             <ul class="cases-slider__list">
+                                                 <li class="cases-slider__item">
+                                                     <p class="cases-slider__title">Проблема</p>
+                                                     <p class="cases-slider__text">Потеря операционной рентабельности и наращивание кредитной массы</p>
+                                                 </li>
+                                                 <li class="cases-slider__item">
+                                                     <p class="cases-slider__title">Фокусировка</p>
+                                                     <p class="cases-slider__text">Что мешает компании быть операционно прибыльной</p>
+                                                 </li>
+                                                 <li class="cases-slider__item">
+                                                     <p class="cases-slider__title">Решение</p>
+                                                     <p class="cases-slider__text">Смещение фокуса с поиска денег и реструктуризации долга на:</p>
+                                                     <ul>
+                                                         <li>Оптимизацию структуры управления</li>
+                                                         <li>Перестройку учетной политики и выделение ЦФО</li>
+                                                         <li>Оптимизацию портфеля проектов</li>
+                                                     </ul>
+                                                 </li>
+                                                 <li class="cases-slider__item result-item">
+                                                     <p class="cases-slider__title">Результат</p>
+                                                     <p class="cases-slider__text">Снижение операционных расходов на 170 млн.руб., переход в «+» рентабельность</p>
+                                                 </li>
+                                             </ul>
+                                         </div>
+                                     </div>
+                                     <div class="swiper-slide">
+                                         <div class="cases-slider__inner">
+                                             <div class="cases-slider__media">
+                                                 <img class="lazy" data-src="assets/images/cases1.jpg" alt="">
+                                                 <h3>Логистический оператор</h3>
+                                             </div>
+                                             <ul class="cases-slider__list">
+                                                 <li class="cases-slider__item">
+                                                     <p class="cases-slider__title">Проблема</p>
+                                                     <p class="cases-slider__text">Потеря операционной рентабельности и наращивание кредитной массы</p>
+                                                 </li>
+                                                 <li class="cases-slider__item">
+                                                     <p class="cases-slider__title">Фокусировка</p>
+                                                     <p class="cases-slider__text">Что мешает компании быть операционно прибыльной</p>
+                                                 </li>
+                                                 <li class="cases-slider__item">
+                                                     <p class="cases-slider__title">Решение</p>
+                                                     <p class="cases-slider__text">Смещение фокуса с поиска денег и реструктуризации долга на:</p>
+                                                     <ul>
+                                                         <li>Оптимизацию структуры управления</li>
+                                                         <li>Перестройку учетной политики и выделение ЦФО</li>
+                                                         <li>Оптимизацию портфеля проектов</li>
+                                                     </ul>
+                                                 </li>
+                                                 <li class="cases-slider__item result-item">
+                                                     <p class="cases-slider__title">Результат</p>
+                                                     <p class="cases-slider__text">Снижение операционных расходов на 170 млн.руб., переход в «+» рентабельность</p>
+                                                 </li>
+                                             </ul>
+                                         </div>
+                                     </div>
+                                 </div>
+                                 <div class="swiper-button-prev news-swiper-arrow news-swiper-arrow--prev">
+                                     <include src="assets/svg/slider-arrow.html"></include>
+                                 </div>
+                                 <div class="swiper-button-next news-swiper-arrow news-swiper-arrow--next">
+                                     <include src="assets/svg/slider-arrow.html"></include>
+                                 </div>
+                             </div>
+                        </div>
+                    </div>
+
+                    <!-- Пейн для автоконцерна -->
+                    <div class="news-tabs__pane cases-tabs__pane" id="auto">
+                        <div class="cases-grid">
+                           2
+                        </div>
+                    </div>
+
+                    <!-- Пейн для IT и Технологии -->
+                    <div class="news-tabs__pane cases-tabs__pane" id="it">
+                        <div class="cases-grid">
+                         3
+                        </div>
+                    </div>
+
+                    <!-- Пейн для строительной компании -->
+                    <div class="news-tabs__pane cases-tabs__pane" id="construction">
+                        <div class="cases-grid">
+                            4
+                        </div>
+                    </div>
+
+                    <!-- Пейны для скрытых табов -->
+                    <div class="news-tabs__pane cases-tabs__pane" id="retail">
+                        <div class="cases-grid">
+                           5
+                        </div>
+                    </div>
+
+                    <div class="news-tabs__pane cases-tabs__pane" id="finance">
+                        <div class="cases-grid">
+                           6
+                        </div>
+                    </div>
+
+                    <div class="news-tabs__pane cases-tabs__pane" id="medicine">
+                        <div class="cases-grid">
+                           7
+                        </div>
+                    </div>
+
+                    <div class="news-tabs__pane cases-tabs__pane" id="education">
+                        <div class="cases-grid">
+                            8
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="main-info fade-up">
+        <div class="main-info__inner">
+            <div class="container">
+                <div class="bid fade-up">
+                    <h2>Заявка</h2>
+                    <div class="bid__inner">
+                        <div class="bid__form">
+                            <h2>Время начать</h2>
+                            <p>Начните поиск путей улучшения для развития и усиления успеха вашей команды и компании</p>
+                            <form id="man-form" class="main-form">
+                                <fieldset>
+                                    <label>
+                                        <input type="text" name="name" placeholder="Имя*" required="">
+                                    </label>
+                                    <label>
+                                        <input type="tel" name="tel" placeholder="Телефон*" data-phone-input="" required="">
+                                    </label>
+                                    <label>
+                                        <input type="email" name="email" placeholder="E-mail*" data-phone-input="" required="">
+                                    </label>
+                                </fieldset>
+                                <fieldset>
+                                    <label>
+                                        <textarea name="comment" placeholder="Ваше сообщение" required=""></textarea>
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="checkbox" required="">
+                                        <span>
+                                           Согласен c условиями обработки <a href="#">персональных данных</a> и <a href="#">политикой конфиденциальности</a>
+                                        </span>
+                                    </label>
+                                    <button class="submit-btn color-btn">
+                                        Отправить заявку
+                                    </button>
+                                </fieldset>
+                            </form>
+                        </div>
+                        <div class="bid__contacts">
+                            <h4>Или подайте заявку на примерную стоимость услуги под ваши задачи</h4>
+                            <div class="bid__links">
+                                <a href="#" class="bid-btn not-color-btn">Заявка на расчет</a>
+                                <a href="mailto:vakhin@yandex.ru" class="bid__item">
+                                    <include src="assets/svg/mail.html"></include>
+                                    <span>vakhin@yandex.ru</span>
+                                </a>
+                            </div>
+                            <div class="bid__info">
+                                <div class="bid__text">
+                                    <div class="bid__title">Есть вопросы?</div>
+                                    <p>Пишите в Telegram, вам поможет наш менеджер</p>
+                                </div>
+                                <a href="mailto:vakhin@yandex.ru" class="bid__item">
+                                    <include src="assets/svg/tg.html"></include>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+<include src="layout/footer.html"></include>
+</body>
+</html>
+

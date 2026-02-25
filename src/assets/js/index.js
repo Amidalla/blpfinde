@@ -11,6 +11,7 @@ import "../styles/arrow-path.scss";
 import "../styles/about-product.scss";
 import "../styles/about.scss";
 import "../styles/questions.scss";
+import "../styles/cases.scss";
 
 import LazyLoad from "vanilla-lazyload";
 import Swiper from 'swiper';
