@@ -21,6 +21,8 @@ import "../styles/access-materials.scss";
 import "../styles/policy.scss";
 import "../styles/error.scss";
 import "../styles/reviews.scss";
+import "../styles/contacts.scss";
+
 
 import LazyLoad from "vanilla-lazyload";
 import Swiper from 'swiper';

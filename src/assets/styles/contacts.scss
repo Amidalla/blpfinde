@@ -1,0 +1,258 @@
+@use "./colors.scss" as c;
+@use "../styles/mixins.scss" as *;
+@use "./fonts.scss";
+
+
+.contacts-page {
+  .page-header__inner {
+    padding-top: 170px;
+    margin-top: 30px;
+
+    @media (max-width: 1600px) {
+      margin-top: 42px;
+    }
+
+
+    @media (max-width: 1350px) {
+      padding-top: 145px;
+      margin-top: 0;
+    }
+
+    @media (max-width: 600px) {
+      padding-top: 127px;
+    }
+
+    .main-title {
+      max-width: 100%;
+    }
+  }
+
+  .main-info {
+    &__inner {
+      background: none;
+      margin-left: 0;
+      margin-right: 0;
+      padding-top: 16px;
+      padding-bottom: 0;
+      
+      @media (max-width: 1600px) {
+        padding-top: 12px;
+      }
+
+      @media (max-width: 1350px) {
+        padding-top: 28px;
+        margin-bottom: 32px;
+      }
+
+      @media (max-width: 760px) {
+        margin-bottom: 24px;
+      }
+    }
+
+    .bid {
+
+      @media (max-width: 1350px) {
+        margin-top: 0;
+      }
+
+      &__inner {
+        background-color: #F2F5F8;
+        -webkit-mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1594 942"><path d="M39.838 80.5435H193.43C210.709 80.5435 220.149 66.8694 222.709 60.0324L235.188 31.0167C246.228 5.0027 263.507 0.333304 276.626 0.333304L1542.64 0C1577.2 0 1594 21.5118 1594 61.5334V892C1594 919.614 1571.61 942 1544 942H50C22.3857 942 0 919.614 0 892V119.565C0 93.5507 23.5188 80.5435 39.838 80.5435Z" fill="white"/></svg>');
+        mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1594 942"><path d="M39.838 80.5435H193.43C210.709 80.5435 220.149 66.8694 222.709 60.0324L235.188 31.0167C246.228 5.0027 263.507 0.333304 276.626 0.333304L1542.64 0C1577.2 0 1594 21.5118 1594 61.5334V892C1594 919.614 1571.61 942 1544 942H50C22.3857 942 0 919.614 0 892V119.565C0 93.5507 23.5188 80.5435 39.838 80.5435Z" fill="white"/></svg>');
+        -webkit-mask-size: cover;
+        mask-size: cover;
+        -webkit-mask-repeat: no-repeat;
+        mask-repeat: no-repeat;
+        background-image: url("../images/contacts-img.png");
+        background-repeat: no-repeat;
+        background-size: 45%;
+        background-position: left bottom;
+        padding-top: 55px;
+        position: relative;
+        
+        @media (max-width: 1600px) {
+          padding-top: 34px;
+          mask-image: none;
+          background: url("../images/contacts-mask.png") no-repeat center;
+          background-size: cover;
+        }
+
+        @media (max-width: 1350px) {
+          background: url("../images/contacts-tablet.png") no-repeat center;
+          padding-top: 26px;
+          background-size: cover;
+        }
+
+        @media (max-width: 750px) {
+          padding-top: 58px;
+        }
+
+        @media (max-width: 360px) {
+          background: url("../images/contacts-mobile.png") no-repeat center left;
+          background-size: cover;
+        }
+      }
+
+      &__form {
+        order: 2;
+        @media (max-width: 1600px) {
+          padding: 24px;
+          margin-top: 130px;
+        }
+
+        @media (max-width: 1350px) {
+          margin-top: 0;
+        }
+        @media (max-width: 750px) {
+          padding: 24px 15px;
+        }
+
+      }
+
+      &__contacts {
+        order: 1;
+
+        h4 {
+          max-width: 582px;
+          font-size: 35px;
+          
+          @media (max-width: 1600px) {
+            font-size: 34px;
+            max-width: 713px;
+            position: absolute;
+          }
+          
+          @media (max-width: 1350px) {
+            font-size: 26px;
+            max-width: 449px;
+          }
+
+          @media (max-width: 750px) {
+            font-size: 22px;
+          }
+        }
+      }
+
+      &__links {
+        display: flex;
+        gap: 21px;
+        align-items: center;
+        margin-bottom: 22px;
+        position: relative;
+
+        @media (max-width: 1600px) {
+          gap: 15px;
+          margin-bottom: 16px;
+        }
+
+        @media (max-width: 1350px) {
+          margin-bottom: 0;
+          flex-direction: column;
+          align-items: end;
+          padding-left: 100px;
+        }
+
+        a {
+          margin-bottom: 0;
+
+          svg {
+            @media (max-width: 1700px) {
+              width: 104px;
+              height: 68.2px;
+            }
+
+            @media (max-width: 1350px) {
+              position: absolute;
+              bottom:-10px;
+              left: 0;
+            }
+          }
+
+          &:last-child {
+            color: #45A2FF;
+            font-size: 18px;
+            font-style: normal;
+            font-weight: 700;
+            line-height: normal;
+
+            &:hover {
+              text-decoration: underline;
+            }
+
+            @media (max-width: 1600px) {
+              font-size: 16px;
+            }
+
+            @media (max-width: 1350px) {
+              font-size: 15px;
+            }
+          }
+        }
+      }
+
+      &__text {
+        @media (max-width: 1350px) {
+          display: flex;
+          align-items: center;
+        }
+
+        p {
+          color: #212529;
+          font-size: 18px;
+          font-style: normal;
+          font-weight: 500;
+          line-height: normal;
+
+          @media (max-width: 1600px) {
+            font-size: 16px;
+          }
+
+          @media (max-width: 1350px) {
+            font-size: 15px;
+            margin: 0;
+          }
+        }
+      }
+
+      &__info {
+
+        @media (max-width: 1600px) {
+          display: flex;
+           gap: 15px;
+          flex-direction: row-reverse;
+          justify-content: left;
+        }
+
+        svg {
+          @media (max-width: 1700px) {
+            width: 104px;
+            height: 68.2px;
+          }
+        }
+      }
+
+      &__container {
+
+        @media (max-width: 1600px) {
+          margin-top: 90px;
+        }
+        @media (max-width: 1350px) {
+          display: flex;
+          align-items: center;
+        }
+
+        @media (max-width: 750px) {
+          flex-direction: column;
+          align-items: start;
+          gap: 34px;
+        }
+      }
+
+      &__item {
+        @media (max-width: 1350px) {
+          margin-bottom: 0;
+        }
+      }
+    }
+  }
+}
