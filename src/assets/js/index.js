@@ -19,6 +19,7 @@ import "../styles/article-detail.scss";
 import "../styles/consultants.scss";
 import "../styles/access-materials.scss";
 import "../styles/policy.scss";
+import "../styles/error.scss";
 
 import LazyLoad from "vanilla-lazyload";
 import Swiper from 'swiper';
