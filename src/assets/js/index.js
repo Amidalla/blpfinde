@@ -18,6 +18,7 @@ import "../styles/article.scss";
 import "../styles/article-detail.scss";
 import "../styles/consultants.scss";
 import "../styles/access-materials.scss";
+import "../styles/policy.scss";
 
 import LazyLoad from "vanilla-lazyload";
 import Swiper from 'swiper';
@@ -28,6 +29,7 @@ import IMask from 'imask';
 import { initSearch } from "./search.js";
 import { initAllVideos } from "./video.js";
 import { initNewsTabs } from "./tabs.js";
+import { initPolicyNavigation } from "./policy.js";
 import { SlidersInit } from "./sliders.js";
 import ScrollAnimator from "./scrollAnimator.js";
 import CircleAnimator from "./circleAnimator.js";
@@ -124,6 +126,7 @@ const App = {
         initCore() {
                 SlidersInit();
                 initNewsTabs();
+                initPolicyNavigation();
                 initPhoneMasks();
                 initSearch();
                 initAllVideos();
@@ -330,6 +333,7 @@ export {
         initSearch,
         initAllVideos,
         initNewsTabs,
+        initPolicyNavigation,
         SlidersInit,
         App
 };
