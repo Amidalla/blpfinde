@@ -20,6 +20,7 @@ import "../styles/consultants.scss";
 import "../styles/access-materials.scss";
 import "../styles/policy.scss";
 import "../styles/error.scss";
+import "../styles/reviews.scss";
 
 import LazyLoad from "vanilla-lazyload";
 import Swiper from 'swiper';

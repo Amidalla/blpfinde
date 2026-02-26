@@ -10,6 +10,7 @@ let leftColumnSliders = [];
 let historySlider = null;
 let casesSliders = [];
 let partnersSlider = null;
+let reviewsResultSlider = null;
 
 export function SlidersInit() {
     initNewsSliders();
@@ -17,6 +18,7 @@ export function SlidersInit() {
     initHistorySlider();
     initCasesSliders();
     initPartnersSlider();
+    initReviewsResultSlider();
 }
 
 function initNewsSliders() {
@@ -787,6 +789,108 @@ function initPartnersSlider() {
     });
 }
 
+function initReviewsResultSlider() {
+    const reviewsPage = document.querySelector('.reviews-page');
+    if (!reviewsPage) return;
+
+    const resultList = reviewsPage.querySelector('.result__list');
+    if (!resultList) return;
+
+    if (reviewsResultSlider && !reviewsResultSlider.destroyed) {
+        if (window.innerWidth > 1180) {
+            destroyReviewsResultSlider();
+        } else {
+            reviewsResultSlider.update();
+        }
+        return;
+    }
+
+    if (window.innerWidth > 1180) {
+        return;
+    }
+
+    const items = Array.from(resultList.children);
+    if (!items || items.length === 0) return;
+
+    resultList.classList.add('swiper-container');
+    resultList.style.overflow = 'hidden';
+    resultList.style.background = 'none'; // Убираем фон
+
+    const wrapperDiv = document.createElement('div');
+    wrapperDiv.className = 'swiper-wrapper';
+    wrapperDiv.style.transitionTimingFunction = 'cubic-bezier(0.4, 0, 0.2, 1)';
+    wrapperDiv.style.background = 'none'; // Убираем фон
+
+    items.forEach(item => {
+        if (item && item.nodeType === 1) {
+            item.classList.add('swiper-slide');
+            wrapperDiv.appendChild(item);
+        }
+    });
+
+    resultList.innerHTML = '';
+    resultList.appendChild(wrapperDiv);
+
+    reviewsResultSlider = new Swiper(resultList, {
+        modules: [Navigation, Pagination],
+        slidesPerView: 3.5,
+        spaceBetween: 20,
+        loop: false,
+        speed: 500,
+        grabCursor: true,
+        watchSlidesProgress: true,
+        breakpoints: {
+            0: {
+                slidesPerView: 1.5,
+                spaceBetween: 16
+            },
+            650: {
+                slidesPerView: 2.5,
+                spaceBetween: 20
+            },
+            901: {
+                slidesPerView: 3.2,
+                spaceBetween: 24
+            },
+            1181: {
+                slidesPerView: 4,
+                spaceBetween: 30
+            }
+        },
+        on: {
+            init: function() {
+                this.update();
+                if (this.wrapperEl) {
+                    this.wrapperEl.style.background = 'none';
+                }
+            },
+            resize: function(swiper) {
+                if (window.innerWidth > 1180) {
+                    destroyReviewsResultSlider();
+                } else {
+                    swiper.update();
+                }
+            }
+        }
+    });
+}
+
+function destroyReviewsResultSlider() {
+    if (reviewsResultSlider && !reviewsResultSlider.destroyed) {
+        reviewsResultSlider.destroy(true, true);
+        reviewsResultSlider = null;
+
+        const reviewsPage = document.querySelector('.reviews-page');
+        if (!reviewsPage) return;
+
+        const resultList = reviewsPage.querySelector('.result__list');
+        if (!resultList) return;
+
+        resultList.classList.remove('swiper-container');
+        resultList.style.overflow = '';
+    }
+}
+
 export function updateAllSliders() {
     newsSliders.forEach(slider => {
         if (slider && !slider.destroyed) {
@@ -841,6 +945,10 @@ export function updateAllSliders() {
     if (partnersSlider && !partnersSlider.destroyed) {
         partnersSlider.update();
     }
+
+    if (reviewsResultSlider && !reviewsResultSlider.destroyed) {
+        reviewsResultSlider.update();
+    }
 }
 
 export function destroyAllSliders() {
@@ -874,10 +982,12 @@ export function destroyAllSliders() {
         partnersSlider.destroy(true, true);
         partnersSlider = null;
     }
+
+    destroyReviewsResultSlider();
 }
 
 export function getSlidersCount() {
-    return newsSliders.length + casesSliders.length + leftColumnSliders.length + (historySlider ? 1 : 0) + (partnersSlider ? 1 : 0);
+    return newsSliders.length + casesSliders.length + leftColumnSliders.length + (historySlider ? 1 : 0) + (partnersSlider ? 1 : 0) + (reviewsResultSlider && !reviewsResultSlider.destroyed ? 1 : 0);
 }
 
 function updateArrowStates(swiperInstance, prevButton, nextButton) {

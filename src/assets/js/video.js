@@ -6,6 +6,8 @@ export function initAllVideos() {
         const playButton = container.querySelector('.play-button');
         if (!playButton) return;
 
+        const isReviewsPage = document.querySelector('.reviews-page') !== null;
+
         container.classList.add('on-poster');
 
         const videoWrapper = document.createElement('div');
@@ -41,8 +43,14 @@ export function initAllVideos() {
             </svg>
         `;
         fullscreenButton.setAttribute('aria-label', 'Полноэкранный режим');
-        fullscreenButton.style.opacity = '0';
-        fullscreenButton.style.pointerEvents = 'none';
+
+        if (isReviewsPage) {
+            fullscreenButton.style.display = 'none';
+        } else {
+            fullscreenButton.style.opacity = '0';
+            fullscreenButton.style.pointerEvents = 'none';
+        }
+
         fullscreenButton.style.zIndex = '3';
         container.appendChild(fullscreenButton);
 
@@ -55,11 +63,13 @@ export function initAllVideos() {
         }
 
         function showFullscreenButton() {
+            if (isReviewsPage) return;
             fullscreenButton.style.opacity = '1';
             fullscreenButton.style.pointerEvents = 'auto';
         }
 
         function hideFullscreenButton() {
+            if (isReviewsPage) return;
             if (!document.fullscreenElement) {
                 fullscreenButton.style.opacity = '0';
                 fullscreenButton.style.pointerEvents = 'none';
@@ -72,6 +82,7 @@ export function initAllVideos() {
         });
 
         function updateFullscreenUI() {
+            if (isReviewsPage) return;
             if (document.fullscreenElement) {
                 fullscreenButton.style.display = 'none';
                 if (!video.paused) {
@@ -101,7 +112,7 @@ export function initAllVideos() {
             playButton.classList.remove('playing');
             container.classList.add('on-poster');
             showFullscreenButton();
-            if (!document.fullscreenElement) {
+            if (!document.fullscreenElement && !isReviewsPage) {
                 posterOverlay.style.opacity = '1';
             }
         });
@@ -109,7 +120,7 @@ export function initAllVideos() {
         video.addEventListener('ended', () => {
             playButton.classList.remove('playing');
             container.classList.add('on-poster');
-            if (!document.fullscreenElement) {
+            if (!document.fullscreenElement && !isReviewsPage) {
                 posterOverlay.style.opacity = '1';
             }
         });
