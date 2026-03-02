@@ -26,7 +26,7 @@
 
     .access-container {
       @media (max-width: 600px) {
-        margin-left: -20px;
+        margin-left: 0;
       }
     }
   }
@@ -384,6 +384,8 @@
 }
 
 .access-container {
+  margin-left: auto;
+
   .access-link {
     display: flex;
     gap: 8px;
@@ -392,6 +394,7 @@
     font-weight: 500;
     color: #F83E49;
     transition: all 0.3s ease;
+
 
     @media (max-width: 1800px) {
       font-size: 16px;

@@ -22,6 +22,7 @@ import "../styles/policy.scss";
 import "../styles/error.scss";
 import "../styles/reviews.scss";
 import "../styles/contacts.scss";
+import "../styles/custom-fancybox.scss"
 
 
 import LazyLoad from "vanilla-lazyload";
@@ -29,6 +30,8 @@ import Swiper from 'swiper';
 import 'swiper/swiper-bundle.css';
 import { Pagination, Navigation, Autoplay, Thumbs, EffectFade } from 'swiper/modules';
 import IMask from 'imask';
+import "@fancyapps/ui/dist/fancybox/fancybox.css";
+import { Fancybox } from "@fancyapps/ui";
 
 import { initSearch } from "./search.js";
 import { initAllVideos } from "./video.js";
@@ -127,6 +130,8 @@ const App = {
                 this.initAccordion();
         },
 
+
+
         initCore() {
                 SlidersInit();
                 initNewsTabs();
@@ -134,7 +139,87 @@ const App = {
                 initPhoneMasks();
                 initSearch();
                 initAllVideos();
+
+
+                window.Fancybox = Fancybox;
+
+
+                Fancybox.bind('[data-fancybox="certificates"]', {
+                        groupAll: true,
+
+                        type: "inline",
+
+                        Images: {
+                                initialSize: "fit",
+                                zoom: true,
+                                pan: true,
+                        },
+
+                        wheel: "zoom",
+                        click: "toggleZoom",
+
+                        Toolbar: false,
+                        Thumbs: false,
+
+                        Carousel: {
+                                Navigation: {
+                                        prevTpl: '<button class="f-button is-prev" title="Назад"></button>',
+                                        nextTpl: '<button class="f-button is-next" title="Вперед"></button>',
+                                },
+                        },
+
+                        on: {
+                                init: (fancybox) => {
+                                        setTimeout(() => {
+                                                const slides = fancybox.carousel?.slides;
+                                                if (slides) {
+                                                        slides.forEach((slide, index) => {
+                                                                const originalItem = document.querySelectorAll('.property__item')[index];
+                                                                const expandedItem = document.getElementById(`property${index + 1}-content`);
+                                                                if (originalItem && expandedItem) {
+                                                                        originalItem.classList.forEach(className => {
+                                                                                if (!className.includes('lazy') && !expandedItem.classList.contains(className)) {
+                                                                                        expandedItem.classList.add(className);
+                                                                                }
+                                                                        });
+                                                                }
+                                                        });
+                                                }
+                                        }, 100);
+                                }
+                        }
+                });
+
                 this.lazyLoad.update();
+        },
+
+        addCustomCloseButton() {
+
+                this.removeCustomCloseButton();
+
+
+                const container = document.querySelector('.fancybox__container');
+                if (!container) return;
+
+
+                const closeBtn = document.createElement('button');
+                closeBtn.className = 'custom-fancybox-close';
+                closeBtn.setAttribute('aria-label', 'Закрыть');
+                closeBtn.onclick = (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        Fancybox.close();
+                };
+
+
+                container.appendChild(closeBtn);
+        },
+
+        removeCustomCloseButton() {
+                const existingBtn = document.querySelector('.custom-fancybox-close');
+                if (existingBtn) {
+                        existingBtn.remove();
+                }
         },
 
         initModules() {
