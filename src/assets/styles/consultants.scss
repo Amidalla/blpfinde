@@ -184,6 +184,16 @@
         background: #FFF;
         overflow: hidden;
         width: calc(50% - 9.76px);
+        cursor: pointer;
+        transition: all 0.3s ease;
+
+        &:hover {
+          box-shadow: 0 15px 30px rgba(0, 0, 0, 0.08);
+
+          @media (max-width: 750px) {
+            box-shadow: none;
+          }
+        }
 
         @media (max-width: 1350px) {
           width: 22.5%;

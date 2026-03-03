@@ -715,6 +715,16 @@
     border: 0.83px solid #FFF;
     box-shadow: -2px 2px 2.4px 0 rgba(255, 185, 185, 0.35) inset, 0 4px 30px 0 rgba(43, 47, 66, 0.25);
     transition: all 0.3s ease;
+    position: relative;
+
+    img {
+      width: 55%;
+      position: absolute;
+      height: auto;
+      bottom: 0;
+      right: 0;
+      z-index: 1;
+    }
 
     &:hover {
       transform: scale(1.03);
@@ -749,10 +759,6 @@
     }
 
     &:first-child {
-      background-image: url("../images/result1.png");
-      background-repeat: no-repeat;
-      background-position:  bottom right;
-      background-size: 50%;
       background-color: #F5F7FB;
       margin-top: 200px;
       
@@ -762,10 +768,6 @@
     }
 
     &:nth-child(2) {
-      background-image: url("../images/result2.png");
-      background-repeat: no-repeat;
-      background-position:  bottom right;
-      background-size: 60%;
       background-color: #F5F7FB;
       margin-top: 100px;
 
@@ -780,18 +782,11 @@
     }
 
     &:nth-child(3) {
-      background-image: url("../images/result3.png");
-      background-repeat: no-repeat;
-      background-position:  bottom right;
       background-size: 80%;
       background-color: #F5F7FB;
     }
 
     &:nth-child(4) {
-      background-image: url("../images/result4.png");
-      background-repeat: no-repeat;
-      background-position:  bottom right;
-      background-size: 40%;
       background-color: #F5F7FB;
       margin-top: 220px;
 
@@ -808,10 +803,6 @@
       }
     }
     &:nth-child(5) {
-      background-image: url("../images/result5.png");
-      background-repeat: no-repeat;
-      background-position:  bottom right;
-      background-size: 40%;
       background-color: #F5F7FB;
       margin-top: -130px;
 
@@ -835,6 +826,8 @@
     font-style: normal;
     font-weight: 700;
     line-height: normal;
+    position: relative;
+    z-index: 2;
     
     @media (max-width: 1600px) {
       font-size: 60px;
@@ -870,6 +863,8 @@
     font-style: normal;
     font-weight: 500;
     line-height: normal;
+    position: relative;
+    z-index: 2;
 
     @media (max-width: 1600px) {
       font-size: 16px;
@@ -1050,6 +1045,7 @@
     padding: 30px;
     transition: all 0.3s ease;
     overflow: hidden;
+    cursor: pointer;
     
     @media (max-width: 1600px) {
       padding: 22.91px;

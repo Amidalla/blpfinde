@@ -24,7 +24,6 @@ import "../styles/reviews.scss";
 import "../styles/contacts.scss";
 import "../styles/custom-fancybox.scss"
 
-
 import LazyLoad from "vanilla-lazyload";
 import Swiper from 'swiper';
 import 'swiper/swiper-bundle.css';
@@ -120,6 +119,7 @@ const App = {
         arrowPathAnimator: null,
         tabletArrowAnimator: null,
         accordion: null,
+        videosInitialized: false, // Добавить этот флаг
 
         init() {
                 this.initCore();
@@ -130,77 +130,288 @@ const App = {
                 this.initAccordion();
         },
 
-
-
+        // Эту функцию нужно полностью заменить
         initCore() {
-                SlidersInit();
-                initNewsTabs();
-                initPolicyNavigation();
-                initPhoneMasks();
-                initSearch();
-                initAllVideos();
+                // 1. Базовые инициализации
+                try {
+                        SlidersInit();
+                } catch (e) {}
 
+                try {
+                        initNewsTabs();
+                } catch (e) {}
 
+                try {
+                        initPolicyNavigation();
+                } catch (e) {}
+
+                try {
+                        initPhoneMasks();
+                } catch (e) {}
+
+                try {
+                        initSearch();
+                } catch (e) {}
+
+                // 2. Глобальный Fancybox
                 window.Fancybox = Fancybox;
 
+                // 3. ИНИЦИАЛИЗАЦИЯ ВИДЕО - ТОЛЬКО ОДИН РАЗ
+                if (!this.videosInitialized) {
+                        setTimeout(() => {
+                                try {
+                                        initAllVideos();
+                                        this.videosInitialized = true;
+                                } catch (e) {}
+                        }, 500);
+                }
 
-                Fancybox.bind('[data-fancybox="certificates"]', {
-                        groupAll: true,
-
-                        type: "inline",
-
-                        Images: {
-                                initialSize: "fit",
-                                zoom: true,
-                                pan: true,
-                        },
-
-                        wheel: "zoom",
-                        click: "toggleZoom",
-
-                        Toolbar: false,
-                        Thumbs: false,
-
-                        Carousel: {
-                                Navigation: {
-                                        prevTpl: '<button class="f-button is-prev" title="Назад"></button>',
-                                        nextTpl: '<button class="f-button is-next" title="Вперед"></button>',
+                // 4. Fancybox для интеллектуальной собственности
+                try {
+                        Fancybox.bind('[data-fancybox="certificates"]', {
+                                groupAll: true,
+                                type: "inline",
+                                Images: {
+                                        initialSize: "fit",
+                                        zoom: true,
+                                        pan: true,
                                 },
-                        },
-
-                        on: {
-                                init: (fancybox) => {
-                                        setTimeout(() => {
-                                                const slides = fancybox.carousel?.slides;
-                                                if (slides) {
-                                                        slides.forEach((slide, index) => {
-                                                                const originalItem = document.querySelectorAll('.property__item')[index];
-                                                                const expandedItem = document.getElementById(`property${index + 1}-content`);
-                                                                if (originalItem && expandedItem) {
-                                                                        originalItem.classList.forEach(className => {
-                                                                                if (!className.includes('lazy') && !expandedItem.classList.contains(className)) {
-                                                                                        expandedItem.classList.add(className);
-                                                                                }
-                                                                        });
-                                                                }
-                                                        });
-                                                }
-                                        }, 100);
+                                wheel: "zoom",
+                                click: "toggleZoom",
+                                Toolbar: false,
+                                Thumbs: false,
+                                Carousel: {
+                                        Navigation: {
+                                                prevTpl: '<button class="f-button is-prev" title="Назад"></button>',
+                                                nextTpl: '<button class="f-button is-next" title="Вперед"></button>',
+                                        },
+                                },
+                                on: {
+                                        init: (fancybox) => {
+                                                setTimeout(() => {
+                                                        const slides = fancybox.carousel?.slides;
+                                                        if (slides) {
+                                                                slides.forEach((slide, index) => {
+                                                                        const originalItem = document.querySelectorAll('.property__item')[index];
+                                                                        const expandedItem = document.getElementById(`property${index + 1}-content`);
+                                                                        if (originalItem && expandedItem) {
+                                                                                originalItem.classList.forEach(className => {
+                                                                                        if (!className.includes('lazy') && !expandedItem.classList.contains(className)) {
+                                                                                                expandedItem.classList.add(className);
+                                                                                        }
+                                                                                });
+                                                                        }
+                                                                });
+                                                        }
+                                                }, 100);
+                                        }
                                 }
-                        }
+                        });
+                } catch (e) {}
+
+                // 5. Fancybox для сертификатов (первая галерея)
+                try {
+                        Fancybox.bind('[data-fancybox="certificates-gallery"]', {
+                                groupAll: true,
+                                type: "inline",
+                                Images: {
+                                        initialSize: "fit",
+                                        zoom: true,
+                                        pan: true,
+                                },
+                                wheel: "zoom",
+                                click: "toggleZoom",
+                                Toolbar: false,
+                                Thumbs: false,
+                                Carousel: {
+                                        Navigation: {
+                                                prevTpl: '<button class="f-button is-prev" title="Назад"></button>',
+                                                nextTpl: '<button class="f-button is-next" title="Вперед"></button>',
+                                        },
+                                },
+                                on: {
+                                        init: (fancybox) => {
+                                                setTimeout(() => {
+                                                        const slides = fancybox.carousel?.slides;
+                                                        if (slides) {
+                                                                slides.forEach((slide, index) => {
+                                                                        const originalItem = document.querySelectorAll('.certificates__list .certificates__item')[index];
+                                                                        const expandedItem = document.getElementById(`certificate${index + 1}-content`);
+                                                                        if (originalItem && expandedItem) {
+                                                                                originalItem.classList.forEach(className => {
+                                                                                        if (!className.includes('lazy') && !expandedItem.classList.contains(className)) {
+                                                                                                expandedItem.classList.add(className);
+                                                                                        }
+                                                                                });
+                                                                        }
+                                                                });
+                                                        }
+                                                }, 100);
+                                        }
+                                }
+                        });
+                } catch (e) {}
+
+                // 6. Fancybox для available-certificates
+                try {
+                        Fancybox.bind('[data-fancybox="available-certificates"]', {
+                                groupAll: true,
+                                type: "inline",
+                                Images: {
+                                        initialSize: "fit",
+                                        zoom: true,
+                                        pan: true,
+                                },
+                                wheel: "zoom",
+                                click: "toggleZoom",
+                                Toolbar: false,
+                                Thumbs: false,
+                                Carousel: {
+                                        Navigation: {
+                                                prevTpl: '<button class="f-button is-prev" title="Назад"></button>',
+                                                nextTpl: '<button class="f-button is-next" title="Вперед"></button>',
+                                        },
+                                },
+                                on: {
+                                        init: (fancybox) => {
+                                                setTimeout(() => {
+                                                        const slides = fancybox.carousel?.slides;
+                                                        if (slides) {
+                                                                slides.forEach((slide, index) => {
+                                                                        const originalItem = document.querySelectorAll('.available-certificates .certificates__item')[index];
+                                                                        const expandedItem = document.getElementById(`available-certificate${index + 1}-content`);
+                                                                        if (originalItem && expandedItem) {
+                                                                                originalItem.classList.forEach(className => {
+                                                                                        if (!className.includes('lazy') && !expandedItem.classList.contains(className)) {
+                                                                                                expandedItem.classList.add(className);
+                                                                                        }
+                                                                                });
+                                                                        }
+                                                                });
+                                                        }
+                                                }, 100);
+                                        }
+                                }
+                        });
+                } catch (e) {}
+
+                // 7. Fancybox для отзывов - с остановкой видео
+                try {
+                        Fancybox.bind('[data-fancybox="reviews"]', {
+                                groupAll: true,
+                                type: "inline",
+                                Images: {
+                                        initialSize: "fit",
+                                        zoom: true,
+                                        pan: true,
+                                },
+                                wheel: "zoom",
+                                click: false,
+                                Toolbar: false,
+                                Thumbs: false,
+                                Carousel: {
+                                        Navigation: {
+                                                prevTpl: '<button class="f-button is-prev" title="Назад"></button>',
+                                                nextTpl: '<button class="f-button is-next" title="Вперед"></button>',
+                                        },
+                                },
+                                on: {
+                                        init: (fancybox) => {
+                                                setTimeout(() => {
+                                                        const slides = fancybox.carousel?.slides;
+                                                        if (slides) {
+                                                                slides.forEach((slide, index) => {
+                                                                        const originalItem = document.querySelectorAll('.all-reviews__item')[index];
+                                                                        const expandedItem = document.getElementById(`review${index + 1}-content`);
+                                                                        if (originalItem && expandedItem) {
+                                                                                originalItem.classList.forEach(className => {
+                                                                                        if (!className.includes('lazy') && !expandedItem.classList.contains(className)) {
+                                                                                                expandedItem.classList.add(className);
+                                                                                        }
+                                                                                });
+                                                                        }
+                                                                });
+                                                        }
+                                                }, 100);
+                                        },
+                                        "Carousel.change": (fancybox, carousel, page, prevPage) => {
+                                                document.querySelectorAll('video').forEach(video => {
+                                                        if (!video.paused) {
+                                                                video.pause();
+                                                        }
+                                                });
+                                        },
+                                        close: () => {
+                                                document.querySelectorAll('video').forEach(video => {
+                                                        if (!video.paused) {
+                                                                video.pause();
+                                                        }
+                                                });
+                                        }
+                                }
+                        });
+                } catch (e) {}
+
+                // 8. Обновление LazyLoad
+                try {
+                        this.lazyLoad.update();
+                } catch (e) {}
+
+                // 9. УБИРАЕМ ПОВТОРНУЮ ИНИЦИАЛИЗАЦИЮ ВИДЕО ПОСЛЕ LOAD
+                // Просто удалить этот блок:
+                // window.addEventListener('load', () => { ... });
+
+                // 10. Наблюдение за динамическими изменениями DOM
+                const observer = new MutationObserver((mutations) => {
+                        mutations.forEach((mutation) => {
+                                if (mutation.addedNodes.length) {
+                                        mutation.addedNodes.forEach((node) => {
+                                                if (node.nodeType === 1 && node.querySelector?.('.media-element')) {
+                                                        // Инициализируем ТОЛЬКО если видео еще не было инициализировано
+                                                        if (!this.videosInitialized) {
+                                                                setTimeout(() => {
+                                                                        initAllVideos();
+                                                                        this.videosInitialized = true;
+                                                                }, 100);
+                                                        }
+                                                }
+                                        });
+                                }
+                        });
                 });
 
-                this.lazyLoad.update();
+                observer.observe(document.body, {
+                        childList: true,
+                        subtree: true
+                });
+        },
+
+        initVideosInFancybox() {
+                const videos = document.querySelectorAll('.fancybox__container video');
+                if (!videos.length) return;
+
+                videos.forEach(video => {
+                        // Добавляем атрибуты только если их нет
+                        if (!video.hasAttribute('controls')) {
+                                video.setAttribute('controls', '');
+                        }
+                        if (!video.hasAttribute('playsinline')) {
+                                video.setAttribute('playsinline', '');
+                        }
+                        video.style.pointerEvents = 'auto';
+
+                        // Загружаем видео только если оно не загружено
+                        if (video.readyState === 0) {
+                                video.load();
+                        }
+                });
         },
 
         addCustomCloseButton() {
-
                 this.removeCustomCloseButton();
-
 
                 const container = document.querySelector('.fancybox__container');
                 if (!container) return;
-
 
                 const closeBtn = document.createElement('button');
                 closeBtn.className = 'custom-fancybox-close';
@@ -210,7 +421,6 @@ const App = {
                         e.stopPropagation();
                         Fancybox.close();
                 };
-
 
                 container.appendChild(closeBtn);
         },
@@ -249,27 +459,21 @@ const App = {
         },
 
         initTabletAnimator() {
-
                 if (window.innerWidth <= 1230) {
                         setTimeout(() => {
                                 try {
                                         this.tabletArrowAnimator = new tabletArrowAnimator();
                                         this.tabletArrowAnimator.init();
                                         window.tabletArrowAnimator = this.tabletArrowAnimator;
-                                } catch (error) {
-                                        console.log('Tablet animator init error:', error);
-                                }
+                                } catch (error) {}
                         }, 600);
                 }
         },
 
         initAccordion() {
-
                 setTimeout(() => {
                         try {
-
                                 this.accordion = new Accordion('.questions-accordion .accordion');
-
 
                                 setTimeout(() => {
                                         if (this.accordion) {
@@ -279,9 +483,7 @@ const App = {
                                                 }
                                         }
                                 }, 200);
-                        } catch (error) {
-                                console.log('Accordion init error:', error);
-                        }
+                        } catch (error) {}
                 }, 300);
         },
 
@@ -308,7 +510,6 @@ const App = {
 
                 window.addEventListener('resize', () => {
                         this.updateSwipers();
-
 
                         const isTablet = window.innerWidth <= 1230;
 

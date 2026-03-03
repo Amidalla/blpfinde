@@ -1,5 +1,10 @@
 export function initAllVideos() {
     document.querySelectorAll('.media-element').forEach((video) => {
+
+        if (video.closest('[style*="display: none"]') || video.closest('.fancybox__container')) {
+            return;
+        }
+
         const container = video.closest('.main-video');
         if (!container) return;
 
@@ -149,7 +154,6 @@ export function initAllVideos() {
             }
         });
     });
-
 
     initDownloadLinks();
 }
