@@ -22,6 +22,7 @@ import "../styles/policy.scss";
 import "../styles/error.scss";
 import "../styles/reviews.scss";
 import "../styles/contacts.scss";
+import "../styles/modals.scss";
 import "../styles/custom-fancybox.scss"
 
 import LazyLoad from "vanilla-lazyload";
@@ -43,7 +44,8 @@ import ArrowBallAnimator from "./arrow-ball-animator.js";
 import ArrowPathAnimator from "./arrow-path-animator.js";
 import tabletArrowAnimator from "./tabletArrowAnimator.js";
 import Accordion from "./accordion.js";
-import {initMobileMenu} from "./modals.js";
+import { initMobileMenu, initModals } from "./modals.js";
+import FormValidator from "./formValidator.js";
 
 Swiper.use([Pagination, Navigation, Autoplay, Thumbs, EffectFade]);
 
@@ -57,7 +59,8 @@ function initPhoneMasks() {
     phoneInputs.forEach(input => {
         IMask(input, {
             mask: '+{7} (000) 000-00-00',
-            lazy: false
+            lazy: false,
+            placeholderChar: '_'
         });
     });
 }
@@ -123,6 +126,9 @@ const App = {
     accordion: null,
     videosInitialized: false,
     mobileMenuInitialized: false,
+    formValidator: null, // ДОБАВЛЕНО
+
+
 
     init() {
         this.initCore();
@@ -132,6 +138,19 @@ const App = {
         this.initTabletAnimator();
         this.initAccordion();
         this.initMobileMenu();
+        initModals();
+        this.initFormValidation(); // ДОБАВЛЕНО: инициализация валидации форм
+    },
+
+    // ДОБАВЛЕНО: новый метод для инициализации валидации форм
+    initFormValidation() {
+        setTimeout(() => {
+            try {
+                this.formValidator = new FormValidator();
+            } catch (error) {
+                console.warn('Form validation initialization failed:', error);
+            }
+        }, 200);
     },
 
     initMobileMenu() {
@@ -146,7 +165,6 @@ const App = {
             }, 100);
         }
     },
-
 
     initCore() {
 
@@ -390,7 +408,6 @@ const App = {
                 if (mutation.addedNodes.length) {
                     mutation.addedNodes.forEach((node) => {
                         if (node.nodeType === 1 && node.querySelector?.('.media-element')) {
-                            // Инициализируем ТОЛЬКО если видео еще не было инициализировано
                             if (!this.videosInitialized) {
                                 setTimeout(() => {
                                     initAllVideos();
@@ -414,7 +431,6 @@ const App = {
         if (!videos.length) return;
 
         videos.forEach(video => {
-            // Добавляем атрибуты только если их нет
             if (!video.hasAttribute('controls')) {
                 video.setAttribute('controls', '');
             }

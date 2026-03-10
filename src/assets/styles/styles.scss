@@ -450,3 +450,158 @@ main {
   }
 }
 
+
+form.submitted {
+
+  input:required:invalid,
+  textarea:required:invalid,
+  select:required:invalid {
+    color: #F83E49;
+    box-shadow: -2px 2px 2.4px 0 rgba(255, 185, 185, 0.35) inset, 10px 10px 30px 0 #0083D0;
+
+
+    &::placeholder {
+      color: #F83E49;
+      opacity: 1;
+    }
+  }
+
+
+  input[type="checkbox"]:required:not(:checked) {
+    border: 1px solid #F83E49;
+    outline: none;
+  }
+}
+
+
+input:required:invalid,
+textarea:required:invalid,
+select:required:invalid {
+  box-shadow: none;
+  outline: none;
+}
+
+
+.phone-mask-red {
+  color: #F83E49 !important;
+}
+
+[data-editor]  {
+  color: var(--Premium-black, #212529);
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 150%;
+
+  @media (max-width: 1600px) {
+    font-size: 16px;
+  }
+
+  @media (max-width: 1350px) {
+    font-size: 15px;
+  }
+
+  h2 {
+    color: #212529;
+    font-size: 43px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    margin-bottom: 24px;
+    
+    @media (max-width: 1600px) {
+      font-size: 34px;
+      margin-bottom: 16px;
+    }
+
+    @media (max-width: 1350px) {
+      font-size: 26px;
+    }
+  }
+
+  h3 {
+    color: #212529;
+    font-size: 32px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    margin-bottom: 16px;
+
+    @media (max-width: 1600px) {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+
+    @media (max-width: 1600px) {
+      font-size: 20px;
+    }
+
+    @media (max-width: 600px) {
+      font-size: 18px;
+    }
+  }
+
+  h4 {
+    color: #212529;
+    font-size: 21px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 99.995%;
+
+    @media (max-width: 1600px) {
+      font-size: 18px;
+    }
+  }
+
+  a {
+    color: var(--Premium-blue, #45A2FF);
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 150%;
+
+    @media (max-width: 1600px) {
+      font-size: 16px;
+    }
+
+    @media (max-width: 1350px) {
+      font-size: 15px;
+    }
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  ul {
+    li {
+      padding-left: 20px;
+      position: relative;
+      margin-bottom: 4px;
+      color: #212529;
+      font-size: 18px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 150%;
+
+      @media (max-width: 1600px) {
+        font-size: 16px;
+      }
+
+      @media (max-width: 1350px) {
+        font-size: 15px;
+      }
+
+      &::before {
+        content: "•";
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #212529;
+        font-size: 16px;
+        line-height: 1;
+      }
+    }
+  }
+}

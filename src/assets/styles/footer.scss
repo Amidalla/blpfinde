@@ -114,85 +114,91 @@
     }
   }
 
-  &__navigation {
-    display: flex;
-    gap: 76px;
-  }
+ &__navigation {
+   display: flex;
+   gap: 76px;
+ }
 
-  &__list {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-  }
+&__list {
+   display: flex;
+   flex-direction: column;
+   gap: 14px;
 
-  &__link {
-    color: var(--Premium-wight, #FFF);
-    font-size: 18px;
-    font-style: normal;
-    font-weight: 700;
-    line-height: normal;
-    transition: all 0.3s ease;
+  & > li {
 
-    @media (max-width: 1600px) {
-      font-size: 16px;
-    }
-
-    @media (max-width: 1350px) {
-      font-size: 15px;
-    }
-
-    span {
+    a {
       color: var(--Premium-wight, #FFF);
       font-size: 18px;
       font-style: normal;
-      font-weight: 400;
+      font-weight: 700;
       line-height: normal;
       transition: all 0.3s ease;
 
       @media (max-width: 1600px) {
         font-size: 16px;
       }
+
       @media (max-width: 1350px) {
         font-size: 15px;
       }
 
-    }
-
-    &:hover {
-      color: #F83E49;
-
       span {
+        color: var(--Premium-wight, #FFF);
+        font-size: 18px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: normal;
+        transition: all 0.3s ease;
+
+        @media (max-width: 1600px) {
+          font-size: 16px;
+        }
+        @media (max-width: 1350px) {
+          font-size: 15px;
+        }
+
+      }
+
+      &:hover {
         color: #F83E49;
+
+        span {
+          color: #F83E49;
+        }
       }
     }
   }
+ }
 
-  &__sublist {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    margin-top: 13px;
-  }
+  .sub-menu {
+   display: flex;
+   flex-direction: column;
+   gap: 8px;
+   margin-top: 13px;
 
-  &__sublink {
-    color: var(--Premium-wight, #FFF);
-    font-size: 18px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: normal;
+    & > li {
 
-    @media (max-width: 1600px) {
-      font-size: 16px;
+      a {
+        color: var(--Premium-wight, #FFF);
+        font-size: 18px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: normal;
+
+        @media (max-width: 1600px) {
+          font-size: 16px;
+        }
+
+        @media (max-width: 1350px) {
+          font-size: 15px;
+        }
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
     }
-
-    @media (max-width: 1350px) {
-      font-size: 15px;
-    }
-
-    &:hover {
-      text-decoration: underline;
-    }
-  }
+ }
 
   &__contacts {
     margin-left: auto;

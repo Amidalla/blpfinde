@@ -2,7 +2,7 @@ class Accordion {
     constructor(containerSelector = '.questions-accordion .accordion') {
         this.container = document.querySelector(containerSelector);
         if (!this.container) {
-            console.log('Accordion container not found');
+
             return;
         }
 
@@ -10,12 +10,12 @@ class Accordion {
         this.panels = this.container.querySelectorAll('.accordion-panel');
 
         if (this.headers.length === 0) {
-            console.log('No accordion headers found');
+
             return;
         }
 
         this.init();
-        // Даем время на загрузку SVG через include
+
         setTimeout(() => {
             this.fixSvgIds();
         }, 100);
@@ -23,10 +23,10 @@ class Accordion {
 
     fixSvgIds() {
         document.querySelectorAll('.icon-plus svg, .icon-minus svg').forEach((svg, svgIndex) => {
-            // Сначала собираем все ID и их новые значения
+
             const idMap = new Map();
 
-            // Все элементы с ID внутри SVG
+
             const elementsWithId = svg.querySelectorAll('[id]');
             elementsWithId.forEach((el) => {
                 const oldId = el.id;
@@ -35,12 +35,12 @@ class Accordion {
                 el.id = newId;
             });
 
-            // Обновляем ссылки через обход DOM
+
             idMap.forEach((newId, oldId) => {
-                // Ищем все атрибуты, которые могут содержать ссылки на ID
+
                 const allElements = svg.querySelectorAll('*');
                 allElements.forEach(el => {
-                    // Проверяем атрибуты, которые могут содержать URL ссылки
+
                     if (el.hasAttribute('clip-path')) {
                         const value = el.getAttribute('clip-path');
                         if (value.includes(`#${oldId}`)) {
@@ -82,7 +82,7 @@ class Accordion {
             svg.classList.add(`svg-${svgIndex}`);
         });
 
-        console.log('SVG IDs fixed, total icons:', document.querySelectorAll('.icon-plus svg, .icon-minus svg').length);
+
     }
 
     init() {
