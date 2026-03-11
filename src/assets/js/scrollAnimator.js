@@ -43,11 +43,11 @@ class ScrollAnimator {
             }
         });
 
-        gsap.set('.tools__item', { opacity: 0, y: 60 });
-        gsap.set('.technology__item', { opacity: 0, y: 80 });
-        gsap.set('.dignity__item', { opacity: 0, y: 50 });
-        gsap.set('.modal-item', { opacity: 0, y: 40 });
-        gsap.set('.main-about__point', { opacity: 0, y: 40 });
+        gsap.set('.tools__item', { opacity: 0, y: 60, scale: 0.95 });
+        gsap.set('.technology__item', { opacity: 0, y: 80, scale: 0.95 });
+        gsap.set('.dignity__item', { opacity: 0, y: 50, scale: 0.95 });
+        gsap.set('.modal-item', { opacity: 0, y: 40, scale: 0.9 });
+        gsap.set('.main-about__point', { opacity: 0, y: 40, scale: 0.95 });
         gsap.set('.clients__media', { opacity: 0, scale: 0.8, rotation: -3 });
 
         const buttons = document.querySelectorAll('.btn, .color-btn, .not-color-btn, .hero-btn, .technology__btn, .main-about__btn, .clients__btn, .bid-btn, .submit-btn, .footer .color-btn, .download-link');
@@ -55,11 +55,11 @@ class ScrollAnimator {
 
         buttons.forEach(btn => {
             if (btn !== headerBtn && !btn.closest('.news-tabs') && !btn.classList.contains('link-btn')) {
-                gsap.set(btn, { opacity: 0 });
+                gsap.set(btn, { opacity: 0, scale: 0.9 });
             }
         });
 
-        gsap.set(headerBtn, { opacity: 0, y: -5 });
+        gsap.set(headerBtn, { opacity: 0, scale: 0.9, y: -5 });
     }
 
     delayedStart() {
@@ -73,7 +73,7 @@ class ScrollAnimator {
 
     startAnimations() {
         if (this.isMobileView) {
-            this.animateMobile();
+            this.setupMobileAnimation();
         } else {
             this.animateDesktop();
         }
@@ -91,193 +91,6 @@ class ScrollAnimator {
         this.animateButtons();
         this.animateHeader();
         this.setupTabsButtons();
-    }
-
-    animateMobile() {
-
-        const sections = [
-            '.hero',
-            '.tools',
-            '.technology',
-            '.dignity',
-            '.main-about',
-            '.clients',
-            '.main-info',
-            '.bid'
-        ];
-
-
-        sections.forEach((selector, index) => {
-            const section = document.querySelector(selector);
-            if (!section) return;
-
-            ScrollTrigger.create({
-                trigger: section,
-                start: 'top 85%',
-                onEnter: () => {
-                    gsap.to(section, {
-                        opacity: 1,
-                        y: 0,
-                        duration: 0.8,
-                        ease: 'none',
-                        delay: index * 0.05
-                    });
-                },
-                once: true
-            });
-        });
-
-
-        const toolsItems = document.querySelectorAll('.tools__item');
-        if (toolsItems.length) {
-            ScrollTrigger.create({
-                trigger: '.tools',
-                start: 'top 80%',
-                onEnter: () => {
-                    gsap.to(toolsItems, {
-                        opacity: 1,
-                        y: 0,
-                        duration: 0.8,
-                        stagger: 0.15,
-                        ease: 'none'
-                    });
-                },
-                once: true
-            });
-        }
-
-        const technologyItems = document.querySelectorAll('.technology__item');
-        if (technologyItems.length) {
-            ScrollTrigger.create({
-                trigger: '.technology__list',
-                start: 'top 80%',
-                onEnter: () => {
-                    gsap.to(technologyItems, {
-                        opacity: 1,
-                        y: 0,
-                        duration: 0.9,
-                        stagger: 0.1,
-                        ease: 'none',
-                        onComplete: () => this.addTechnologyHoverEffects()
-                    });
-                },
-                once: true
-            });
-        }
-
-        const dignityItems = document.querySelectorAll('.dignity__item');
-        if (dignityItems.length) {
-            ScrollTrigger.create({
-                trigger: '.dignity',
-                start: 'top 80%',
-                onEnter: () => {
-                    gsap.to(dignityItems, {
-                        opacity: 1,
-                        y: 0,
-                        duration: 0.7,
-                        stagger: 0.08,
-                        ease: 'none'
-                    });
-                },
-                once: true
-            });
-        }
-
-        const modalItems = document.querySelectorAll('.modal-item');
-        if (modalItems.length) {
-            ScrollTrigger.create({
-                trigger: '.modal-list',
-                start: 'top 85%',
-                onEnter: () => {
-                    gsap.to(modalItems, {
-                        opacity: 1,
-                        y: 0,
-                        duration: 0.7,
-                        stagger: 0.08,
-                        ease: 'none'
-                    });
-                },
-                once: true
-            });
-        }
-
-        const aboutPoints = document.querySelectorAll('.main-about__point');
-        if (aboutPoints.length) {
-            ScrollTrigger.create({
-                trigger: '.main-about__list',
-                start: 'top 85%',
-                onEnter: () => {
-                    gsap.to(aboutPoints, {
-                        opacity: 1,
-                        y: 0,
-                        duration: 0.8,
-                        stagger: 0.15,
-                        ease: 'none'
-                    });
-                },
-                once: true
-            });
-        }
-
-        const clientsMedia = document.querySelectorAll('.clients__media');
-        if (clientsMedia.length) {
-            ScrollTrigger.create({
-                trigger: '.clients',
-                start: 'top 80%',
-                onEnter: () => {
-                    gsap.to(clientsMedia, {
-                        opacity: 1,
-                        scale: 1,
-                        rotation: 0,
-                        duration: 0.9,
-                        ease: 'none'
-                    });
-                },
-                once: true
-            });
-        }
-
-        const buttons = document.querySelectorAll(
-            '.btn, .color-btn, .not-color-btn, .hero-btn, .technology__btn, .main-about__btn, .clients__btn, .bid-btn, .submit-btn, .footer .color-btn, .download-link'
-        );
-
-        if (buttons.length) {
-            const headerBtn = document.querySelector('.header__btn .color-btn');
-            const buttonsToAnimate = Array.from(buttons).filter(btn => {
-                if (btn === headerBtn) return false;
-                if (btn.closest('.news-tabs')) return false;
-                if (btn.classList.contains('link-btn')) return false;
-                return true;
-            });
-
-            ScrollTrigger.batch(buttonsToAnimate, {
-                start: 'top 95%',
-                onEnter: batch => {
-                    gsap.to(batch, {
-                        opacity: 1,
-                        duration: 0.6,
-                        stagger: 0.05,
-                        ease: 'none'
-                    });
-                },
-                once: true
-            });
-        }
-
-
-        const headerBtn = document.querySelector('.header__btn .color-btn');
-        if (headerBtn) {
-            gsap.to(headerBtn, {
-                opacity: 1,
-                y: 0,
-                duration: 0.7,
-                delay: 0.2,
-                ease: 'none'
-            });
-        }
-
-        this.setupTabsButtons();
-        this.addButtonsHoverEffects();
     }
 
     init() {
@@ -303,6 +116,49 @@ class ScrollAnimator {
 
     setupMobileAnimation() {
 
+        const allButtons = document.querySelectorAll('.btn, .color-btn, .not-color-btn, .hero-btn, .technology__btn, .main-about__btn, .clients__btn, .bid-btn, .submit-btn, .header__btn .color-btn, .footer .color-btn, .download-link');
+
+        allButtons.forEach(btn => {
+            btn.style.removeProperty('opacity');
+            btn.style.removeProperty('transform');
+            btn.style.removeProperty('scale');
+            btn.style.removeProperty('translate');
+            btn.style.removeProperty('rotate');
+            btn.style.removeProperty('animation');
+        });
+
+        gsap.set([
+            '.hero',
+            '.tools__item',
+            '.technology__item',
+            '.dignity__item',
+            '.modal-item',
+            '.main-about',
+            '.clients',
+            '.main-info',
+            '.bid',
+            '.clients__media',
+            '.btn',
+            '.color-btn',
+            '.not-color-btn',
+            '.hero-btn',
+            '.technology__btn',
+            '.main-about__btn',
+            '.clients__btn',
+            '.bid-btn',
+            '.submit-btn',
+            '.header__btn .color-btn',
+            '.footer .color-btn',
+            '.download-link'
+        ], {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            x: 0,
+            rotation: 0
+        });
+
+        this.setupTabsButtons();
     }
 
     setupTabsButtons() {
@@ -340,6 +196,8 @@ class ScrollAnimator {
             const section = document.querySelector(selector);
             if (!section) return;
 
+            gsap.set(section, { opacity: 0, y: 50 });
+
             ScrollTrigger.create({
                 trigger: section,
                 start: 'top 85%',
@@ -347,8 +205,8 @@ class ScrollAnimator {
                     gsap.to(section, {
                         opacity: 1,
                         y: 0,
-                        duration: 0.8,
-                        ease: 'none',
+                        duration: 0.6,
+                        ease: 'power2.out',
                         delay: index * 0.05
                     });
                 },
@@ -361,6 +219,12 @@ class ScrollAnimator {
         const items = document.querySelectorAll('.tools__item');
         if (!items.length) return;
 
+        gsap.set(items, {
+            opacity: 0,
+            y: 60,
+            scale: 0.95
+        });
+
         ScrollTrigger.create({
             trigger: '.tools',
             start: 'top 80%',
@@ -368,9 +232,10 @@ class ScrollAnimator {
                 gsap.to(items, {
                     opacity: 1,
                     y: 0,
-                    duration: 0.8,
+                    scale: 1,
+                    duration: 0.6,
                     stagger: 0.15,
-                    ease: 'none'
+                    ease: 'power3.out'
                 });
             },
             once: true
@@ -381,6 +246,12 @@ class ScrollAnimator {
         const items = document.querySelectorAll('.technology__item');
         if (!items.length) return;
 
+        gsap.set(items, {
+            opacity: 0,
+            y: 80,
+            scale: 0.95
+        });
+
         ScrollTrigger.create({
             trigger: '.technology__list',
             start: 'top 80%',
@@ -388,9 +259,10 @@ class ScrollAnimator {
                 gsap.to(items, {
                     opacity: 1,
                     y: 0,
-                    duration: 0.9,
+                    scale: 1,
+                    duration: 0.7,
                     stagger: 0.1,
-                    ease: 'none',
+                    ease: 'power3.out',
                     onComplete: () => this.addTechnologyHoverEffects()
                 });
                 this.animateTechnologyArrows();
@@ -406,22 +278,24 @@ class ScrollAnimator {
             const span = arrow.querySelector('span');
 
             if (svg) {
-                gsap.set(svg, { opacity: 0.7 });
+                gsap.set(svg, { opacity: 0.7, scale: 0.9 });
                 gsap.to(svg, {
                     opacity: 1,
-                    duration: 0.5,
+                    scale: 1,
+                    duration: 0.4,
                     delay: 0.2 + index * 0.05,
-                    ease: 'none'
+                    ease: 'back.out(1.2)'
                 });
             }
 
             if (span) {
-                gsap.set(span, { opacity: 0 });
+                gsap.set(span, { opacity: 0, scale: 0.5 });
                 gsap.to(span, {
                     opacity: 1,
-                    duration: 0.4,
+                    scale: 1,
+                    duration: 0.3,
                     delay: 0.25 + index * 0.05,
-                    ease: 'none'
+                    ease: 'back.out(1.2)'
                 });
             }
         });
@@ -555,6 +429,12 @@ class ScrollAnimator {
         const items = document.querySelectorAll('.dignity__item');
         if (!items.length) return;
 
+        gsap.set(items, {
+            opacity: 0,
+            y: 50,
+            scale: 0.95
+        });
+
         ScrollTrigger.create({
             trigger: '.dignity',
             start: 'top 80%',
@@ -562,9 +442,10 @@ class ScrollAnimator {
                 gsap.to(items, {
                     opacity: 1,
                     y: 0,
-                    duration: 0.7,
+                    scale: 1,
+                    duration: 0.5,
                     stagger: 0.08,
-                    ease: 'none'
+                    ease: 'back.out(1.2)'
                 });
             },
             once: true
@@ -575,6 +456,12 @@ class ScrollAnimator {
         const items = document.querySelectorAll('.modal-item');
         if (!items.length) return;
 
+        gsap.set(items, {
+            opacity: 0,
+            y: 40,
+            scale: 0.9
+        });
+
         ScrollTrigger.create({
             trigger: '.modal-list',
             start: 'top 85%',
@@ -582,9 +469,10 @@ class ScrollAnimator {
                 gsap.to(items, {
                     opacity: 1,
                     y: 0,
-                    duration: 0.7,
+                    scale: 1,
+                    duration: 0.5,
                     stagger: 0.08,
-                    ease: 'none'
+                    ease: 'back.out(1.2)'
                 });
             },
             once: true
@@ -595,6 +483,12 @@ class ScrollAnimator {
         const points = document.querySelectorAll('.main-about__point');
         if (!points.length) return;
 
+        gsap.set(points, {
+            opacity: 0,
+            y: 40,
+            scale: 0.95
+        });
+
         ScrollTrigger.create({
             trigger: '.main-about__list',
             start: 'top 85%',
@@ -602,9 +496,10 @@ class ScrollAnimator {
                 gsap.to(points, {
                     opacity: 1,
                     y: 0,
-                    duration: 0.8,
+                    scale: 1,
+                    duration: 0.6,
                     stagger: 0.15,
-                    ease: 'none'
+                    ease: 'power3.out'
                 });
             },
             once: true
@@ -615,6 +510,12 @@ class ScrollAnimator {
         const media = document.querySelectorAll('.clients__media');
         if (!media.length) return;
 
+        gsap.set(media, {
+            opacity: 0,
+            scale: 0.8,
+            rotation: -3
+        });
+
         ScrollTrigger.create({
             trigger: '.clients',
             start: 'top 80%',
@@ -623,8 +524,8 @@ class ScrollAnimator {
                     opacity: 1,
                     scale: 1,
                     rotation: 0,
-                    duration: 0.9,
-                    ease: 'none'
+                    duration: 0.7,
+                    ease: 'elastic.out(1, 0.4)'
                 });
             },
             once: true
@@ -642,12 +543,19 @@ class ScrollAnimator {
         headerBtn.style.removeProperty('rotate');
         headerBtn.style.removeProperty('animation');
 
+        gsap.set(headerBtn, {
+            opacity: 0,
+            scale: 0.9,
+            y: -5
+        });
+
         gsap.to(headerBtn, {
             opacity: 1,
+            scale: 1,
             y: 0,
-            duration: 0.7,
+            duration: 0.5,
             delay: 0.2,
-            ease: 'none'
+            ease: 'back.out(1.7)'
         });
     }
 
@@ -676,14 +584,20 @@ class ScrollAnimator {
             btn.style.removeProperty('animation');
         });
 
+        gsap.set(buttonsToAnimate, {
+            opacity: 0,
+            scale: 0.9
+        });
+
         ScrollTrigger.batch(buttonsToAnimate, {
             start: 'top 95%',
             onEnter: batch => {
                 gsap.to(batch, {
                     opacity: 1,
-                    duration: 0.6,
+                    scale: 1,
+                    duration: 0.4,
                     stagger: 0.05,
-                    ease: 'none'
+                    ease: 'back.out(1.7)'
                 });
             },
             once: true
@@ -820,6 +734,10 @@ class ScrollAnimator {
                     this.downloadLinkAnimation = null;
                 } else if (!this.isMobileView && !this.downloadLinkAnimation && this.isHomePage) {
                     this.animateDownloadLink();
+                }
+
+                if (this.isHomePage && this.isMobileView) {
+                    this.setupMobileAnimation();
                 }
             }, 250);
         });

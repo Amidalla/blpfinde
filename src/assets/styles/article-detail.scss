@@ -46,6 +46,21 @@
     @media (max-width: 750px) {
       margin-bottom: 44px;
     }
+
+    .description {
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+
+      @media (max-width: 1600px) {
+        gap: 16px;
+      }
+
+      img {
+        max-width: 735px;
+        border-radius: 20px;
+      }
+    }
   }
 
   &__text {

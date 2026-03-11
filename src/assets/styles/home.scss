@@ -80,6 +80,12 @@
       align-items: start;
       gap: 16px;
     }
+    
+    .color-btn {
+      @media (max-width: 1800px) {
+        padding: 15px 30px;
+      }
+    }
   }
 }
 
@@ -470,6 +476,10 @@
     &:nth-child(3) {
       background: url("../images/tools-thrid.jpg") no-repeat center;
       background-size: cover;
+
+      .tags-item {
+        background: #FFFAE3;
+      }
     }
 
     p {
@@ -1011,12 +1021,20 @@
       font-style: normal;
       font-weight: 400;
       line-height: 140%;
-      
+
       @media (max-width: 1600px) {
         font-size: 16px;
       }
     }
-    
+
+
+    @media (max-width: 1600px) {
+      svg {
+        width: 75px;
+      }
+    }
+
+
     @media (max-width: 1230px) {
       gap: 11.43px;
 
@@ -2418,7 +2436,7 @@
       padding: 64px 40px;
     }
     @media (max-width: 1350px) {
-      padding: 48px 0 13px 0;
+      padding: 48px 0 0 0;
       margin-right: 0;
       margin-left: 0;
       border-radius: 0;
@@ -2933,7 +2951,7 @@
 
       .bid__info {
         display: flex;
-        gap: 150px;
+        gap: 18px;
 
         .bid__title {
           font-size: 16px;

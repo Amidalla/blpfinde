@@ -231,6 +231,9 @@ function initTabletSlider(leftColumn) {
     leftColumn.appendChild(swiperWrapper);
 
     function updateCenterSlide(swiper) {
+
+        if (!swiper || !swiper.slides) return;
+
         const slides = swiper.slides;
         slides.forEach(slide => slide.classList.remove('center-slide'));
 
@@ -350,6 +353,8 @@ function initMobileSlider(leftColumn) {
     leftColumn.appendChild(swiperWrapper);
 
     function updateCenterSlide(swiper) {
+        if (!swiper || !swiper.slides) return;
+
         const slides = swiper.slides;
         slides.forEach(slide => slide.classList.remove('center-slide'));
 
@@ -913,8 +918,9 @@ export function updateAllSliders() {
         }
     });
 
+
     leftColumnSliders.forEach(slider => {
-        if (slider && !slider.destroyed) {
+        if (slider && !slider.destroyed && slider.slides) {
             slider.update();
 
             const slides = slider.slides;
