@@ -47,6 +47,34 @@ import Accordion from "./accordion.js";
 import { initMobileMenu, initModals } from "./modals.js";
 import FormValidator from "./formValidator.js";
 
+const params = window
+    .location
+    .search
+    .replace('?','')
+    .split('&')
+    .reduce(
+        function(p,e){
+            var a = e.split('=');
+            p[ decodeURIComponent(a[0])] = decodeURIComponent(a[1]);
+            return p;
+        },
+        {}
+    );
+
+if (params?.active_tab) {
+    document.querySelectorAll('.cases-tabs__nav .cases-tabs__btn')
+        .forEach(el => el.classList.remove('active'));
+
+    document.querySelectorAll('.cases-tabs__pane')
+        .forEach(el => el.classList.remove('active'));
+
+    document.querySelector('.cases-tabs__nav .cases-tabs__btn[data-tab=' + params.active_tab + ']')
+        .classList.add('active')
+    document.querySelector('#' + params.active_tab)
+        .classList.add('active')
+
+}
+
 Swiper.use([Pagination, Navigation, Autoplay, Thumbs, EffectFade]);
 
 const lazyLoadInstance = new LazyLoad({
