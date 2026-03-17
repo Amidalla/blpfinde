@@ -46,7 +46,7 @@
     margin-right: 41px;
 
     @media (max-width: 1800px) {
-      margin-right: 16px;
+      margin-right: 41px;
     }
 
     @media (max-width: 1600px) {
@@ -511,6 +511,14 @@
   position: relative;
   overflow: hidden;
   z-index: 1;
+
+  @media (max-width: 1600px) {
+    border-radius: 15px;
+  }
+
+  @media (max-width: 750px) {
+    border-radius: 10px;
+  }
 
   &::before {
     content: '';

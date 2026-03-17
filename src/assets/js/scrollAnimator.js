@@ -43,11 +43,12 @@ class ScrollAnimator {
             }
         });
 
-        gsap.set('.tools__item', { opacity: 0, y: 60, scale: 0.95 });
-        gsap.set('.technology__item', { opacity: 0, y: 80, scale: 0.95 });
-        gsap.set('.dignity__item', { opacity: 0, y: 50, scale: 0.95 });
-        gsap.set('.modal-item', { opacity: 0, y: 40, scale: 0.9 });
-        gsap.set('.main-about__point', { opacity: 0, y: 40, scale: 0.95 });
+        // Анимируем контейнеры списков, а не отдельные элементы
+        gsap.set('.tools__list', { opacity: 0, y: 60 });
+        gsap.set('.technology__list', { opacity: 0, y: 80 });
+        gsap.set('.dignity__list', { opacity: 0, y: 50 });
+        gsap.set('.modal-list', { opacity: 0, y: 40 });
+        gsap.set('.main-about__list', { opacity: 0, y: 40 });
         gsap.set('.clients__media', { opacity: 0, scale: 0.8, rotation: -3 });
 
         const buttons = document.querySelectorAll('.btn, .color-btn, .not-color-btn, .hero-btn, .technology__btn, .main-about__btn, .clients__btn, .bid-btn, .submit-btn, .footer .color-btn, .download-link');
@@ -82,11 +83,11 @@ class ScrollAnimator {
 
     animateDesktop() {
         this.animateSections();
-        this.animateToolsItems();
-        this.animateTechnologyItems();
-        this.animateDignityItems();
-        this.animateModalItems();
-        this.animateAboutPoints();
+        this.animateToolsList();
+        this.animateTechnologyList();
+        this.animateDignityList();
+        this.animateModalList();
+        this.animateAboutList();
         this.animateClientsMedia();
         this.animateButtons();
         this.animateHeader();
@@ -129,10 +130,10 @@ class ScrollAnimator {
 
         gsap.set([
             '.hero',
-            '.tools__item',
-            '.technology__item',
-            '.dignity__item',
-            '.modal-item',
+            '.tools__list',
+            '.technology__list',
+            '.dignity__list',
+            '.modal-list',
             '.main-about',
             '.clients',
             '.main-info',
@@ -205,7 +206,7 @@ class ScrollAnimator {
                     gsap.to(section, {
                         opacity: 1,
                         y: 0,
-                        duration: 0.6,
+                        duration: 0.8,
                         ease: 'power2.out',
                         delay: index * 0.05
                     });
@@ -215,54 +216,42 @@ class ScrollAnimator {
         });
     }
 
-    animateToolsItems() {
-        const items = document.querySelectorAll('.tools__item');
-        if (!items.length) return;
+    animateToolsList() {
+        const list = document.querySelector('.tools__list');
+        if (!list) return;
 
-        gsap.set(items, {
-            opacity: 0,
-            y: 60,
-            scale: 0.95
-        });
+        gsap.set(list, { opacity: 0, y: 60 });
 
         ScrollTrigger.create({
             trigger: '.tools',
             start: 'top 80%',
             onEnter: () => {
-                gsap.to(items, {
+                gsap.to(list, {
                     opacity: 1,
                     y: 0,
-                    scale: 1,
-                    duration: 0.6,
-                    stagger: 0.15,
-                    ease: 'power3.out'
+                    duration: 0.8,
+                    ease: 'power2.out'
                 });
             },
             once: true
         });
     }
 
-    animateTechnologyItems() {
-        const items = document.querySelectorAll('.technology__item');
-        if (!items.length) return;
+    animateTechnologyList() {
+        const list = document.querySelector('.technology__list');
+        if (!list) return;
 
-        gsap.set(items, {
-            opacity: 0,
-            y: 80,
-            scale: 0.95
-        });
+        gsap.set(list, { opacity: 0, y: 80 });
 
         ScrollTrigger.create({
             trigger: '.technology__list',
             start: 'top 80%',
             onEnter: () => {
-                gsap.to(items, {
+                gsap.to(list, {
                     opacity: 1,
                     y: 0,
-                    scale: 1,
-                    duration: 0.7,
-                    stagger: 0.1,
-                    ease: 'power3.out',
+                    duration: 0.8,
+                    ease: 'power2.out',
                     onComplete: () => this.addTechnologyHoverEffects()
                 });
                 this.animateTechnologyArrows();
@@ -282,9 +271,9 @@ class ScrollAnimator {
                 gsap.to(svg, {
                     opacity: 1,
                     scale: 1,
-                    duration: 0.4,
+                    duration: 0.6,
                     delay: 0.2 + index * 0.05,
-                    ease: 'back.out(1.2)'
+                    ease: 'power2.out'
                 });
             }
 
@@ -293,9 +282,9 @@ class ScrollAnimator {
                 gsap.to(span, {
                     opacity: 1,
                     scale: 1,
-                    duration: 0.3,
+                    duration: 0.5,
                     delay: 0.25 + index * 0.05,
-                    ease: 'back.out(1.2)'
+                    ease: 'power2.out'
                 });
             }
         });
@@ -343,7 +332,7 @@ class ScrollAnimator {
                 scale: 1.3,
                 color: '#F83E49',
                 duration: 0.1,
-                ease: 'back.out(1.5)',
+                ease: 'power2.out',
                 overwrite: true
             });
         }
@@ -425,81 +414,63 @@ class ScrollAnimator {
         }
     }
 
-    animateDignityItems() {
-        const items = document.querySelectorAll('.dignity__item');
-        if (!items.length) return;
+    animateDignityList() {
+        const list = document.querySelector('.dignity__list');
+        if (!list) return;
 
-        gsap.set(items, {
-            opacity: 0,
-            y: 50,
-            scale: 0.95
-        });
+        gsap.set(list, { opacity: 0, y: 50 });
 
         ScrollTrigger.create({
             trigger: '.dignity',
             start: 'top 80%',
             onEnter: () => {
-                gsap.to(items, {
+                gsap.to(list, {
                     opacity: 1,
                     y: 0,
-                    scale: 1,
-                    duration: 0.5,
-                    stagger: 0.08,
-                    ease: 'back.out(1.2)'
+                    duration: 0.8,
+                    ease: 'power2.out'
                 });
             },
             once: true
         });
     }
 
-    animateModalItems() {
-        const items = document.querySelectorAll('.modal-item');
-        if (!items.length) return;
+    animateModalList() {
+        const list = document.querySelector('.modal-list');
+        if (!list) return;
 
-        gsap.set(items, {
-            opacity: 0,
-            y: 40,
-            scale: 0.9
-        });
+        gsap.set(list, { opacity: 0, y: 40 });
 
         ScrollTrigger.create({
             trigger: '.modal-list',
             start: 'top 85%',
             onEnter: () => {
-                gsap.to(items, {
+                gsap.to(list, {
                     opacity: 1,
                     y: 0,
-                    scale: 1,
-                    duration: 0.5,
-                    stagger: 0.08,
-                    ease: 'back.out(1.2)'
+                    duration: 0.8,
+                    ease: 'power2.out'
                 });
             },
             once: true
         });
     }
 
-    animateAboutPoints() {
-        const points = document.querySelectorAll('.main-about__point');
-        if (!points.length) return;
+    animateAboutList() {
+        const list = document.querySelector('.main-about__list');
+        if (!list) return;
 
-        gsap.set(points, {
-            opacity: 0,
-            y: 40,
-            scale: 0.95
-        });
+        gsap.set(list, { opacity: 0, y: 40 });
 
         ScrollTrigger.create({
             trigger: '.main-about__list',
             start: 'top 85%',
             onEnter: () => {
-                gsap.to(points, {
+                gsap.to(list, {
                     opacity: 1,
                     y: 0,
-                    scale: 1,
-                    duration: 0.6,
-                    stagger: 0.15,
-                    ease: 'power3.out'
+                    duration: 0.8,
+                    ease: 'power2.out'
                 });
             },
             once: true
@@ -524,8 +495,8 @@ class ScrollAnimator {
                     opacity: 1,
                     scale: 1,
                     rotation: 0,
-                    duration: 0.7,
-                    ease: 'elastic.out(1, 0.4)'
+                    duration: 0.8,
+                    ease: 'power2.out'
                 });
             },
             once: true
@@ -553,9 +524,9 @@ class ScrollAnimator {
             opacity: 1,
             scale: 1,
             y: 0,
-            duration: 0.5,
+            duration: 0.6,
             delay: 0.2,
-            ease: 'back.out(1.7)'
+            ease: 'power2.out'
         });
     }
 
@@ -595,9 +566,9 @@ class ScrollAnimator {
                 gsap.to(batch, {
                     opacity: 1,
                     scale: 1,
-                    duration: 0.4,
+                    duration: 0.6,
                     stagger: 0.05,
-                    ease: 'back.out(1.7)'
+                    ease: 'power2.out'
                 });
             },
             once: true
@@ -698,11 +669,11 @@ class ScrollAnimator {
 
         this.downloadLinkAnimation = gsap.to(downloadLink, {
             keyframes: [
-                { x: 3, y: 0, duration: 0.5, ease: "sine.inOut" },
-                { x: 0, y: 3, duration: 0.5, ease: "sine.inOut" },
-                { x: -3, y: 0, duration: 0.5, ease: "sine.inOut" },
-                { x: 0, y: -3, duration: 0.5, ease: "sine.inOut" },
-                { x: 0, y: 0, duration: 0.5, ease: "sine.inOut" }
+                { x: 3, y: 0, duration: 0.5, ease: "power2.out" },
+                { x: 0, y: 3, duration: 0.5, ease: "power2.out" },
+                { x: -3, y: 0, duration: 0.5, ease: "power2.out" },
+                { x: 0, y: -3, duration: 0.5, ease: "power2.out" },
+                { x: 0, y: 0, duration: 0.5, ease: "power2.out" }
             ],
             repeat: -1,
             repeatDelay: 0.5

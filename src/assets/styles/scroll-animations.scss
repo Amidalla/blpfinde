@@ -3,6 +3,7 @@
 @use "./fonts.scss";
 
 .home-page {
+    // Анимируем контейнеры секций
     .hero,
     .tools,
     .technology,
@@ -10,13 +11,23 @@
     .main-about,
     .clients,
     .main-info,
-    .bid,
-    .tools__item,
-    .technology__item,
-    .dignity__item,
-    .modal-item,
-    .main-about__point,
-    .clients__media,
+    .bid {
+        opacity: 0;
+        visibility: visible;
+    }
+
+    // Анимируем контейнеры списков
+    .tools__list,
+    .technology__list,
+    .dignity__list,
+    .modal-list,
+    .main-about__list,
+    .clients__media {
+        opacity: 0;
+        visibility: visible;
+    }
+
+    // Кнопки оставляем как есть
     .btn,
     .color-btn,
     .not-color-btn,
@@ -32,6 +43,15 @@
     }
 }
 
+// Элементы внутри списков должны быть видимыми
+.tools__item,
+.technology__item,
+.dignity__item,
+.modal-item,
+.main-about__point {
+    opacity: 1 !important;
+    visibility: visible !important;
+}
 
 .hero,
 .tools,
@@ -41,15 +61,14 @@
 .clients,
 .main-info,
 .bid,
-.tools__item,
-.technology__item,
-.dignity__item,
-.modal-item,
-.main-about__point,
+.tools__list,
+.technology__list,
+.dignity__list,
+.modal-list,
+.main-about__list,
 .clients__media {
     will-change: transform, opacity;
 }
-
 
 .btn,
 .color-btn,
@@ -72,13 +91,11 @@
     }
 }
 
-
 .link-btn {
     &:hover {
         box-shadow: none !important;
     }
 }
-
 
 .download-link {
     display: inline-flex;
@@ -98,7 +115,6 @@
         }
     }
 }
-
 
 .technology__item {
     transition: transform 0.2s ease;
@@ -156,7 +172,6 @@
     }
 }
 
-
 .tools__item {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 
@@ -170,7 +185,6 @@
         }
     }
 }
-
 
 .dignity__item {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -189,7 +203,6 @@
     }
 }
 
-
 .modal-item {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 
@@ -207,7 +220,6 @@
     }
 }
 
-
 .clients__media {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 
@@ -216,7 +228,6 @@
         box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
     }
 }
-
 
 .clients__number {
     &,
@@ -232,7 +243,6 @@
         transition: none;
     }
 }
-
 
 .main-about__point {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -251,7 +261,6 @@
     }
 }
 
-
 @media (max-width: 750px) {
     .hero,
     .tools,
@@ -261,11 +270,11 @@
     .clients,
     .main-info,
     .bid,
-    .tools__item,
-    .technology__item,
-    .dignity__item,
-    .modal-item,
-    .main-about__point,
+    .tools__list,
+    .technology__list,
+    .dignity__list,
+    .modal-list,
+    .main-about__list,
     .clients__media,
     .btn,
     .color-btn,
@@ -285,6 +294,14 @@
         scale: 1;
         transition: none;
         animation: none;
+    }
+
+    .tools__item,
+    .technology__item,
+    .dignity__item,
+    .modal-item,
+    .main-about__point {
+        opacity: 1 !important;
     }
 
     .tools__item:hover,
@@ -330,7 +347,6 @@
             transform: none;
         }
     }
-
 
     .clients__number {
         &,

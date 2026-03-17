@@ -94,6 +94,7 @@
 
     @media (max-width: 1350px) {
       max-width: none;
+      margin-right: 0;
     }
 
     svg {
@@ -393,6 +394,12 @@
           text-decoration: underline;
         }
       }
+    }
+  }
+
+  .footer-btn {
+    @media (max-width: 450px) {
+      width: 100%;
     }
   }
 }

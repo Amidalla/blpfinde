@@ -26,20 +26,33 @@
       background-image: url("../images/materials-tablet.png");
       background-repeat: no-repeat;
       background-position: bottom 0 right 0;
-      background-size: 50%;
+      background-size: contain;
       min-height: 430px;
     }
 
     @media (max-width: 675px) {
       padding-bottom: 260px;
-      background-size: 80%;
+      background-size: 100% 90%;
       background-position: bottom 0 right 0;
+      background-image: url("../images/materials-mobile.png");
     }
 
 
     @media (max-width: 600px) {
       padding-top: 127px;
     }
+
+    @media (max-width: 550px) {
+      background-size: 100% 85%;
+    }
+    @media (max-width: 500px) {
+      background-size: 100% 70%;
+    }
+
+    @media (max-width: 450px) {
+      background-size: 100% 60%;
+    }
+
 
     .main-title {
       p {
@@ -127,16 +140,19 @@
   }
 
   &__media {
+    min-width: 174px;
     width: 174px;
     height: 168.308px;
     
     @media (max-width: 1600px) {
       width: 82.705px;
+      min-width: 82.705px;
       height: 80px;
     }
 
     @media (max-width: 1350px) {
       width: 57.894px;
+      min-width: 57.894px;
       height: 56px;
     }
 
@@ -171,6 +187,19 @@
 
     @media (max-width: 1350px) {
       margin-bottom: 20px;
+    }
+  }
+
+  &__btn {
+    padding: 20px 72px;
+
+    @media (max-width: 1600px) {
+      padding: 15px 30px;
+    }
+
+    @media (max-width: 750px) {
+      padding: 10px;
+      min-width: 230px;
     }
   }
 
@@ -276,6 +305,12 @@
         gap: 15px;
         align-items: start;
       }
+    }
+  }
+
+  &__btn {
+    @media (max-width: 450px) {
+      width: 100%;
     }
   }
 

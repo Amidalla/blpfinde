@@ -11,23 +11,26 @@
 
   &__btn {
     border-radius: 20px;
+    height: 63px;
     border: 1px solid var(--Premium-wight, #FFF);
     background: var(--Premium-wight, #FFF);
     box-shadow: 3px 4px 8.4px 0 rgba(73, 96, 136, 0.12);
-    padding: 21px 28px;
+    padding: 0 71.5px;
     color: var(--Premium-dark-gray-blue, #485F86);
     font-size: 18px;
     font-style: normal;
     font-weight: 500;
-    line-height: 150%;
+    line-height: 100%;
     cursor: pointer;
     position: relative;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     transform: translateY(0) scale(1);
 
-    @media (max-width: 1800px) {
+    @media (max-width: 1600px) {
       font-size: 16px;
       padding: 15px;
+      height: 49px;
+      border-radius: 10px;
     }
 
     @media (max-width: 1350px) {
@@ -35,6 +38,7 @@
       color: var(--Premium-dark-gray-blue, #485F86);
       font-size: 15px;
       font-weight: 700;
+      height: 39px;
     }
 
     &:focus {

@@ -32,8 +32,8 @@
 
     @media (max-width: 675px) {
       padding-bottom: 260px;
-      background-size: 80%;
-      background-position: bottom 0 right 0;
+      background-size: 90%;
+      background-position: bottom 20px right 0;
     }
 
 
@@ -80,17 +80,21 @@
 
 .questions-accordion {
   margin-bottom: 80px;
+  margin-top: 60px;
 
   @media (max-width: 1600px) {
     margin-bottom: 64px;
+    margin-top: 40px;
   }
 
   @media (max-width: 1350px) {
     margin-bottom: 48px;
+    margin-top: 32px;
   }
 
   @media (max-width: 750px) {
     margin-bottom: 46px;
+    margin-top: 24px;
   }
 
   .accordion-item {
@@ -103,6 +107,14 @@
 
     &:last-child {
       margin-bottom: 0;
+    }
+
+    @media (max-width: 1350px) {
+      margin-bottom: 16px;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
     }
 
     &:has(.accordion-header.active) {

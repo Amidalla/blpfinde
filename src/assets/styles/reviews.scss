@@ -84,7 +84,7 @@
       &__item {
 
         @media (max-width: 1700px) {
-          padding: 15.35px 38.69px 15.35px 21.49px;
+          padding: 15px 38.69px 15.35px 15px;
         }
 
         @media (max-width: 1180px) {
@@ -117,6 +117,12 @@
           @media (max-width: 1270px) {
             margin-top: 0;
           }
+        }
+      }
+
+      &__text {
+        @media (max-width: 1350px) {
+          min-width: 175px;
         }
       }
     }
@@ -304,6 +310,11 @@
     .user {
       width: 60px;
       height: 60px;
+      
+      @media (max-width: 1600px) {
+        width: 40px;
+        height: 40px;
+      }
 
       img {
         width: 100%;
@@ -320,6 +331,11 @@
 
     .date {
       font-size: 14px;
+
+      @media (max-width: 1600px) {
+        margin-top: 0;
+        margin-bottom: 0;
+      }
     }
   }
 
@@ -353,7 +369,7 @@
         margin-bottom: 12px;
       }
       @media (max-width: 1350px) {
-        font-size: 16px;
+        font-size: 15px;
       }
     }
 

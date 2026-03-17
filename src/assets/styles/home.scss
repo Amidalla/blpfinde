@@ -1261,6 +1261,7 @@
     flex-direction: column;
     align-items: center;
     gap: 31px;
+    position: relative;
     
     @media (max-width: 1800px) {
       gap: 23.39px;
@@ -1271,28 +1272,58 @@
       gap: 10px;
     }
 
-    &:first-child {
-      img {
-        max-width: 200%;
-        margin-top: -55px;
-        margin-left: 42px;
-        margin-bottom: -45px;
-        display: block;
+
+
+    .technology__image-wrapper {
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      border-radius: 50%;
+      flex-shrink: 0;
+
+
+      &::after {
+        content: "";
+        width: 223.377px;
+        max-width: 100%;
+        height: 223.377px;
+        background: transparent;
+        box-shadow: 0 4.981px 38.479px 0 rgba(140, 196, 252, 0.60);
+        position: absolute;
+        border-radius: 50%;
 
         @media (max-width: 1800px) {
-          width: 120%;
-          margin-top: -29px;
-          margin-left: 27px;
-          margin-bottom: -22px;
+          width: 178px;
+          height: 178px;
         }
 
         @media (max-width: 1350px) {
-          width: 40%;
-          margin: -22px -10px -22px -14px;
+          width: 80px;
+          height: 80px;
         }
       }
 
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+
+
+    &:first-child {
+      img {
+        display: block;
+      }
+
       @media (max-width: 1350px) {
+
+        img {
+          width: 80px;
+        }
+
         .item-arrow span  {
           bottom: 35px;
           left: -5px;
@@ -1329,44 +1360,20 @@
 
 
       img {
-        max-width: 200%;
-        margin-top: -55px;
-        margin-left: 21px;
-        margin-bottom: -45px;
         display: block;
 
-        @media (max-width: 1800px) {
-          width: 120%;
-          margin-top: -31px;
-          margin-left: 11px;
-          margin-bottom: -26px;
-        }
-
         @media (max-width: 1350px) {
-          width: 40%;
-          margin: -22px -10px -22px -18px;
+          width: 80px;
         }
       }
     }
 
     &:nth-child(3) {
       img {
-        max-width: 200%;
-        margin-top: -78px;
-        margin-left: 0;
-        margin-bottom: -59px;
         display: block;
 
-        @media (max-width: 1800px) {
-          width: 120%;
-          margin-top: -39px;
-          margin-left: 1px;
-          margin-bottom: -28px;
-        }
-
         @media (max-width: 1350px) {
-          width: 40%;
-          margin: -22px -10px -22px -25px;
+          width: 80px;
         }
       }
 
@@ -1407,44 +1414,20 @@
 
 
       img {
-        max-width: 200%;
-        margin-top: -52px;
-        margin-left: 3px;
-        margin-bottom: -45px;
         display: block;
 
-        @media (max-width: 1800px) {
-          width: 120%;
-          margin-top: -28px;
-          margin-left: 4px;
-          margin-bottom: -25px;
-        }
-
         @media (max-width: 1350px) {
-          width: 40%;
-          margin: -22px -10px -22px -20px;
+          width: 80px;
         }
       }
     }
 
     &:nth-child(5) {
       img {
-        max-width: 200%;
-        margin-top: -53px;
-        margin-left: -13px;
-        margin-bottom: -45px;
         display: block;
 
-        @media (max-width: 1800px) {
-          width: 120%;
-          margin-top: -27px;
-          margin-left: -5px;
-          margin-bottom: -23px;
-        }
-
         @media (max-width: 1350px) {
-          width: 40%;
-          margin: -22px -5px -22px -23px;
+          width: 80px;
         }
       }
 
@@ -1466,11 +1449,17 @@
       display: flex;
       flex-direction: column;
       align-items: center;
+      gap: 19px;
       
       @media (max-width: 1800px) {
         width: 199.909px;
-        height: 339.469px;
+        height: 368.469px;
         padding: 14.091px 9.091px 28.182px 9.091px;
+        gap: 9px;
+      }
+
+      @media  (max-width: 1600px) {
+        height: 349.469px;
       }
 
       @media (max-width: 1350px) {
@@ -1677,7 +1666,7 @@
   justify-content: center;
   align-items: center;
   gap: 8px;
-  border-radius: 15px;
+  border-radius: 20px;
   border: 1px solid #7198DA;
   background: #FFF;
   box-shadow: 0 4px 30px 0 rgba(43, 47, 66, 0.25);
@@ -1691,11 +1680,13 @@
   @media (max-width: 1800px) {
     font-size: 16px;
     padding: 15px 20px;
+    border-radius: 15px;
   }
 
   @media (max-width: 1350px) {
     font-size: 15px;
     padding: 10px 12px;
+    border-radius: 10px;
   }
 
   &:hover {
@@ -2385,9 +2376,6 @@
       }
     }
 
-
-
-
     .not-color-btn {
       background: transparent;
       display: flex;
@@ -2832,7 +2820,7 @@
     }
 
     @media (max-width: 1350px) {
-      padding: 126.57px 30px 68px 30px;
+      padding: 126.57px 30px 45px 30px;
       border-radius: 0;
       display: flex;
       flex-direction: column;
@@ -2894,9 +2882,10 @@
         font-size: 16px;
       }
 
-      @media (max-width: 1600px) {
+      @media (max-width: 1350px) {
         font-size: 15px;
         max-width: 340px;
+        margin-bottom: 10px;
       }
     }
   }
@@ -2930,6 +2919,23 @@
     .bid-btn {
       display: flex;
       margin-bottom: 41px;
+      padding: 17px 68.5px;
+      width: 295px;
+      
+      @media (max-width: 1600px) {
+        width: 252px;
+        padding: 15px 52px;
+      }
+
+      @media (max-width: 1350px) {
+        width: 176px;
+        padding: 15px 12px;
+      }
+      @media (max-width: 750px) {
+        width: auto;
+        padding: 10px 12px;
+      }
+
     }
 
     p {
@@ -3132,7 +3138,7 @@
       @media (max-width: 1350px) {
         display: grid;
         justify-content: start;
-        grid-template-columns: 268px auto;
+        grid-template-columns: 300px auto;
         column-gap: 20px;
         row-gap: 8px;
 
@@ -3154,20 +3160,20 @@
           grid-column: 2;
           margin: 0;
           align-self: start;
-          min-width: 300px;
+          min-width: 274px;
         }
 
 
         textarea {
-          width: 268px;
-          height: 74px;
+          width: 298px;
+          height: 102px;
           font-size: 15px;
           padding: 14px 15px;
         }
 
 
         .checkbox-label {
-          max-width: 300px;
+          max-width: 274px;
           align-items: start;
           margin-top: -8px;
 
@@ -3227,6 +3233,10 @@
         line-height: 130%;
       }
 
+      @media (max-width: 1350px) {
+        border-radius: 10px;
+      }
+
       &:focus {
         color: #212529;
         transform: translateX(10px);
@@ -3266,6 +3276,10 @@
         padding: 14px 15px;
         font-size: 16px;
         line-height: 130%;
+      }
+
+      @media (max-width: 1350px) {
+        border-radius: 10px;
       }
 
 
