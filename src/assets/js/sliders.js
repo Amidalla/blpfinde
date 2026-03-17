@@ -252,7 +252,7 @@ function initTabletSlider(leftColumn) {
         loop: true,
         initialSlide: 3,
         autoplay: {
-            delay: 1500,
+            delay: 2000,
             disableOnInteraction: false,
             pauseOnMouseEnter: true
         },

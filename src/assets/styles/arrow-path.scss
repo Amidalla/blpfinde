@@ -1,56 +1,70 @@
 
-
-.control-units {
-  position: relative;
-}
-
-.arrow-overlay-container {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 1000;
-}
-
-.original-arrow-svg {
-  overflow: visible !important;
-}
-
 .control-units__block {
-  transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-  will-change: transform;
+  display: flex;
+  width: 375px;
+  height: 182px;
+  padding: 15px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  border-radius: 20px;
+  background: #F2F5F8;
+  transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1),
+  background-color 0.4s ease,
+  color 0.3s ease,
+  opacity 0.3s ease,
+  visibility 0.3s ease;
+  will-change: transform, background-color, color, opacity, visibility;
 
-  &.active {
-    transform: translateX(-76px);
-  }
-}
-
-.arrow-path-group {
-  pointer-events: none;
-  z-index: 30;
-  opacity: 0;
-
-  .original-arrow-svg {
-    position: absolute;
-    overflow: visible;
-    filter: drop-shadow(0 4px 8px rgba(187, 223, 253, 0.3));
+  @media (min-width: 1231px) {
     opacity: 0;
-
-    path {
-      vector-effect: non-scaling-stroke;
-    }
+    visibility: hidden;
   }
 }
 
+
+.control-units__block h4,
+.control-units__block p {
+  transition: color 0.5s ease;
+}
+
+
+.control-units__block.active {
+  background: #45A2FF;
+  transform: translateX(-50px);
+}
+
+.control-units__block.active h4,
+.control-units__block.active p {
+  color: #fff;
+}
+
+
+.control-units__item:last-child .control-units__block.active {
+  transform: translateX(76px);
+}
+
+
+@media (max-width: 1600px) {
+  .control-units__block {
+    width: 100%;
+    height: 126px;
+    min-width: 100%;
+  }
+}
+
+@media (max-width: 1230px) {
+  .control-units__block {
+    transition: background-color 0.4s ease, color 0.3s ease;
+  }
+
+  .control-units__block.active {
+    transform: none !important;
+  }
+}
 
 @media (max-width: 768px) {
   .control-units__block.active {
     transform: translateX(-20px);
-  }
-
-  .arrow-path-group {
-    display: none;
   }
 }

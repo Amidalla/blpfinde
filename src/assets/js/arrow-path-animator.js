@@ -22,6 +22,11 @@ export default class ArrowPathAnimator {
         this.ballX = 0;
         this.ballY = 0;
         this.container = null;
+        this.blocksHidden = false;
+    }
+
+    isDesktop() {
+        return window.innerWidth > 1230;
     }
 
     getTranslateValue() {
@@ -33,8 +38,12 @@ export default class ArrowPathAnimator {
 
     getArrowDisplayTime() {
         if (window.innerWidth <= 1700) {
-            return 800;
+            return 1200;
         }
+        return 900;
+    }
+
+    getArrowAnimationTime() {
         return 600;
     }
 
@@ -47,34 +56,63 @@ export default class ArrowPathAnimator {
         this.getBallCoordinates();
         this.getArrowBallAnimator();
         this.container = document.querySelector('.control-units');
-
         this.setupZIndex();
-
         if (this.isTablet) {
             this.prepareForTablet();
         } else if (this.isMobile) {
             this.showImmediately();
         } else {
-            this.hide();
+            this.hideAllBlocks();
             this.setupScrollObserver();
         }
-
         window.addEventListener('resize', this.handleResize.bind(this));
         return this;
     }
 
-    prepareForTablet() {
-        const blocks = [this.firstBlock, this.secondBlock, this.thirdBlock,
-            this.fourthBlock, this.fifthBlock, this.sixthBlock];
+    hideAllBlocks() {
+        if (!this.isDesktop()) return;
+        const blocks = [this.firstBlock, this.secondBlock, this.thirdBlock, this.fourthBlock, this.fifthBlock, this.sixthBlock];
+        blocks.forEach(block => {
+            if (block) {
+                block.style.opacity = '0';
+                block.style.visibility = 'hidden';
+                block.style.transform = '';
+                block.classList.remove('active');
+            }
+        });
+        this.blocksHidden = true;
+    }
 
+    showBlockWithActive(block, position) {
+        if (!block || !this.isDesktop()) return;
+        const translateValue = this.getTranslateValue();
+        block.style.opacity = '1';
+        block.style.visibility = 'visible';
+        block.classList.add('active');
+        if (position === 'left' || position === 'left-mobile' || position === 'fifth' || position === 'sixth') {
+            block.style.transform = `translateX(-${translateValue}px)`;
+        } else if (position === 'right' || position === 'second' || position === 'third' || position === 'fourth') {
+            block.style.transform = `translateX(${translateValue}px)`;
+        }
+    }
+
+    resetBlock(block) {
+        if (!block || !this.isDesktop()) return;
+        block.classList.remove('active');
+        block.style.transform = '';
+    }
+
+    prepareForTablet() {
+        const blocks = [this.firstBlock, this.secondBlock, this.thirdBlock, this.fourthBlock, this.fifthBlock, this.sixthBlock];
         blocks.forEach(block => {
             if (block) {
                 block.style.transform = '';
+                block.style.opacity = '1';
+                block.style.visibility = 'visible';
                 block.style.transition = 'background 0.2s ease, color 0.2s ease';
                 block.classList.remove('active');
             }
         });
-
         this.destroyArrow();
     }
 
@@ -83,13 +121,11 @@ export default class ArrowPathAnimator {
             this.container.style.position = 'relative';
             this.container.style.zIndex = '1';
         }
-
         const svg = document.querySelector('.control-units svg');
         if (svg) {
             svg.style.position = 'relative';
             svg.style.zIndex = '20';
         }
-
         const ballGroup = document.querySelector('.static-ball-group');
         if (ballGroup) {
             ballGroup.style.zIndex = '30';
@@ -103,42 +139,31 @@ export default class ArrowPathAnimator {
     getBallCoordinates() {
         const svg = document.querySelector('.control-units svg');
         if (!svg) return;
-
         const ballGroup = svg.querySelector('.static-ball-group');
         if (!ballGroup) return;
-
         const blueCircle = ballGroup.querySelector('.static-ball-blue');
         if (!blueCircle) return;
-
         const cx = parseFloat(blueCircle.getAttribute('cx') || '0');
         const cy = parseFloat(blueCircle.getAttribute('cy') || '0');
-
         this.ballX = cx;
         this.ballY = cy;
-
         return { x: this.ballX, y: this.ballY };
     }
 
     getBallScreenCoordinates() {
         const svg = document.querySelector('.control-units svg');
         if (!svg) return null;
-
         const ballGroup = svg.querySelector('.static-ball-group');
         if (!ballGroup) return null;
-
         const blueCircle = ballGroup.querySelector('.static-ball-blue');
         if (!blueCircle) return null;
-
         const cx = parseFloat(blueCircle.getAttribute('cx') || '0');
         const cy = parseFloat(blueCircle.getAttribute('cy') || '0');
-
         const svgPoint = svg.createSVGPoint();
         svgPoint.x = cx;
         svgPoint.y = cy;
-
         const screenCTM = svg.getScreenCTM();
         const screenPoint = svgPoint.matrixTransform(screenCTM);
-
         return {
             x: screenPoint.x,
             y: screenPoint.y
@@ -148,11 +173,9 @@ export default class ArrowPathAnimator {
     getBallContainerCoordinates() {
         const screenCoords = this.getBallScreenCoordinates();
         if (!screenCoords || !this.container) return null;
-
         const containerRect = this.container.getBoundingClientRect();
         const containerX = screenCoords.x - containerRect.left;
         const containerY = screenCoords.y - containerRect.top;
-
         return {
             x: containerX,
             y: containerY
@@ -162,49 +185,59 @@ export default class ArrowPathAnimator {
     findTargetBlocks() {
         const section = document.querySelector('.control-units');
         if (!section) return;
-
         this.isTablet = window.innerWidth <= 1230;
-
         const leftColumn = document.querySelector('.control-units__item:first-child');
         const rightColumn = document.querySelector('.control-units__item:last-child');
-
         if (leftColumn) {
             this.firstBlock = leftColumn.querySelector('[data-block="processes"]');
             this.fifthBlock = leftColumn.querySelector('[data-block="weak-involvement"]');
             this.sixthBlock = leftColumn.querySelector('[data-block="understanding-no-solution"]');
-
             if (this.isTablet) {
                 this.secondBlock = leftColumn.querySelector('[data-block="employee-inefficiency"]');
                 this.thirdBlock = leftColumn.querySelector('[data-block="where-to-start"]');
                 this.fourthBlock = leftColumn.querySelector('[data-block="no-vision"]');
             }
         }
-
         if (!this.isTablet && rightColumn) {
             this.secondBlock = rightColumn.querySelector('[data-block="employee-inefficiency"]');
             this.thirdBlock = rightColumn.querySelector('[data-block="where-to-start"]');
             this.fourthBlock = rightColumn.querySelector('[data-block="no-vision"]');
         }
-
-        const blocks = [this.firstBlock, this.secondBlock, this.thirdBlock,
-            this.fourthBlock, this.fifthBlock, this.sixthBlock];
-
+        const blocks = [this.firstBlock, this.secondBlock, this.thirdBlock, this.fourthBlock, this.fifthBlock, this.sixthBlock];
         blocks.forEach(block => {
             if (block) {
                 if (this.isTablet) {
-                    block.style.transition = 'background 0.2s ease, color 0.2s ease';
+                    block.style.transition = 'background 0.2s ease, color 0.2s ease, opacity 0.3s ease';
                     block.style.transform = '';
+                    block.style.opacity = '1';
+                    block.style.visibility = 'visible';
                 } else {
-                    block.style.transition = 'transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.2s ease, color 0.2s ease';
+                    block.style.transition = 'transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.4s ease, color 0.3s ease, opacity 0.3s ease';
                 }
                 block.classList.remove('active');
             }
         });
     }
 
+    createMask(arrowSvg) {
+        const maskId = `mask-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+        const mask = document.createElementNS('http://www.w3.org/2000/svg', 'mask');
+        mask.setAttribute('id', maskId);
+        mask.setAttribute('maskContentUnits', 'objectBoundingBox');
+        const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+        rect.setAttribute('width', '1');
+        rect.setAttribute('height', '1');
+        rect.setAttribute('fill', 'white');
+        rect.setAttribute('x', '0');
+        rect.style.transform = 'scaleX(1)';
+        rect.style.transition = 'transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)';
+        mask.appendChild(rect);
+        arrowSvg.appendChild(mask);
+        return { maskId, rect };
+    }
+
     createFirstArrow(ballX, ballY) {
         if (this.isTablet || !this.firstBlock) return null;
-
         const arrowDiv = document.createElement('div');
         arrowDiv.style.position = 'absolute';
         arrowDiv.style.top = '0';
@@ -215,21 +248,14 @@ export default class ArrowPathAnimator {
         arrowDiv.style.zIndex = '10';
         arrowDiv.style.overflow = 'visible';
         arrowDiv.style.opacity = '0';
-
-        const displayTime = this.getArrowDisplayTime();
-        arrowDiv.style.transition = `opacity ${displayTime * 0.3}ms ease`;
-
+        arrowDiv.style.transition = 'opacity 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)';
         const svg = document.querySelector('.control-units svg');
         const svgRect = svg.getBoundingClientRect();
         const containerRect = this.container.getBoundingClientRect();
-
         const ballContainerX = svgRect.left - containerRect.left + ballX;
         const ballContainerY = svgRect.top - containerRect.top + ballY;
-
         const arrowSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-
         const shorten = this.shouldShortenArrows();
-
         if (shorten) {
             arrowSvg.setAttribute('width', '133');
             arrowSvg.setAttribute('height', '60');
@@ -239,9 +265,7 @@ export default class ArrowPathAnimator {
             arrowSvg.setAttribute('height', '60');
             arrowSvg.setAttribute('viewBox', '0 0 241 60');
         }
-
         arrowSvg.style.position = 'absolute';
-
         if (window.innerWidth <= 1700) {
             arrowSvg.style.left = (ballContainerX - 131) + 'px';
             arrowSvg.style.top = (ballContainerY - 57.2941) + 'px';
@@ -249,29 +273,27 @@ export default class ArrowPathAnimator {
             arrowSvg.style.left = (ballContainerX - 237.5) + 'px';
             arrowSvg.style.top = (ballContainerY - 57.2941) + 'px';
         }
-
         arrowSvg.style.overflow = 'visible';
         arrowSvg.style.transform = 'none';
         arrowSvg.style.zIndex = '10';
-
         const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-
         if (shorten) {
             path.setAttribute('d', 'M126.833 57.2941C126.833 58.7668 128.027 59.9607 129.5 59.9607C130.973 59.9607 132.167 58.7668 132.167 57.2941C132.167 55.8213 130.973 54.6274 129.5 54.6274C128.027 54.6274 126.833 55.8213 126.833 57.2941ZM0.0647185 14.0481C-0.0711593 14.2885 0.0135722 14.5935 0.253972 14.7294L4.17151 16.9436C4.4119 17.0795 4.71694 16.9948 4.85282 16.7544C4.98869 16.514 4.90396 16.2089 4.66356 16.0731L1.18131 14.1048L3.14954 10.6226C3.28541 10.3822 3.20068 10.0771 2.96028 9.94127C2.71988 9.80539 2.41485 9.89012 2.27897 10.1305L0.0647185 14.0481ZM129.5 57.2941L129.85 56.9372C99.196 26.2859 58.999 9.2754 0.366178 13.8123L0.5 14.2941L0.633822 14.7758C58.901 10.3127 98.804 27.1021 129.15 57.651L129.5 57.2941Z');
         } else {
             path.setAttribute('d', 'M234.833 57.2941C234.833 58.7668 236.027 59.9607 237.5 59.9607C238.973 59.9607 240.167 58.7668 240.167 57.2941C240.167 55.8213 238.973 54.6274 237.5 54.6274C236.027 54.6274 234.833 55.8213 234.833 57.2941ZM0.0647185 14.0481C-0.0711593 14.2885 0.0135722 14.5935 0.253972 14.7294L4.17151 16.9436C4.4119 17.0795 4.71694 16.9948 4.85282 16.7544C4.98869 16.514 4.90396 16.2089 4.66356 16.0731L1.18131 14.1048L3.14954 10.6226C3.28541 10.3822 3.20068 10.0771 2.96028 9.94127C2.71988 9.80539 2.41485 9.89012 2.27897 10.1305L0.0647185 14.0481ZM237.5 57.2941L237.85 56.9372C184.696 4.78592 108.499 -16.2246 0.366178 13.8123L0.5 14.2941L0.633822 14.7758C108.501 -15.1873 184.304 5.80215 237.15 57.651L237.5 57.2941Z');
         }
-
         path.setAttribute('fill', '#BBDFFD');
-
         arrowSvg.appendChild(path);
+        const { maskId, rect } = this.createMask(arrowSvg);
+        path.setAttribute('mask', `url(#${maskId})`);
+        rect.style.transform = 'scaleX(1)';
         arrowDiv.appendChild(arrowSvg);
         this.container.appendChild(arrowDiv);
-
         return {
             div: arrowDiv,
             svg: arrowSvg,
             path: path,
+            maskRect: rect,
             ballContainerX,
             ballContainerY
         };
@@ -279,7 +301,6 @@ export default class ArrowPathAnimator {
 
     createSecondArrow(ballContainerX, ballContainerY) {
         if (this.isTablet || !this.secondBlock) return null;
-
         const arrowDiv = document.createElement('div');
         arrowDiv.style.position = 'absolute';
         arrowDiv.style.top = '0';
@@ -290,12 +311,8 @@ export default class ArrowPathAnimator {
         arrowDiv.style.zIndex = '10';
         arrowDiv.style.overflow = 'visible';
         arrowDiv.style.opacity = '0';
-
-        const displayTime = this.getArrowDisplayTime();
-        arrowDiv.style.transition = `opacity ${displayTime * 0.3}ms ease`;
-
+        arrowDiv.style.transition = 'opacity 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)';
         let arrowLeft, arrowTop;
-
         if (window.innerWidth <= 1700) {
             arrowLeft = ballContainerX - 2;
             arrowTop = ballContainerY - 57.2941;
@@ -303,11 +320,8 @@ export default class ArrowPathAnimator {
             arrowLeft = ballContainerX - 3.5;
             arrowTop = ballContainerY - 57.2941;
         }
-
         const arrowSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-
         const shorten = this.shouldShortenArrows();
-
         if (shorten) {
             arrowSvg.setAttribute('width', '133');
             arrowSvg.setAttribute('height', '60');
@@ -317,32 +331,30 @@ export default class ArrowPathAnimator {
             arrowSvg.setAttribute('height', '60');
             arrowSvg.setAttribute('viewBox', '0 0 241 60');
         }
-
         arrowSvg.style.position = 'absolute';
         arrowSvg.style.left = arrowLeft + 'px';
         arrowSvg.style.top = arrowTop + 'px';
         arrowSvg.style.overflow = 'visible';
         arrowSvg.style.zIndex = '10';
         arrowSvg.style.transform = 'scaleX(-1)';
-
         const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-
         if (shorten) {
             path.setAttribute('d', 'M126.833 57.2941C126.833 58.7668 128.027 59.9607 129.5 59.9607C130.973 59.9607 132.167 58.7668 132.167 57.2941C132.167 55.8213 130.973 54.6274 129.5 54.6274C128.027 54.6274 126.833 55.8213 126.833 57.2941ZM0.0647185 14.0481C-0.0711593 14.2885 0.0135722 14.5935 0.253972 14.7294L4.17151 16.9436C4.4119 17.0795 4.71694 16.9948 4.85282 16.7544C4.98869 16.514 4.90396 16.2089 4.66356 16.0731L1.18131 14.1048L3.14954 10.6226C3.28541 10.3822 3.20068 10.0771 2.96028 9.94127C2.71988 9.80539 2.41485 9.89012 2.27897 10.1305L0.0647185 14.0481ZM129.5 57.2941L129.85 56.9372C99.196 26.2859 58.999 9.2754 0.366178 13.8123L0.5 14.2941L0.633822 14.7758C58.901 10.3127 98.804 27.1021 129.15 57.651L129.5 57.2941Z');
         } else {
             path.setAttribute('d', 'M234.833 57.2941C234.833 58.7668 236.027 59.9607 237.5 59.9607C238.973 59.9607 240.167 58.7668 240.167 57.2941C240.167 55.8213 238.973 54.6274 237.5 54.6274C236.027 54.6274 234.833 55.8213 234.833 57.2941ZM0.0647185 14.0481C-0.0711593 14.2885 0.0135722 14.5935 0.253972 14.7294L4.17151 16.9436C4.4119 17.0795 4.71694 16.9948 4.85282 16.7544C4.98869 16.514 4.90396 16.2089 4.66356 16.0731L1.18131 14.1048L3.14954 10.6226C3.28541 10.3822 3.20068 10.0771 2.96028 9.94127C2.71988 9.80539 2.41485 9.89012 2.27897 10.1305L0.0647185 14.0481ZM237.5 57.2941L237.85 56.9372C184.696 4.78592 108.499 -16.2246 0.366178 13.8123L0.5 14.2941L0.633822 14.7758C108.501 -15.1873 184.304 5.80215 237.15 57.651L237.5 57.2941Z');
         }
-
         path.setAttribute('fill', '#BBDFFD');
-
         arrowSvg.appendChild(path);
+        const { maskId, rect } = this.createMask(arrowSvg);
+        path.setAttribute('mask', `url(#${maskId})`);
+        rect.style.transform = 'scaleX(1)';
         arrowDiv.appendChild(arrowSvg);
         this.container.appendChild(arrowDiv);
-
         return {
             div: arrowDiv,
             svg: arrowSvg,
             path: path,
+            maskRect: rect,
             ballContainerX,
             ballContainerY,
             arrowLeft,
@@ -352,7 +364,6 @@ export default class ArrowPathAnimator {
 
     createThirdArrow(ballContainerX, ballContainerY) {
         if (this.isTablet || !this.thirdBlock) return null;
-
         const arrowDiv = document.createElement('div');
         arrowDiv.style.position = 'absolute';
         arrowDiv.style.top = '0';
@@ -363,12 +374,8 @@ export default class ArrowPathAnimator {
         arrowDiv.style.zIndex = '10';
         arrowDiv.style.overflow = 'visible';
         arrowDiv.style.opacity = '0';
-
-        const displayTime = this.getArrowDisplayTime();
-        arrowDiv.style.transition = `opacity ${displayTime * 0.3}ms ease`;
-
+        arrowDiv.style.transition = 'opacity 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)';
         let arrowLeft, arrowTop;
-
         if (window.innerWidth <= 1700) {
             arrowLeft = ballContainerX - 0;
             arrowTop = ballContainerY - 4;
@@ -376,11 +383,8 @@ export default class ArrowPathAnimator {
             arrowLeft = ballContainerX - 0;
             arrowTop = ballContainerY - 4;
         }
-
         const arrowSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-
         const shorten = this.shouldShortenArrows();
-
         if (shorten) {
             arrowSvg.setAttribute('width', '66');
             arrowSvg.setAttribute('height', '8');
@@ -390,32 +394,30 @@ export default class ArrowPathAnimator {
             arrowSvg.setAttribute('height', '8');
             arrowSvg.setAttribute('viewBox', '0 0 120 8');
         }
-
         arrowSvg.style.position = 'absolute';
         arrowSvg.style.left = arrowLeft + 'px';
         arrowSvg.style.top = arrowTop + 'px';
         arrowSvg.style.overflow = 'visible';
         arrowSvg.style.zIndex = '10';
         arrowSvg.style.transform = 'scaleX(-1)';
-
         const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-
         if (shorten) {
             path.setAttribute('d', 'M0.146447 3.33004C-0.0488155 3.5253 -0.0488155 3.84189 0.146447 4.03715L3.32843 7.21913C3.52369 7.41439 3.84027 7.41439 4.03553 7.21913C4.2308 7.02387 4.2308 6.70728 4.03553 6.51202L1.20711 3.68359L4.03553 0.855167C4.2308 0.659904 4.2308 0.343322 4.03553 0.14806C3.84027 -0.0472023 3.52369 -0.0472023 3.32843 0.14806L0.146447 3.33004ZM66 3.68359V3.18359H0.5V3.68359V4.18359H66V3.68359Z');
         } else {
             path.setAttribute('d', 'M0.146447 3.33004C-0.0488155 3.5253 -0.0488155 3.84189 0.146447 4.03715L3.32843 7.21913C3.52369 7.41439 3.84027 7.41439 4.03553 7.21913C4.2308 7.02387 4.2308 6.70728 4.03553 6.51202L1.20711 3.68359L4.03553 0.855167C4.2308 0.659904 4.2308 0.343322 4.03553 0.14806C3.84027 -0.0472023 3.52369 -0.0472023 3.32843 0.14806L0.146447 3.33004ZM120 3.68359V3.18359H0.5V3.68359V4.18359H120V3.68359Z');
         }
-
         path.setAttribute('fill', '#BBDFFD');
-
         arrowSvg.appendChild(path);
+        const { maskId, rect } = this.createMask(arrowSvg);
+        path.setAttribute('mask', `url(#${maskId})`);
+        rect.style.transform = 'scaleX(1)';
         arrowDiv.appendChild(arrowSvg);
         this.container.appendChild(arrowDiv);
-
         return {
             div: arrowDiv,
             svg: arrowSvg,
             path: path,
+            maskRect: rect,
             ballContainerX,
             ballContainerY,
             arrowLeft,
@@ -425,7 +427,6 @@ export default class ArrowPathAnimator {
 
     createFourthArrow(ballContainerX, ballContainerY) {
         if (this.isTablet || !this.fourthBlock) return null;
-
         const arrowDiv = document.createElement('div');
         arrowDiv.style.position = 'absolute';
         arrowDiv.style.top = '0';
@@ -436,12 +437,8 @@ export default class ArrowPathAnimator {
         arrowDiv.style.zIndex = '10';
         arrowDiv.style.overflow = 'visible';
         arrowDiv.style.opacity = '0';
-
-        const displayTime = this.getArrowDisplayTime();
-        arrowDiv.style.transition = `opacity ${displayTime * 0.3}ms ease`;
-
+        arrowDiv.style.transition = 'opacity 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)';
         let arrowLeft, arrowTop;
-
         if (window.innerWidth <= 1700) {
             arrowLeft = ballContainerX - 2;
             arrowTop = ballContainerY - 2.7059;
@@ -449,11 +446,8 @@ export default class ArrowPathAnimator {
             arrowLeft = ballContainerX - 3.5;
             arrowTop = ballContainerY - 2.7059;
         }
-
         const arrowSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-
         const shorten = this.shouldShortenArrows();
-
         if (shorten) {
             arrowSvg.setAttribute('width', '133');
             arrowSvg.setAttribute('height', '60');
@@ -463,32 +457,30 @@ export default class ArrowPathAnimator {
             arrowSvg.setAttribute('height', '60');
             arrowSvg.setAttribute('viewBox', '0 0 241 60');
         }
-
         arrowSvg.style.position = 'absolute';
         arrowSvg.style.left = arrowLeft + 'px';
         arrowSvg.style.top = arrowTop + 'px';
         arrowSvg.style.overflow = 'visible';
         arrowSvg.style.zIndex = '10';
         arrowSvg.style.transform = 'scaleX(-1) scaleY(-1)';
-
         const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-
         if (shorten) {
             path.setAttribute('d', 'M126.833 57.2941C126.833 58.7668 128.027 59.9607 129.5 59.9607C130.973 59.9607 132.167 58.7668 132.167 57.2941C132.167 55.8213 130.973 54.6274 129.5 54.6274C128.027 54.6274 126.833 55.8213 126.833 57.2941ZM0.0647185 14.0481C-0.0711593 14.2885 0.0135722 14.5935 0.253972 14.7294L4.17151 16.9436C4.4119 17.0795 4.71694 16.9948 4.85282 16.7544C4.98869 16.514 4.90396 16.2089 4.66356 16.0731L1.18131 14.1048L3.14954 10.6226C3.28541 10.3822 3.20068 10.0771 2.96028 9.94127C2.71988 9.80539 2.41485 9.89012 2.27897 10.1305L0.0647185 14.0481ZM129.5 57.2941L129.85 56.9372C99.196 26.2859 58.999 9.2754 0.366178 13.8123L0.5 14.2941L0.633822 14.7758C58.901 10.3127 98.804 27.1021 129.15 57.651L129.5 57.2941Z');
         } else {
             path.setAttribute('d', 'M234.833 57.2941C234.833 58.7668 236.027 59.9607 237.5 59.9607C238.973 59.9607 240.167 58.7668 240.167 57.2941C240.167 55.8213 238.973 54.6274 237.5 54.6274C236.027 54.6274 234.833 55.8213 234.833 57.2941ZM0.0647185 14.0481C-0.0711593 14.2885 0.0135722 14.5935 0.253972 14.7294L4.17151 16.9436C4.4119 17.0795 4.71694 16.9948 4.85282 16.7544C4.98869 16.514 4.90396 16.2089 4.66356 16.0731L1.18131 14.1048L3.14954 10.6226C3.28541 10.3822 3.20068 10.0771 2.96028 9.94127C2.71988 9.80539 2.41485 9.89012 2.27897 10.1305L0.0647185 14.0481ZM237.5 57.2941L237.85 56.9372C184.696 4.78592 108.499 -16.2246 0.366178 13.8123L0.5 14.2941L0.633822 14.7758C108.501 -15.1873 184.304 5.80215 237.15 57.651L237.5 57.2941Z');
         }
-
         path.setAttribute('fill', '#BBDFFD');
-
         arrowSvg.appendChild(path);
+        const { maskId, rect } = this.createMask(arrowSvg);
+        path.setAttribute('mask', `url(#${maskId})`);
+        rect.style.transform = 'scaleX(1)';
         arrowDiv.appendChild(arrowSvg);
         this.container.appendChild(arrowDiv);
-
         return {
             div: arrowDiv,
             svg: arrowSvg,
             path: path,
+            maskRect: rect,
             ballContainerX,
             ballContainerY,
             arrowLeft,
@@ -498,7 +490,6 @@ export default class ArrowPathAnimator {
 
     createFifthArrow(ballContainerX, ballContainerY) {
         if (this.isTablet || !this.fifthBlock) return null;
-
         const arrowDiv = document.createElement('div');
         arrowDiv.style.position = 'absolute';
         arrowDiv.style.top = '0';
@@ -509,12 +500,8 @@ export default class ArrowPathAnimator {
         arrowDiv.style.zIndex = '10';
         arrowDiv.style.overflow = 'visible';
         arrowDiv.style.opacity = '0';
-
-        const displayTime = this.getArrowDisplayTime();
-        arrowDiv.style.transition = `opacity ${displayTime * 0.3}ms ease`;
-
+        arrowDiv.style.transition = 'opacity 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)';
         let arrowLeft, arrowTop;
-
         if (window.innerWidth <= 1700) {
             arrowLeft = ballContainerX - 131;
             arrowTop = ballContainerY - 2.7059;
@@ -522,11 +509,8 @@ export default class ArrowPathAnimator {
             arrowLeft = ballContainerX - 237.5;
             arrowTop = ballContainerY - 2.7059;
         }
-
         const arrowSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-
         const shorten = this.shouldShortenArrows();
-
         if (shorten) {
             arrowSvg.setAttribute('width', '133');
             arrowSvg.setAttribute('height', '60');
@@ -536,32 +520,30 @@ export default class ArrowPathAnimator {
             arrowSvg.setAttribute('height', '60');
             arrowSvg.setAttribute('viewBox', '0 0 241 60');
         }
-
         arrowSvg.style.position = 'absolute';
         arrowSvg.style.left = arrowLeft + 'px';
         arrowSvg.style.top = arrowTop + 'px';
         arrowSvg.style.overflow = 'visible';
         arrowSvg.style.zIndex = '10';
         arrowSvg.style.transform = 'scaleY(-1)';
-
         const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-
         if (shorten) {
             path.setAttribute('d', 'M126.833 57.2941C126.833 58.7668 128.027 59.9607 129.5 59.9607C130.973 59.9607 132.167 58.7668 132.167 57.2941C132.167 55.8213 130.973 54.6274 129.5 54.6274C128.027 54.6274 126.833 55.8213 126.833 57.2941ZM0.0647185 14.0481C-0.0711593 14.2885 0.0135722 14.5935 0.253972 14.7294L4.17151 16.9436C4.4119 17.0795 4.71694 16.9948 4.85282 16.7544C4.98869 16.514 4.90396 16.2089 4.66356 16.0731L1.18131 14.1048L3.14954 10.6226C3.28541 10.3822 3.20068 10.0771 2.96028 9.94127C2.71988 9.80539 2.41485 9.89012 2.27897 10.1305L0.0647185 14.0481ZM129.5 57.2941L129.85 56.9372C99.196 26.2859 58.999 9.2754 0.366178 13.8123L0.5 14.2941L0.633822 14.7758C58.901 10.3127 98.804 27.1021 129.15 57.651L129.5 57.2941Z');
         } else {
             path.setAttribute('d', 'M234.833 57.2941C234.833 58.7668 236.027 59.9607 237.5 59.9607C238.973 59.9607 240.167 58.7668 240.167 57.2941C240.167 55.8213 238.973 54.6274 237.5 54.6274C236.027 54.6274 234.833 55.8213 234.833 57.2941ZM0.0647185 14.0481C-0.0711593 14.2885 0.0135722 14.5935 0.253972 14.7294L4.17151 16.9436C4.4119 17.0795 4.71694 16.9948 4.85282 16.7544C4.98869 16.514 4.90396 16.2089 4.66356 16.0731L1.18131 14.1048L3.14954 10.6226C3.28541 10.3822 3.20068 10.0771 2.96028 9.94127C2.71988 9.80539 2.41485 9.89012 2.27897 10.1305L0.0647185 14.0481ZM237.5 57.2941L237.85 56.9372C184.696 4.78592 108.499 -16.2246 0.366178 13.8123L0.5 14.2941L0.633822 14.7758C108.501 -15.1873 184.304 5.80215 237.15 57.651L237.5 57.2941Z');
         }
-
         path.setAttribute('fill', '#BBDFFD');
-
         arrowSvg.appendChild(path);
+        const { maskId, rect } = this.createMask(arrowSvg);
+        path.setAttribute('mask', `url(#${maskId})`);
+        rect.style.transform = 'scaleX(1)';
         arrowDiv.appendChild(arrowSvg);
         this.container.appendChild(arrowDiv);
-
         return {
             div: arrowDiv,
             svg: arrowSvg,
             path: path,
+            maskRect: rect,
             ballContainerX,
             ballContainerY,
             arrowLeft,
@@ -571,7 +553,6 @@ export default class ArrowPathAnimator {
 
     createSixthArrow(ballContainerX, ballContainerY) {
         if (this.isTablet || !this.sixthBlock) return null;
-
         const arrowDiv = document.createElement('div');
         arrowDiv.style.position = 'absolute';
         arrowDiv.style.top = '0';
@@ -582,12 +563,8 @@ export default class ArrowPathAnimator {
         arrowDiv.style.zIndex = '10';
         arrowDiv.style.overflow = 'visible';
         arrowDiv.style.opacity = '0';
-
-        const displayTime = this.getArrowDisplayTime();
-        arrowDiv.style.transition = `opacity ${displayTime * 0.3}ms ease`;
-
+        arrowDiv.style.transition = 'opacity 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)';
         let arrowLeft, arrowTop;
-
         if (window.innerWidth <= 1700) {
             arrowLeft = ballContainerX - 66;
             arrowTop = ballContainerY - 4;
@@ -595,11 +572,8 @@ export default class ArrowPathAnimator {
             arrowLeft = ballContainerX - 120;
             arrowTop = ballContainerY - 4;
         }
-
         const arrowSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-
         const shorten = this.shouldShortenArrows();
-
         if (shorten) {
             arrowSvg.setAttribute('width', '66');
             arrowSvg.setAttribute('height', '8');
@@ -609,32 +583,30 @@ export default class ArrowPathAnimator {
             arrowSvg.setAttribute('height', '8');
             arrowSvg.setAttribute('viewBox', '0 0 120 8');
         }
-
         arrowSvg.style.position = 'absolute';
         arrowSvg.style.left = arrowLeft + 'px';
         arrowSvg.style.top = arrowTop + 'px';
         arrowSvg.style.overflow = 'visible';
         arrowSvg.style.zIndex = '10';
         arrowSvg.style.transform = 'scaleY(-1)';
-
         const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-
         if (shorten) {
             path.setAttribute('d', 'M0.146447 3.33004C-0.0488155 3.5253 -0.0488155 3.84189 0.146447 4.03715L3.32843 7.21913C3.52369 7.41439 3.84027 7.41439 4.03553 7.21913C4.2308 7.02387 4.2308 6.70728 4.03553 6.51202L1.20711 3.68359L4.03553 0.855167C4.2308 0.659904 4.2308 0.343322 4.03553 0.14806C3.84027 -0.0472023 3.52369 -0.0472023 3.32843 0.14806L0.146447 3.33004ZM66 3.68359V3.18359H0.5V3.68359V4.18359H66V3.68359Z');
         } else {
             path.setAttribute('d', 'M0.146447 3.33004C-0.0488155 3.5253 -0.0488155 3.84189 0.146447 4.03715L3.32843 7.21913C3.52369 7.41439 3.84027 7.41439 4.03553 7.21913C4.2308 7.02387 4.2308 6.70728 4.03553 6.51202L1.20711 3.68359L4.03553 0.855167C4.2308 0.659904 4.2308 0.343322 4.03553 0.14806C3.84027 -0.0472023 3.52369 -0.0472023 3.32843 0.14806L0.146447 3.33004ZM120 3.68359V3.18359H0.5V3.68359V4.18359H120V3.68359Z');
         }
-
         path.setAttribute('fill', '#BBDFFD');
-
         arrowSvg.appendChild(path);
+        const { maskId, rect } = this.createMask(arrowSvg);
+        path.setAttribute('mask', `url(#${maskId})`);
+        rect.style.transform = 'scaleX(1)';
         arrowDiv.appendChild(arrowSvg);
         this.container.appendChild(arrowDiv);
-
         return {
             div: arrowDiv,
             svg: arrowSvg,
             path: path,
+            maskRect: rect,
             ballContainerX,
             ballContainerY,
             arrowLeft,
@@ -642,52 +614,50 @@ export default class ArrowPathAnimator {
         };
     }
 
+    showArrow(arrow) {
+        if (!arrow) return;
+        arrow.div.style.opacity = '1';
+    }
+
+    hideArrow(arrow) {
+        if (!arrow || !arrow.maskRect) return;
+        arrow.maskRect.style.transformOrigin = '1 0.5';
+        arrow.maskRect.style.transform = 'scaleX(0)';
+    }
+
     startAnimation() {
         if (this.isTablet || this.isMobile || this.hasAnimated || this.isAnimating) return;
-
         this.isAnimating = true;
         this.animationStage = 1;
-
         const ball = this.getBallCoordinates();
         if (!ball) return;
-
         this.firstArrow = this.createFirstArrow(ball.x, ball.y);
         if (!this.firstArrow || !this.firstBlock) {
             this.isAnimating = false;
             return;
         }
-
         const displayTime = this.getArrowDisplayTime();
-
-        this.firstArrow.div.style.opacity = '1';
-        this.firstBlock.classList.add('active');
-
-        const translateValue = this.getTranslateValue();
-        this.firstBlock.style.transform = `translateX(-${translateValue}px)`;
-
+        const animationTime = this.getArrowAnimationTime();
+        this.showArrow(this.firstArrow);
+        this.showBlockWithActive(this.firstBlock, 'left');
         setTimeout(() => {
-            if (this.firstArrow) {
-                this.firstArrow.div.style.opacity = '0';
-            }
-            if (this.firstBlock) {
-                this.firstBlock.classList.remove('active');
-            }
-
+            this.hideArrow(this.firstArrow);
             setTimeout(() => {
-                if (this.arrowBallAnimator) {
-                    this.arrowBallAnimator.moveToOneOClock();
-                }
-
+                this.resetBlock(this.firstBlock);
                 setTimeout(() => {
-                    if (this.secondArrow && this.secondArrow.div) {
-                        this.secondArrow.div.remove();
-                        this.secondArrow = null;
+                    if (this.arrowBallAnimator) {
+                        this.arrowBallAnimator.moveToOneOClock();
                     }
-
-                    document.querySelectorAll('[data-debug-marker]').forEach(el => el.remove());
-                    this.startSecondArrow();
-                }, 600);
-            }, 200);
+                    setTimeout(() => {
+                        if (this.secondArrow && this.secondArrow.div) {
+                            this.secondArrow.div.remove();
+                            this.secondArrow = null;
+                        }
+                        document.querySelectorAll('[data-debug-marker]').forEach(el => el.remove());
+                        this.startSecondArrow();
+                    }, 600);
+                }, 200);
+            }, animationTime);
         }, displayTime);
     }
 
@@ -697,42 +667,31 @@ export default class ArrowPathAnimator {
             this.isAnimating = false;
             return;
         }
-
         this.animationStage = 2;
-
         const ballContainer = this.getBallContainerCoordinates();
         if (!ballContainer || !this.secondBlock) return;
-
         this.secondArrow = this.createSecondArrow(ballContainer.x, ballContainer.y);
         if (!this.secondArrow) return;
-
         const displayTime = this.getArrowDisplayTime();
-
-        this.secondArrow.div.style.opacity = '1';
-        this.secondBlock.classList.add('active');
-
-        const translateValue = this.getTranslateValue();
-        this.secondBlock.style.transform = `translateX(${translateValue}px)`;
-
+        const animationTime = this.getArrowAnimationTime();
+        this.showArrow(this.secondArrow);
+        this.showBlockWithActive(this.secondBlock, 'right');
         setTimeout(() => {
-            if (this.secondArrow) {
-                this.secondArrow.div.style.opacity = '0';
-            }
-            if (this.secondBlock) {
-                this.secondBlock.classList.remove('active');
-            }
-
-            if (this.arrowBallAnimator) {
-                this.arrowBallAnimator.moveToThreeOClock(() => {
-                    setTimeout(() => {
-                        this.startThirdArrow();
-                    }, 200);
-                });
-            } else {
-                this.hasAnimated = true;
-                this.isAnimating = false;
-                this.animationStage = 0;
-            }
+            this.hideArrow(this.secondArrow);
+            setTimeout(() => {
+                this.resetBlock(this.secondBlock);
+                if (this.arrowBallAnimator) {
+                    this.arrowBallAnimator.moveToThreeOClock(() => {
+                        setTimeout(() => {
+                            this.startThirdArrow();
+                        }, 200);
+                    });
+                } else {
+                    this.hasAnimated = true;
+                    this.isAnimating = false;
+                    this.animationStage = 0;
+                }
+            }, animationTime);
         }, displayTime);
     }
 
@@ -742,9 +701,7 @@ export default class ArrowPathAnimator {
             this.isAnimating = false;
             return;
         }
-
         this.animationStage = 3;
-
         const ballContainer = this.getBallContainerCoordinates();
         if (!ballContainer || !this.thirdBlock) {
             this.hasAnimated = true;
@@ -752,7 +709,6 @@ export default class ArrowPathAnimator {
             this.animationStage = 0;
             return;
         }
-
         this.thirdArrow = this.createThirdArrow(ballContainer.x, ballContainer.y);
         if (!this.thirdArrow) {
             this.hasAnimated = true;
@@ -760,34 +716,26 @@ export default class ArrowPathAnimator {
             this.animationStage = 0;
             return;
         }
-
         const displayTime = this.getArrowDisplayTime();
-
-        this.thirdArrow.div.style.opacity = '1';
-        this.thirdBlock.classList.add('active');
-
-        const translateValue = this.getTranslateValue();
-        this.thirdBlock.style.transform = `translateX(${translateValue}px)`;
-
+        const animationTime = this.getArrowAnimationTime();
+        this.showArrow(this.thirdArrow);
+        this.showBlockWithActive(this.thirdBlock, 'right');
         setTimeout(() => {
-            if (this.thirdArrow) {
-                this.thirdArrow.div.style.opacity = '0';
-            }
-            if (this.thirdBlock) {
-                this.thirdBlock.classList.remove('active');
-            }
-
-            if (this.arrowBallAnimator) {
-                this.arrowBallAnimator.moveToFiveOClock(() => {
-                    setTimeout(() => {
-                        this.startFourthArrow();
-                    }, 200);
-                });
-            } else {
-                this.hasAnimated = true;
-                this.isAnimating = false;
-                this.animationStage = 0;
-            }
+            this.hideArrow(this.thirdArrow);
+            setTimeout(() => {
+                this.resetBlock(this.thirdBlock);
+                if (this.arrowBallAnimator) {
+                    this.arrowBallAnimator.moveToFiveOClock(() => {
+                        setTimeout(() => {
+                            this.startFourthArrow();
+                        }, 200);
+                    });
+                } else {
+                    this.hasAnimated = true;
+                    this.isAnimating = false;
+                    this.animationStage = 0;
+                }
+            }, animationTime);
         }, displayTime);
     }
 
@@ -797,9 +745,7 @@ export default class ArrowPathAnimator {
             this.isAnimating = false;
             return;
         }
-
         this.animationStage = 4;
-
         const ballContainer = this.getBallContainerCoordinates();
         if (!ballContainer || !this.fourthBlock) {
             this.hasAnimated = true;
@@ -807,7 +753,6 @@ export default class ArrowPathAnimator {
             this.animationStage = 0;
             return;
         }
-
         this.fourthArrow = this.createFourthArrow(ballContainer.x, ballContainer.y);
         if (!this.fourthArrow) {
             this.hasAnimated = true;
@@ -815,34 +760,26 @@ export default class ArrowPathAnimator {
             this.animationStage = 0;
             return;
         }
-
         const displayTime = this.getArrowDisplayTime();
-
-        this.fourthArrow.div.style.opacity = '1';
-        this.fourthBlock.classList.add('active');
-
-        const translateValue = this.getTranslateValue();
-        this.fourthBlock.style.transform = `translateX(${translateValue}px)`;
-
+        const animationTime = this.getArrowAnimationTime();
+        this.showArrow(this.fourthArrow);
+        this.showBlockWithActive(this.fourthBlock, 'right');
         setTimeout(() => {
-            if (this.fourthArrow) {
-                this.fourthArrow.div.style.opacity = '0';
-            }
-            if (this.fourthBlock) {
-                this.fourthBlock.classList.remove('active');
-            }
-
-            if (this.arrowBallAnimator) {
-                this.arrowBallAnimator.moveToSevenOClock(() => {
-                    setTimeout(() => {
-                        this.startFifthArrow();
-                    }, 200);
-                });
-            } else {
-                this.hasAnimated = true;
-                this.isAnimating = false;
-                this.animationStage = 0;
-            }
+            this.hideArrow(this.fourthArrow);
+            setTimeout(() => {
+                this.resetBlock(this.fourthBlock);
+                if (this.arrowBallAnimator) {
+                    this.arrowBallAnimator.moveToSevenOClock(() => {
+                        setTimeout(() => {
+                            this.startFifthArrow();
+                        }, 200);
+                    });
+                } else {
+                    this.hasAnimated = true;
+                    this.isAnimating = false;
+                    this.animationStage = 0;
+                }
+            }, animationTime);
         }, displayTime);
     }
 
@@ -852,9 +789,7 @@ export default class ArrowPathAnimator {
             this.isAnimating = false;
             return;
         }
-
         this.animationStage = 5;
-
         const ballContainer = this.getBallContainerCoordinates();
         if (!ballContainer || !this.fifthBlock) {
             this.hasAnimated = true;
@@ -862,7 +797,6 @@ export default class ArrowPathAnimator {
             this.animationStage = 0;
             return;
         }
-
         this.fifthArrow = this.createFifthArrow(ballContainer.x, ballContainer.y);
         if (!this.fifthArrow) {
             this.hasAnimated = true;
@@ -870,34 +804,26 @@ export default class ArrowPathAnimator {
             this.animationStage = 0;
             return;
         }
-
         const displayTime = this.getArrowDisplayTime();
-
-        this.fifthArrow.div.style.opacity = '1';
-        this.fifthBlock.classList.add('active');
-
-        const translateValue = this.getTranslateValue();
-        this.fifthBlock.style.transform = `translateX(-${translateValue}px)`;
-
+        const animationTime = this.getArrowAnimationTime();
+        this.showArrow(this.fifthArrow);
+        this.showBlockWithActive(this.fifthBlock, 'left');
         setTimeout(() => {
-            if (this.fifthArrow) {
-                this.fifthArrow.div.style.opacity = '0';
-            }
-            if (this.fifthBlock) {
-                this.fifthBlock.classList.remove('active');
-            }
-
-            if (this.arrowBallAnimator) {
-                this.arrowBallAnimator.moveToNineOClock(() => {
-                    setTimeout(() => {
-                        this.startSixthArrow();
-                    }, 200);
-                });
-            } else {
-                this.hasAnimated = true;
-                this.isAnimating = false;
-                this.animationStage = 0;
-            }
+            this.hideArrow(this.fifthArrow);
+            setTimeout(() => {
+                this.resetBlock(this.fifthBlock);
+                if (this.arrowBallAnimator) {
+                    this.arrowBallAnimator.moveToNineOClock(() => {
+                        setTimeout(() => {
+                            this.startSixthArrow();
+                        }, 200);
+                    });
+                } else {
+                    this.hasAnimated = true;
+                    this.isAnimating = false;
+                    this.animationStage = 0;
+                }
+            }, animationTime);
         }, displayTime);
     }
 
@@ -907,9 +833,7 @@ export default class ArrowPathAnimator {
             this.isAnimating = false;
             return;
         }
-
         this.animationStage = 6;
-
         const ballContainer = this.getBallContainerCoordinates();
         if (!ballContainer || !this.sixthBlock) {
             this.hasAnimated = true;
@@ -917,7 +841,6 @@ export default class ArrowPathAnimator {
             this.animationStage = 0;
             return;
         }
-
         this.sixthArrow = this.createSixthArrow(ballContainer.x, ballContainer.y);
         if (!this.sixthArrow) {
             this.hasAnimated = true;
@@ -925,30 +848,22 @@ export default class ArrowPathAnimator {
             this.animationStage = 0;
             return;
         }
-
         const displayTime = this.getArrowDisplayTime();
-
-        this.sixthArrow.div.style.opacity = '1';
-        this.sixthBlock.classList.add('active');
-
-        const translateValue = this.getTranslateValue();
-        this.sixthBlock.style.transform = `translateX(-${translateValue}px)`;
-
+        const animationTime = this.getArrowAnimationTime();
+        this.showArrow(this.sixthArrow);
+        this.showBlockWithActive(this.sixthBlock, 'left');
         setTimeout(() => {
-            if (this.sixthArrow) {
-                this.sixthArrow.div.style.opacity = '0';
-            }
-            if (this.sixthBlock) {
-                this.sixthBlock.classList.remove('active');
-            }
-
-            if (this.arrowBallAnimator) {
-                this.scaleBallToZero();
-            } else {
-                this.hasAnimated = true;
-                this.isAnimating = false;
-                this.animationStage = 0;
-            }
+            this.hideArrow(this.sixthArrow);
+            setTimeout(() => {
+                this.resetBlock(this.sixthBlock);
+                if (this.arrowBallAnimator) {
+                    this.scaleBallToZero();
+                } else {
+                    this.hasAnimated = true;
+                    this.isAnimating = false;
+                    this.animationStage = 0;
+                }
+            }, animationTime);
         }, displayTime);
     }
 
@@ -959,7 +874,6 @@ export default class ArrowPathAnimator {
             this.animationStage = 0;
             return;
         }
-
         const ballGroup = document.querySelector('.static-ball-group');
         if (!ballGroup) {
             this.hasAnimated = true;
@@ -967,18 +881,15 @@ export default class ArrowPathAnimator {
             this.animationStage = 0;
             return;
         }
-
         const blueCircle = ballGroup.querySelector('.static-ball-blue');
         if (blueCircle) {
             const cx = blueCircle.getAttribute('cx');
             const cy = blueCircle.getAttribute('cy');
             ballGroup.style.transformOrigin = `${cx}px ${cy}px`;
         }
-
         ballGroup.style.transition = 'transform 0.8s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.6s ease';
         ballGroup.style.transform = 'scale(0)';
         ballGroup.style.opacity = '0';
-
         setTimeout(() => {
             if (this.arrowBallAnimator) {
                 this.arrowBallAnimator.destroy();
@@ -996,13 +907,12 @@ export default class ArrowPathAnimator {
         if (this.fourthArrow?.div) this.fourthArrow.div.style.opacity = '0';
         if (this.fifthArrow?.div) this.fifthArrow.div.style.opacity = '0';
         if (this.sixthArrow?.div) this.sixthArrow.div.style.opacity = '0';
-
-        const blocks = [this.firstBlock, this.secondBlock, this.thirdBlock,
-            this.fourthBlock, this.fifthBlock, this.sixthBlock];
-
+        const blocks = [this.firstBlock, this.secondBlock, this.thirdBlock, this.fourthBlock, this.fifthBlock, this.sixthBlock];
         blocks.forEach(block => {
             if (block) {
                 block.style.transform = '';
+                block.style.opacity = '1';
+                block.style.visibility = 'visible';
                 block.classList.remove('active');
             }
         });
@@ -1010,16 +920,13 @@ export default class ArrowPathAnimator {
 
     showImmediately() {
         if (this.isTablet) return;
-
         const translateValue = this.getTranslateValue();
-
         if (this.firstBlock) this.firstBlock.style.transform = `translateX(-${translateValue}px)`;
         if (this.secondBlock) this.secondBlock.style.transform = `translateX(${translateValue}px)`;
         if (this.thirdBlock) this.thirdBlock.style.transform = `translateX(${translateValue}px)`;
         if (this.fourthBlock) this.fourthBlock.style.transform = `translateX(${translateValue}px)`;
         if (this.fifthBlock) this.fifthBlock.style.transform = `translateX(-${translateValue}px)`;
         if (this.sixthBlock) this.sixthBlock.style.transform = `translateX(-${translateValue}px)`;
-
         this.hasAnimated = true;
     }
 
@@ -1029,7 +936,6 @@ export default class ArrowPathAnimator {
             this.startAnimation();
             return;
         }
-
         this.observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting && !this.hasAnimated && !this.isAnimating) {
@@ -1038,20 +944,16 @@ export default class ArrowPathAnimator {
                 }
             });
         }, { threshold: 0.4 });
-
         this.observer.observe(section);
     }
 
     handleResize() {
         const wasMobile = this.isMobile;
         const wasTablet = this.isTablet;
-
         this.isMobile = window.innerWidth <= 768;
         this.isTablet = window.innerWidth <= 1230;
-
         if (wasTablet !== this.isTablet) {
             this.findTargetBlocks();
-
             if (this.isTablet) {
                 this.destroyArrow();
                 this.prepareForTablet();
@@ -1069,7 +971,6 @@ export default class ArrowPathAnimator {
             }
             return;
         }
-
         if (wasMobile !== this.isMobile) {
             if (this.isMobile) {
                 this.showImmediately();
@@ -1102,18 +1003,16 @@ export default class ArrowPathAnimator {
 
     destroy() {
         this.destroyArrow();
-
-        const blocks = [this.firstBlock, this.secondBlock, this.thirdBlock,
-            this.fourthBlock, this.fifthBlock, this.sixthBlock];
-
+        const blocks = [this.firstBlock, this.secondBlock, this.thirdBlock, this.fourthBlock, this.fifthBlock, this.sixthBlock];
         blocks.forEach(block => {
             if (block) {
                 block.style.transform = '';
                 block.style.transition = '';
+                block.style.opacity = '1';
+                block.style.visibility = 'visible';
                 block.classList.remove('active');
             }
         });
-
         if (this.observer) this.observer.disconnect();
         window.removeEventListener('resize', this.handleResize.bind(this));
     }
