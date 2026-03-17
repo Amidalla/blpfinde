@@ -77,7 +77,8 @@ html body .fancybox__container {
     left: 20px;
 
     &::after {
-      background-image: url('../images/history-arrow-prev.png');
+      background-image: url('../images/history-arrow-next.png');
+      transform: rotate(-180deg);
     }
   }
 

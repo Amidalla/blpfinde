@@ -222,14 +222,18 @@
     padding: 30px;
     transition: all 0.3s ease;
 
-    &.video {
+
 
       .all-reviews__body p {
         display: -webkit-box;
-        -webkit-line-clamp: 2;
+        -webkit-line-clamp: 4;
         -webkit-box-orient: vertical;
         overflow: hidden;
         text-overflow: ellipsis;
+      }
+
+      &:has(.video-container) .all-reviews__body p {
+        -webkit-line-clamp: 2;
       }
 
       .video-container {
@@ -247,7 +251,7 @@
           height: 100%;
 
           &::before {
-            background: rgba(255, 255, 255, 0.2);
+            display: none;
           }
         }
 
@@ -265,7 +269,7 @@
           background-size: contain;
         }
       }
-    }
+
 
     &:hover {
       box-shadow: 0 15px 30px rgba(0, 0, 0, .08);

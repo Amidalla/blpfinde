@@ -154,9 +154,7 @@ const App = {
     accordion: null,
     videosInitialized: false,
     mobileMenuInitialized: false,
-    formValidator: null, // ДОБАВЛЕНО
-
-
+    formValidator: null,
 
     init() {
         this.initCore();
@@ -167,10 +165,9 @@ const App = {
         this.initAccordion();
         this.initMobileMenu();
         initModals();
-        this.initFormValidation(); // ДОБАВЛЕНО: инициализация валидации форм
+        this.initFormValidation();
     },
 
-    // ДОБАВЛЕНО: новый метод для инициализации валидации форм
     initFormValidation() {
         setTimeout(() => {
             try {
@@ -195,7 +192,6 @@ const App = {
     },
 
     initCore() {
-
         try {
             SlidersInit();
         } catch (e) {
@@ -221,9 +217,7 @@ const App = {
         } catch (e) {
         }
 
-
         window.Fancybox = Fancybox;
-
 
         if (!this.videosInitialized) {
             setTimeout(() => {
@@ -235,196 +229,462 @@ const App = {
             }, 500);
         }
 
+        setTimeout(() => {
+            try {
+                const certificateLinks = document.querySelectorAll('[data-fancybox="certificates"]');
 
-        try {
-            Fancybox.bind('[data-fancybox="certificates"]', {
-                groupAll: true,
-                type: "inline",
-                Images: {
-                    initialSize: "fit",
-                    zoom: true,
-                    pan: true,
-                },
-                wheel: "zoom",
-                click: "toggleZoom",
-                Toolbar: false,
-                Thumbs: false,
-                Carousel: {
-                    Navigation: {
-                        prevTpl: '<button class="f-button is-prev" title="Назад"></button>',
-                        nextTpl: '<button class="f-button is-next" title="Вперед"></button>',
-                    },
-                },
-                on: {
-                    init: (fancybox) => {
-                        setTimeout(() => {
-                            const slides = fancybox.carousel?.slides;
-                            if (slides) {
-                                slides.forEach((slide, index) => {
-                                    const originalItem = document.querySelectorAll('.property__item')[index];
-                                    const expandedItem = document.getElementById(`property${index + 1}-content`);
-                                    if (originalItem && expandedItem) {
-                                        originalItem.classList.forEach(className => {
-                                            if (!className.includes('lazy') && !expandedItem.classList.contains(className)) {
-                                                expandedItem.classList.add(className);
-                                            }
-                                        });
-                                    }
-                                });
+                certificateLinks.forEach((link) => {
+                    link.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+
+                        const propertyItem = link.closest('.property__item');
+                        if (!propertyItem) return;
+
+                        const allItems = Array.from(document.querySelectorAll('.property__item'));
+                        const currentIndex = allItems.indexOf(propertyItem);
+
+                        const items = allItems.map((item, i) => {
+                            const clone = item.cloneNode(true);
+
+                            clone.removeAttribute('data-fancybox');
+                            clone.removeAttribute('data-src');
+                            clone.classList.add('property__item--expanded');
+
+                            const closeBtn = document.createElement('button');
+                            closeBtn.className = 'custom-fancybox-close scale-in';
+                            closeBtn.setAttribute('data-fancybox-close', '');
+
+                            const isMobile = window.matchMedia('(max-width: 768px)').matches;
+                            const isSmallMobile = window.matchMedia('(max-width: 480px)').matches;
+
+                            let btnWidth = '44px';
+                            let btnHeight = '44px';
+                            let svgWidth = '44';
+                            let svgHeight = '44';
+
+                            if (isSmallMobile) {
+                                btnWidth = '28px';
+                                btnHeight = '28px';
+                                svgWidth = '28';
+                                svgHeight = '28';
+                            } else if (isMobile) {
+                                btnWidth = '32px';
+                                btnHeight = '32px';
+                                svgWidth = '32';
+                                svgHeight = '32';
                             }
-                        }, 100);
-                    }
-                }
-            });
-        } catch (e) {
-        }
 
+                            closeBtn.style.width = btnWidth;
+                            closeBtn.style.height = btnHeight;
 
-        try {
-            Fancybox.bind('[data-fancybox="certificates-gallery"]', {
-                groupAll: true,
-                type: "inline",
-                Images: {
-                    initialSize: "fit",
-                    zoom: true,
-                    pan: true,
-                },
-                wheel: "zoom",
-                click: "toggleZoom",
-                Toolbar: false,
-                Thumbs: false,
-                Carousel: {
-                    Navigation: {
-                        prevTpl: '<button class="f-button is-prev" title="Назад"></button>',
-                        nextTpl: '<button class="f-button is-next" title="Вперед"></button>',
-                    },
-                },
-                on: {
-                    init: (fancybox) => {
-                        setTimeout(() => {
-                            const slides = fancybox.carousel?.slides;
-                            if (slides) {
-                                slides.forEach((slide, index) => {
-                                    const originalItem = document.querySelectorAll('.certificates__list .certificates__item')[index];
-                                    const expandedItem = document.getElementById(`certificate${index + 1}-content`);
-                                    if (originalItem && expandedItem) {
-                                        originalItem.classList.forEach(className => {
-                                            if (!className.includes('lazy') && !expandedItem.classList.contains(className)) {
-                                                expandedItem.classList.add(className);
-                                            }
-                                        });
-                                    }
-                                });
-                            }
-                        }, 100);
-                    }
-                }
-            });
-        } catch (e) {
-        }
+                            closeBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="${svgWidth}" height="${svgHeight}" viewBox="0 0 44 44" fill="none">
+                                <path d="M37.5963 33.224L26.3729 22.0006L37.5963 10.7771C38.808 9.56543 38.808 7.61465 37.5963 6.40293C36.3846 5.19121 34.4338 5.19121 33.2221 6.40293L21.9986 17.6264L10.7752 6.40293C9.56348 5.19121 7.6127 5.19121 6.40098 6.40293C5.18926 7.61465 5.18926 9.56543 6.40098 10.7771L17.6244 22.0006L6.40098 33.224C5.18926 34.4357 5.18926 36.3865 6.40098 37.5982C7.6127 38.81 9.56348 38.81 10.7752 37.5982L21.9986 26.3748L33.2221 37.5982C34.4338 38.81 36.3846 38.81 37.5963 37.5982C38.7994 36.3865 38.7994 34.4272 37.5963 33.224Z" fill="#212529"></path>
+                            </svg>`;
+                            clone.appendChild(closeBtn);
 
+                            const modalId = 'certificate-property-modal-' + i + '-' + Date.now();
+                            clone.id = modalId;
 
-        try {
-            Fancybox.bind('[data-fancybox="available-certificates"]', {
-                groupAll: true,
-                type: "inline",
-                Images: {
-                    initialSize: "fit",
-                    zoom: true,
-                    pan: true,
-                },
-                wheel: "zoom",
-                click: "toggleZoom",
-                Toolbar: false,
-                Thumbs: false,
-                Carousel: {
-                    Navigation: {
-                        prevTpl: '<button class="f-button is-prev" title="Назад"></button>',
-                        nextTpl: '<button class="f-button is-next" title="Вперед"></button>',
-                    },
-                },
-                on: {
-                    init: (fancybox) => {
-                        setTimeout(() => {
-                            const slides = fancybox.carousel?.slides;
-                            if (slides) {
-                                slides.forEach((slide, index) => {
-                                    const originalItem = document.querySelectorAll('.available-certificates .certificates__item')[index];
-                                    const expandedItem = document.getElementById(`available-certificate${index + 1}-content`);
-                                    if (originalItem && expandedItem) {
-                                        originalItem.classList.forEach(className => {
-                                            if (!className.includes('lazy') && !expandedItem.classList.contains(className)) {
-                                                expandedItem.classList.add(className);
-                                            }
-                                        });
-                                    }
-                                });
-                            }
-                        }, 100);
-                    }
-                }
-            });
-        } catch (e) {
-        }
+                            const tempDiv = document.createElement('div');
+                            tempDiv.style.display = 'none';
+                            tempDiv.appendChild(clone);
+                            document.body.appendChild(tempDiv);
 
+                            return {
+                                src: '#' + modalId,
+                                type: 'inline'
+                            };
+                        });
 
-        try {
-            Fancybox.bind('[data-fancybox="reviews"]', {
-                groupAll: true,
-                type: "inline",
-                Images: {
-                    initialSize: "fit",
-                    zoom: true,
-                    pan: true,
-                },
-                wheel: "zoom",
-                click: false,
-                Toolbar: false,
-                Thumbs: false,
-                Carousel: {
-                    Navigation: {
-                        prevTpl: '<button class="f-button is-prev" title="Назад"></button>',
-                        nextTpl: '<button class="f-button is-next" title="Вперед"></button>',
-                    },
-                },
-                on: {
-                    init: (fancybox) => {
-                        setTimeout(() => {
-                            const slides = fancybox.carousel?.slides;
-                            if (slides) {
-                                slides.forEach((slide, index) => {
-                                    const originalItem = document.querySelectorAll('.all-reviews__item')[index];
-                                    const expandedItem = document.getElementById(`review${index + 1}-content`);
-                                    if (originalItem && expandedItem) {
-                                        originalItem.classList.forEach(className => {
-                                            if (!className.includes('lazy') && !expandedItem.classList.contains(className)) {
-                                                expandedItem.classList.add(className);
-                                            }
-                                        });
-                                    }
-                                });
-                            }
-                        }, 100);
-                    },
-                    "Carousel.change": (fancybox, carousel, page, prevPage) => {
-                        document.querySelectorAll('video').forEach(video => {
-                            if (!video.paused) {
-                                video.pause();
+                        Fancybox.show(items, {
+                            startIndex: currentIndex,
+                            showClass: "f-fadeIn",
+                            hideClass: "f-fadeOut",
+                            groupAll: true,
+                            infinite: true,
+                            transitionEffect: "fade",
+                            Images: {
+                                initialSize: "fit",
+                                zoom: true,
+                                pan: true,
+                            },
+                            wheel: "zoom",
+                            click: "toggleZoom",
+                            Toolbar: false,
+                            Thumbs: false,
+                            Carousel: {
+                                fade: true,
+                                Navigation: {
+                                    prevTpl: '<button class="f-button is-prev" title="Назад" style="display: flex; align-items: center; justify-content: center; width: 50px; height: 50px; background: rgba(0,0,0,0.5); border-radius: 50%; color: white; font-size: 24px; position: absolute; left: 20px; top: 50%; transform: translateY(-50%); z-index: 1000; cursor: pointer; border: none;">‹</button>',
+                                    nextTpl: '<button class="f-button is-next" title="Вперед" style="display: flex; align-items: center; justify-content: center; width: 50px; height: 50px; background: rgba(0,0,0,0.5); border-radius: 50%; color: white; font-size: 24px; position: absolute; right: 20px; top: 50%; transform: translateY(-50%); z-index: 1000; cursor: pointer; border: none;">›</button>',
+                                },
+                            },
+                            on: {
+                                close: () => {
+                                    document.querySelectorAll('[id^="certificate-property-modal-"]').forEach(el => {
+                                        const parent = el.parentNode;
+                                        if (parent && parent.parentNode) {
+                                            parent.parentNode.removeChild(parent);
+                                        }
+                                    });
+                                }
                             }
                         });
-                    },
-                    close: () => {
-                        document.querySelectorAll('video').forEach(video => {
-                            if (!video.paused) {
-                                video.pause();
+                    });
+                });
+
+                const galleryLinks = document.querySelectorAll('[data-fancybox="certificates-gallery"]');
+
+                galleryLinks.forEach((link) => {
+                    link.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+
+                        const certificateItem = link.closest('.certificates__item');
+                        if (!certificateItem) return;
+
+                        const allItems = Array.from(document.querySelectorAll('.certificates__list .certificates__item'));
+                        const currentIndex = allItems.indexOf(certificateItem);
+
+                        const items = allItems.map((item, i) => {
+                            const clone = item.cloneNode(true);
+
+                            clone.removeAttribute('data-fancybox');
+                            clone.removeAttribute('data-src');
+                            clone.classList.add('certificates__item--expanded');
+
+                            const closeBtn = document.createElement('button');
+                            closeBtn.className = 'custom-fancybox-close scale-in';
+                            closeBtn.setAttribute('data-fancybox-close', '');
+
+                            const isMobile = window.matchMedia('(max-width: 768px)').matches;
+                            const isSmallMobile = window.matchMedia('(max-width: 480px)').matches;
+
+                            let btnWidth = '44px';
+                            let btnHeight = '44px';
+                            let svgWidth = '44';
+                            let svgHeight = '44';
+
+                            if (isSmallMobile) {
+                                btnWidth = '28px';
+                                btnHeight = '28px';
+                                svgWidth = '28';
+                                svgHeight = '28';
+                            } else if (isMobile) {
+                                btnWidth = '32px';
+                                btnHeight = '32px';
+                                svgWidth = '32';
+                                svgHeight = '32';
+                            }
+
+                            closeBtn.style.width = btnWidth;
+                            closeBtn.style.height = btnHeight;
+
+                            closeBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="${svgWidth}" height="${svgHeight}" viewBox="0 0 44 44" fill="none">
+                                <path d="M37.5963 33.224L26.3729 22.0006L37.5963 10.7771C38.808 9.56543 38.808 7.61465 37.5963 6.40293C36.3846 5.19121 34.4338 5.19121 33.2221 6.40293L21.9986 17.6264L10.7752 6.40293C9.56348 5.19121 7.6127 5.19121 6.40098 6.40293C5.18926 7.61465 5.18926 9.56543 6.40098 10.7771L17.6244 22.0006L6.40098 33.224C5.18926 34.4357 5.18926 36.3865 6.40098 37.5982C7.6127 38.81 9.56348 38.81 10.7752 37.5982L21.9986 26.3748L33.2221 37.5982C34.4338 38.81 36.3846 38.81 37.5963 37.5982C38.7994 36.3865 38.7994 34.4272 37.5963 33.224Z" fill="#212529"></path>
+                            </svg>`;
+                            clone.appendChild(closeBtn);
+
+                            const modalId = 'certificate-gallery-modal-' + i + '-' + Date.now();
+                            clone.id = modalId;
+
+                            const tempDiv = document.createElement('div');
+                            tempDiv.style.display = 'none';
+                            tempDiv.appendChild(clone);
+                            document.body.appendChild(tempDiv);
+
+                            return {
+                                src: '#' + modalId,
+                                type: 'inline'
+                            };
+                        });
+
+                        Fancybox.show(items, {
+                            startIndex: currentIndex,
+                            showClass: "f-fadeIn",
+                            hideClass: "f-fadeOut",
+                            groupAll: true,
+                            infinite: true,
+                            transitionEffect: "fade",
+                            Images: {
+                                initialSize: "fit",
+                                zoom: true,
+                                pan: true,
+                            },
+                            wheel: "zoom",
+                            click: "toggleZoom",
+                            Toolbar: false,
+                            Thumbs: false,
+                            Carousel: {
+                                fade: true,
+                                Navigation: {
+                                    prevTpl: '<button class="f-button is-prev" title="Назад" style="display: flex; align-items: center; justify-content: center; width: 50px; height: 50px; background: rgba(0,0,0,0.5); border-radius: 50%; color: white; font-size: 24px; position: absolute; left: 20px; top: 50%; transform: translateY(-50%); z-index: 1000; cursor: pointer; border: none;">‹</button>',
+                                    nextTpl: '<button class="f-button is-next" title="Вперед" style="display: flex; align-items: center; justify-content: center; width: 50px; height: 50px; background: rgba(0,0,0,0.5); border-radius: 50%; color: white; font-size: 24px; position: absolute; right: 20px; top: 50%; transform: translateY(-50%); z-index: 1000; cursor: pointer; border: none;">›</button>',
+                                },
+                            },
+                            on: {
+                                close: () => {
+                                    document.querySelectorAll('[id^="certificate-gallery-modal-"]').forEach(el => {
+                                        const parent = el.parentNode;
+                                        if (parent && parent.parentNode) {
+                                            parent.parentNode.removeChild(parent);
+                                        }
+                                    });
+                                }
                             }
                         });
-                    }
-                }
-            });
-        } catch (e) {
-        }
+                    });
+                });
 
+                const availableLinks = document.querySelectorAll('[data-fancybox="available-certificates"]');
+
+                availableLinks.forEach((link) => {
+                    link.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+
+                        const certificateItem = link.closest('.certificates__item');
+                        if (!certificateItem) return;
+
+                        const allItems = Array.from(document.querySelectorAll('.available-certificates .certificates__item'));
+                        const currentIndex = allItems.indexOf(certificateItem);
+
+                        const items = allItems.map((item, i) => {
+                            const clone = item.cloneNode(true);
+
+                            clone.removeAttribute('data-fancybox');
+                            clone.removeAttribute('data-src');
+                            clone.classList.add('certificates__item--expanded');
+
+                            const closeBtn = document.createElement('button');
+                            closeBtn.className = 'custom-fancybox-close scale-in';
+                            closeBtn.setAttribute('data-fancybox-close', '');
+
+                            const isMobile = window.matchMedia('(max-width: 768px)').matches;
+                            const isSmallMobile = window.matchMedia('(max-width: 480px)').matches;
+
+                            let btnWidth = '44px';
+                            let btnHeight = '44px';
+                            let svgWidth = '44';
+                            let svgHeight = '44';
+
+                            if (isSmallMobile) {
+                                btnWidth = '28px';
+                                btnHeight = '28px';
+                                svgWidth = '28';
+                                svgHeight = '28';
+                            } else if (isMobile) {
+                                btnWidth = '32px';
+                                btnHeight = '32px';
+                                svgWidth = '32';
+                                svgHeight = '32';
+                            }
+
+                            closeBtn.style.width = btnWidth;
+                            closeBtn.style.height = btnHeight;
+
+                            closeBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="${svgWidth}" height="${svgHeight}" viewBox="0 0 44 44" fill="none">
+                                <path d="M37.5963 33.224L26.3729 22.0006L37.5963 10.7771C38.808 9.56543 38.808 7.61465 37.5963 6.40293C36.3846 5.19121 34.4338 5.19121 33.2221 6.40293L21.9986 17.6264L10.7752 6.40293C9.56348 5.19121 7.6127 5.19121 6.40098 6.40293C5.18926 7.61465 5.18926 9.56543 6.40098 10.7771L17.6244 22.0006L6.40098 33.224C5.18926 34.4357 5.18926 36.3865 6.40098 37.5982C7.6127 38.81 9.56348 38.81 10.7752 37.5982L21.9986 26.3748L33.2221 37.5982C34.4338 38.81 36.3846 38.81 37.5963 37.5982C38.7994 36.3865 38.7994 34.4272 37.5963 33.224Z" fill="#212529"></path>
+                            </svg>`;
+                            clone.appendChild(closeBtn);
+
+                            const modalId = 'available-certificate-modal-' + i + '-' + Date.now();
+                            clone.id = modalId;
+
+                            const tempDiv = document.createElement('div');
+                            tempDiv.style.display = 'none';
+                            tempDiv.appendChild(clone);
+                            document.body.appendChild(tempDiv);
+
+                            return {
+                                src: '#' + modalId,
+                                type: 'inline'
+                            };
+                        });
+
+                        Fancybox.show(items, {
+                            startIndex: currentIndex,
+                            showClass: "f-fadeIn",
+                            hideClass: "f-fadeOut",
+                            groupAll: true,
+                            infinite: true,
+                            transitionEffect: "fade",
+                            Images: {
+                                initialSize: "fit",
+                                zoom: true,
+                                pan: true,
+                            },
+                            wheel: "zoom",
+                            click: "toggleZoom",
+                            Toolbar: false,
+                            Thumbs: false,
+                            Carousel: {
+                                fade: true,
+                                Navigation: {
+                                    prevTpl: '<button class="f-button is-prev" title="Назад" style="display: flex; align-items: center; justify-content: center; width: 50px; height: 50px; background: rgba(0,0,0,0.5); border-radius: 50%; color: white; font-size: 24px; position: absolute; left: 20px; top: 50%; transform: translateY(-50%); z-index: 1000; cursor: pointer; border: none;">‹</button>',
+                                    nextTpl: '<button class="f-button is-next" title="Вперед" style="display: flex; align-items: center; justify-content: center; width: 50px; height: 50px; background: rgba(0,0,0,0.5); border-radius: 50%; color: white; font-size: 24px; position: absolute; right: 20px; top: 50%; transform: translateY(-50%); z-index: 1000; cursor: pointer; border: none;">›</button>',
+                                },
+                            },
+                            on: {
+                                close: () => {
+                                    document.querySelectorAll('[id^="available-certificate-modal-"]').forEach(el => {
+                                        const parent = el.parentNode;
+                                        if (parent && parent.parentNode) {
+                                            parent.parentNode.removeChild(parent);
+                                        }
+                                    });
+                                }
+                            }
+                        });
+                    });
+                });
+
+            } catch (e) {
+            }
+        }, 500);
+
+        setTimeout(() => {
+            try {
+                const reviewLinks = document.querySelectorAll('.all-reviews__body .news-link');
+
+                reviewLinks.forEach((link) => {
+                    link.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+
+                        const reviewItem = link.closest('.all-reviews__item');
+                        if (!reviewItem) return;
+
+                        const allReviews = Array.from(document.querySelectorAll('.all-reviews__item'));
+                        const currentIndex = allReviews.indexOf(reviewItem);
+
+                        const items = allReviews.map((item, i) => {
+                            const clone = item.cloneNode(true);
+                            clone.classList.add('all-reviews__item--expanded');
+
+                            const cloneLink = clone.querySelector('.news-link');
+                            if (cloneLink) cloneLink.remove();
+
+                            const itemHasVideo = clone.querySelector('.video-container') !== null;
+
+                            if (itemHasVideo) {
+                                const videoContainer = clone.querySelector('.video-container');
+                                if (videoContainer) {
+                                    const videoElement = videoContainer.querySelector('video');
+                                    if (videoElement) {
+                                        videoElement.controls = true;
+                                        videoElement.removeAttribute('poster');
+
+                                        const playButton = videoContainer.querySelector('.play-button');
+                                        const fullscreenButton = videoContainer.querySelector('.fullscreen-button');
+                                        const posterOverlay = videoContainer.querySelector('.poster-overlay');
+
+                                        if (playButton) playButton.remove();
+                                        if (fullscreenButton) fullscreenButton.remove();
+                                        if (posterOverlay) posterOverlay.remove();
+                                    }
+                                }
+
+                                const textParagraph = clone.querySelector('.all-reviews__body p');
+                                if (textParagraph) {
+                                    textParagraph.remove();
+                                }
+                            } else {
+                                const textParagraph = clone.querySelector('.all-reviews__body p');
+                                if (textParagraph) {
+                                    textParagraph.style.webkitLineClamp = 'unset';
+                                    textParagraph.style.display = 'block';
+                                    textParagraph.style.overflow = 'visible';
+                                    textParagraph.style.maxHeight = 'none';
+                                }
+                            }
+
+                            const closeBtn = document.createElement('button');
+                            closeBtn.className = 'custom-fancybox-close scale-in';
+                            closeBtn.setAttribute('data-fancybox-close', '');
+
+                            const isMobile = window.matchMedia('(max-width: 768px)').matches;
+                            const isSmallMobile = window.matchMedia('(max-width: 480px)').matches;
+
+                            let btnWidth = '44px';
+                            let btnHeight = '44px';
+                            let svgWidth = '44';
+                            let svgHeight = '44';
+
+                            if (isSmallMobile) {
+                                btnWidth = '28px';
+                                btnHeight = '28px';
+                                svgWidth = '28';
+                                svgHeight = '28';
+                            } else if (isMobile) {
+                                btnWidth = '32px';
+                                btnHeight = '32px';
+                                svgWidth = '32';
+                                svgHeight = '32';
+                            }
+
+                            closeBtn.style.width = btnWidth;
+                            closeBtn.style.height = btnHeight;
+
+                            closeBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="${svgWidth}" height="${svgHeight}" viewBox="0 0 44 44" fill="none">
+                                <path d="M37.5963 33.224L26.3729 22.0006L37.5963 10.7771C38.808 9.56543 38.808 7.61465 37.5963 6.40293C36.3846 5.19121 34.4338 5.19121 33.2221 6.40293L21.9986 17.6264L10.7752 6.40293C9.56348 5.19121 7.6127 5.19121 6.40098 6.40293C5.18926 7.61465 5.18926 9.56543 6.40098 10.7771L17.6244 22.0006L6.40098 33.224C5.18926 34.4357 5.18926 36.3865 6.40098 37.5982C7.6127 38.81 9.56348 38.81 10.7752 37.5982L21.9986 26.3748L33.2221 37.5982C34.4338 38.81 36.3846 38.81 37.5963 37.5982C38.7994 36.3865 38.7994 34.4272 37.5963 33.224Z" fill="#212529"></path>
+                            </svg>`;
+                            clone.appendChild(closeBtn);
+
+                            const modalId = 'review-modal-' + i + '-' + Date.now();
+                            clone.id = modalId;
+
+                            const tempDiv = document.createElement('div');
+                            tempDiv.style.display = 'none';
+                            tempDiv.appendChild(clone);
+                            document.body.appendChild(tempDiv);
+
+                            return {
+                                src: '#' + modalId,
+                                type: 'inline'
+                            };
+                        });
+
+                        Fancybox.show(items, {
+                            startIndex: currentIndex,
+                            showClass: "f-fadeIn",
+                            hideClass: "f-fadeOut",
+                            groupAll: true,
+                            infinite: true,
+                            transitionEffect: "fade",
+                            Images: {
+                                initialSize: "fit",
+                                zoom: true,
+                                pan: true,
+                            },
+                            wheel: "zoom",
+                            click: false,
+                            Toolbar: false,
+                            Thumbs: false,
+                            Carousel: {
+                                fade: true,
+                                Navigation: {
+                                    prevTpl: '<button class="f-button is-prev" title="Назад" style="display: flex; align-items: center; justify-content: center; width: 50px; height: 50px; background: rgba(0,0,0,0.5); border-radius: 50%; color: white; font-size: 24px; position: absolute; left: 20px; top: 50%; transform: translateY(-50%); z-index: 1000; cursor: pointer; border: none;">‹</button>',
+                                    nextTpl: '<button class="f-button is-next" title="Вперед" style="display: flex; align-items: center; justify-content: center; width: 50px; height: 50px; background: rgba(0,0,0,0.5); border-radius: 50%; color: white; font-size: 24px; position: absolute; right: 20px; top: 50%; transform: translateY(-50%); z-index: 1000; cursor: pointer; border: none;">›</button>',
+                                },
+                            },
+                            on: {
+                                close: () => {
+                                    document.querySelectorAll('[id^="review-modal-"]').forEach(el => {
+                                        const parent = el.parentNode;
+                                        if (parent && parent.parentNode) {
+                                            parent.parentNode.removeChild(parent);
+                                        }
+                                    });
+                                }
+                            }
+                        });
+                    });
+                });
+            } catch (e) {
+            }
+        }, 500);
 
         try {
             this.lazyLoad.update();
@@ -466,7 +726,6 @@ const App = {
                 video.setAttribute('playsinline', '');
             }
             video.style.pointerEvents = 'auto';
-
 
             if (video.readyState === 0) {
                 video.load();
