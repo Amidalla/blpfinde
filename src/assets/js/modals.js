@@ -9,7 +9,12 @@ function initModal(config) {
 
     const modal = document.querySelector(modalSelector);
     const overlay = document.querySelector('.overlay');
-    const openButtons = document.querySelectorAll(openButtonsSelector);
+
+    // Проверяем, что селектор не пустой, иначе возвращаем null
+    let openButtons = [];
+    if (openButtonsSelector && openButtonsSelector.trim() !== '') {
+        openButtons = document.querySelectorAll(openButtonsSelector);
+    }
 
     if (!modal || !overlay || openButtons.length === 0) {
         return null;
@@ -25,17 +30,13 @@ function initModal(config) {
     function disableBodyScroll() {
         scrollbarWidth = calculateScrollbarWidth();
 
-
         const scrollY = window.scrollY;
 
-
         document.documentElement.classList.add('modal-open');
-
 
         if (scrollbarWidth > 0) {
             document.documentElement.style.paddingRight = `${scrollbarWidth}px`;
         }
-
 
         document.documentElement.dataset.scrollY = scrollY;
     }
@@ -44,10 +45,8 @@ function initModal(config) {
 
         const scrollY = document.documentElement.dataset.scrollY;
 
-
         document.documentElement.classList.remove('modal-open');
         document.documentElement.style.paddingRight = '';
-
 
         if (scrollY) {
             window.scrollTo(0, parseInt(scrollY));
@@ -75,7 +74,6 @@ function initModal(config) {
         if (onClose) onClose();
     }
 
-
     openButtons.forEach(btn => {
         btn.addEventListener('click', (e) => {
             e.preventDefault();
@@ -83,7 +81,6 @@ function initModal(config) {
             openModal();
         });
     });
-
 
     const closeBtn = modal.querySelector(closeButtonSelector);
     if (closeBtn) {
@@ -94,7 +91,6 @@ function initModal(config) {
         });
     }
 
-
     overlay.addEventListener('click', (e) => {
         if (isModalOpen) {
             e.preventDefault();
@@ -103,18 +99,15 @@ function initModal(config) {
         }
     });
 
-
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && isModalOpen) {
             closeModal();
         }
     });
 
-
     modal.addEventListener('click', (e) => {
         e.stopPropagation();
     });
-
 
     window.addEventListener('resize', () => {
         if (isModalOpen) {
@@ -326,7 +319,6 @@ export function initMobileMenu() {
     });
 }
 
-
 export function initModals() {
 
     initModal({
@@ -341,51 +333,21 @@ export function initModals() {
         closeButtonSelector: '.modal-form__close'
     });
 
-    const authModal = initModal({
+    initModal({
+        modalSelector: '.form-bid',
+        openButtonsSelector: '.consultants__btn.color-btn, .certificate-benefits__btn.color-btn',
+        closeButtonSelector: '.modal-form__close'
+    });
+
+    initModal({
         modalSelector: '.form-authorization',
-        openButtonsSelector: '.access-link',
+        openButtonsSelector: '',
         closeButtonSelector: '.modal-form__close'
     });
 
-
-    const regModal = initModal({
+    initModal({
         modalSelector: '.form-registration',
-        openButtonsSelector: '.registration-link',
+        openButtonsSelector: '',
         closeButtonSelector: '.modal-form__close'
     });
-
-
-    if (authModal && regModal) {
-
-        const registrationLinks = document.querySelectorAll('.registration-link');
-        registrationLinks.forEach(link => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-
-
-                if (authModal.isOpen()) {
-                    authModal.close();
-                }
-
-
-                regModal.open();
-            });
-        });
-
-
-        const accessLinks = document.querySelectorAll('.access-link');
-        accessLinks.forEach(link => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-
-
-                if (regModal.isOpen()) {
-                    regModal.close();
-                }
-
-            });
-        });
-    }
 }
