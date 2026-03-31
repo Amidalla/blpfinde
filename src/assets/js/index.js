@@ -837,6 +837,19 @@ const App = {
             if (this.arrowPathAnimator) {
                 this.arrowPathAnimator.handleResize();
             }
+
+            const headerTop = document.querySelector('.header__top');
+            if (headerTop) {
+                window.addEventListener('scroll', () => {
+                    if (window.innerWidth <= 600) {
+                        if (window.scrollY > 0) {
+                            headerTop.classList.add('scrolled');
+                        } else {
+                            headerTop.classList.remove('scrolled');
+                        }
+                    }
+                });
+            }
         });
 
         window.addEventListener('resize', () => {

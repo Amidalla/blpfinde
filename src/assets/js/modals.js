@@ -10,7 +10,7 @@ function initModal(config) {
     const modal = document.querySelector(modalSelector);
     const overlay = document.querySelector('.overlay');
 
-    // Проверяем, что селектор не пустой, иначе возвращаем null
+
     let openButtons = [];
     if (openButtonsSelector && openButtonsSelector.trim() !== '') {
         openButtons = document.querySelectorAll(openButtonsSelector);
@@ -320,6 +320,8 @@ export function initMobileMenu() {
 }
 
 export function initModals() {
+    let materialsModal = null;
+    let authorizationModal = null;
 
     initModal({
         modalSelector: '.form-solution',
@@ -333,15 +335,29 @@ export function initModals() {
         closeButtonSelector: '.modal-form__close'
     });
 
-    initModal({
-        modalSelector: '.form-bid',
+    materialsModal = initModal({
+        modalSelector: '.form-materials',
         openButtonsSelector: '.consultants__btn.color-btn, .certificate-benefits__btn.color-btn',
-        closeButtonSelector: '.modal-form__close'
+        closeButtonSelector: '.modal-form__close',
+        onOpen: () => {
+            const registrationLink = document.querySelector('.form-materials .registration-link');
+            if (registrationLink) {
+                registrationLink.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    if (materialsModal && materialsModal.close) {
+                        materialsModal.close();
+                    }
+                    if (authorizationModal && authorizationModal.open) {
+                        authorizationModal.open();
+                    }
+                });
+            }
+        }
     });
 
-    initModal({
+    authorizationModal = initModal({
         modalSelector: '.form-authorization',
-        openButtonsSelector: '',
+        openButtonsSelector: '.certificate-benefits__btn.not-color-btn',
         closeButtonSelector: '.modal-form__close'
     });
 
@@ -351,3 +367,4 @@ export function initModals() {
         closeButtonSelector: '.modal-form__close'
     });
 }
+

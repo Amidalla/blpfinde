@@ -524,6 +524,7 @@
 }
 
 .control-units {
+
   &__inner {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -767,6 +768,7 @@
 .benefit {
   position: relative;
   overflow: hidden;
+  z-index: 2;
 
   .svg-animation-container {
     opacity: 0;
@@ -1029,7 +1031,8 @@
 
 
     @media (max-width: 1600px) {
-      svg {
+      svg,
+      img {
         width: 75px;
       }
     }
@@ -1038,7 +1041,8 @@
     @media (max-width: 1230px) {
       gap: 11.43px;
 
-      svg {
+      svg,
+      img {
         width: 63.068px;
       }
 
@@ -1696,6 +1700,7 @@
 }
 
 .main-about {
+
   .container {
     margin-top: 80px;
     margin-bottom: 76px;
@@ -1893,10 +1898,15 @@
     display: flex;
     margin-top: 30px;
 
+    @media (max-width: 1600px) {
+      font-size: 16px;
+    }
+
     @media (max-width: 1350px) {
       margin-top: 20px;
       flex-direction: column;
       gap: 24.13px;
+      font-size: 15px;
     }
   }
 
@@ -2139,9 +2149,14 @@
   &__media {
     @media (max-width: 1350px) {
       width: 100px;
+      margin-bottom: 9px;
 
       svg {
        max-width: 100%;;
+      }
+
+      img {
+        max-width: 100%;
       }
     }
 
@@ -2393,6 +2408,7 @@
       font-weight: 500;
       line-height: 150%;
       transition: all 0.3s ease;
+      max-height: 67px;
 
       @media (max-width: 1800px) {
         font-size: 16px;
@@ -2788,7 +2804,7 @@
     }
 
     @media (max-width: 750px) {
-      margin-top: 9px;
+      margin-top: 0;
     }
 
     @media (max-width: 600px) {
@@ -2831,9 +2847,18 @@
     }
 
     @media (max-width: 750px) {
-      mask-image: none;
-      background: c.$white;
-      padding: 66.88px 15px 27px 15px;
+      -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='360' height='1138' viewBox='0 0 360 1138' fill='none'%3E%3Cpath d='M40.838 44.4266H127.721C144.948 44.4266 149.124 39.7808 151.686 32.9774C151.579 33.2334 151.709 32.9156 151.709 32.9156C151.701 32.9362 151.693 32.9568 151.686 32.9774C151.904 32.4513 153.118 29.5009 158.5 16.3828C166.5 -3.11739 180 0.21645 205.626 0.21645H360.5V52.4166V1188.88H0V110.448V44.4268L40.838 44.4266Z' fill='white'/%3E%3C/svg%3E");
+      mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='360' height='1138' viewBox='0 0 360 1138' fill='none'%3E%3Cpath d='M40.838 44.4266H127.721C144.948 44.4266 149.124 39.7808 151.686 32.9774C151.579 33.2334 151.709 32.9156 151.709 32.9156C151.701 32.9362 151.693 32.9568 151.686 32.9774C151.904 32.4513 153.118 29.5009 158.5 16.3828C166.5 -3.11739 180 0.21645 205.626 0.21645H360.5V52.4166V1188.88H0V110.448V44.4268L40.838 44.4266Z' fill='white'/%3E%3C/svg%3E");
+      background: #fff;
+      padding: 117.88px 15px 27px 15px;
+    }
+
+    @media (max-width: 500px) {
+      padding: 93.88px 15px 27px 15px;
+    }
+
+    @media (max-width: 500px) {
+      padding: 76.88px 15px 27px 15px;
     }
   }
 
@@ -2978,6 +3003,11 @@
             height: 67px;
           }
 
+          img {
+            width: 100px;
+            height: 67px;
+          }
+
           span {
             font-size: 15px;
           }
@@ -3000,6 +3030,11 @@
 
         a {
           svg {
+            width: 100px;
+            height: 67px;
+          }
+
+          img {
             width: 100px;
             height: 67px;
           }
@@ -3218,7 +3253,7 @@
       padding: 10px 20px;
       border-radius: 16px;
       background: var(--Premium-wight, #FFF);
-      box-shadow: -2px 2px 2.4px 0 #0083D0 inset, 10px 10px 30px 0 #0083D0;
+      box-shadow: -18px -18px 30px 0 rgba(255, 255, 255, 0.08), 4px 5px 16px 0 #2A8EC8;
       color: var(--Secondary-grey, #ABACAD);
       font-size: 18px;
       font-style: normal;
@@ -3262,7 +3297,7 @@
       padding: 10px 20px;
       border-radius: 16px;
       background: var(--Premium-wight, #FFF);
-      box-shadow: -2px 2px 2.4px 0 #0083D0 inset, 10px 10px 30px 0 #0083D0;
+      box-shadow: -18px -18px 30px 0 rgba(255, 255, 255, 0.08), 4px 5px 16px 0 #2A8EC8;
       color: var(--Secondary-grey, #ABACAD);
       font-family: "AAStetica", sans-serif;
       font-size: 18px;
@@ -3270,6 +3305,7 @@
       font-weight: 400;
       line-height: normal;
       transition: all 0.3s ease;
+      border: none;
 
       @media (max-width: 1600px) {
         width: 424px;
@@ -3360,9 +3396,14 @@
     font-style: normal;
     font-weight: 400;
     line-height: normal;
+    margin-left: 0;
 
     @media (max-width: 1600px) {
       font-size: 16px;
+    }
+
+    @media (max-width: 1350px) {
+      font-size: 15px;
     }
   }
 
@@ -3391,3 +3432,8 @@
   }
 }
 
+.wpcf7-form-control-wrap {
+  .wpcf7-list-item-label {
+    font-weight: 600;
+  }
+}

@@ -299,165 +299,6 @@ function createTabletSlide(block, height, spaceBetween) {
     return slideDiv;
 }
 
-function initMobileSlider(leftColumn) {
-    if (!leftColumn.dataset.originalContent) {
-        leftColumn.dataset.originalContent = leftColumn.innerHTML;
-    }
-
-    const blocks = Array.from(leftColumn.children);
-    if (blocks.length === 0) return;
-
-    leftColumn.style.height = 'auto';
-    leftColumn.style.overflow = 'hidden';
-    leftColumn.style.position = 'relative';
-    leftColumn.style.width = '100%';
-
-    const swiperWrapper = document.createElement('div');
-    swiperWrapper.className = 'swiper-wrapper';
-    swiperWrapper.style.transitionTimingFunction = 'cubic-bezier(0.4, 0, 0.2, 1)';
-    swiperWrapper.style.display = 'flex';
-    swiperWrapper.style.alignItems = 'stretch';
-
-    const spaceBetween = 16;
-    const containerWidth = leftColumn.offsetWidth;
-    const slideWidth = containerWidth * 0.8;
-
-    const allSlides = [];
-
-    for (let i = blocks.length - 3; i < blocks.length; i++) {
-        if (blocks[i]) {
-            const slideDiv = createMobileSlide(blocks[i], slideWidth, spaceBetween);
-            allSlides.push(slideDiv);
-        }
-    }
-
-    blocks.forEach((block) => {
-        if (block) {
-            const slideDiv = createMobileSlide(block, slideWidth, spaceBetween);
-            allSlides.push(slideDiv);
-        }
-    });
-
-    for (let i = 0; i < 3; i++) {
-        if (blocks[i]) {
-            const slideDiv = createMobileSlide(blocks[i], slideWidth, spaceBetween);
-            allSlides.push(slideDiv);
-        }
-    }
-
-    allSlides.forEach(slide => {
-        swiperWrapper.appendChild(slide);
-    });
-
-    leftColumn.innerHTML = '';
-    leftColumn.appendChild(swiperWrapper);
-
-    function updateCenterSlide(swiper) {
-        if (!swiper || !swiper.slides) return;
-
-        const slides = swiper.slides;
-        slides.forEach(slide => slide.classList.remove('center-slide'));
-
-        const visibleSlides = swiper.el.querySelectorAll('.swiper-slide-visible');
-        if (visibleSlides.length >= 3) {
-            const centralSlide = visibleSlides[1];
-            if (centralSlide) centralSlide.classList.add('center-slide');
-        } else if (visibleSlides.length > 0) {
-            visibleSlides[0].classList.add('center-slide');
-        }
-    }
-
-    const slider = new Swiper(leftColumn, {
-        modules: [Autoplay],
-        direction: 'horizontal',
-        slidesPerView: 'auto',
-        spaceBetween: spaceBetween,
-        centeredSlides: true,
-        loop: true,
-        initialSlide: 3,
-        autoplay: {
-            delay: 2000,
-            disableOnInteraction: false,
-            pauseOnMouseEnter: true
-        },
-        speed: 500,
-        grabCursor: true,
-        watchSlidesProgress: true,
-        watchSlidesVisibility: true,
-        on: {
-            init: function() {
-                leftColumn.swiper = this;
-                this.update();
-                setTimeout(() => {
-                    updateCenterSlide(this);
-                }, 100);
-            },
-            slideChange: function() {
-                updateCenterSlide(this);
-            },
-            resize: function() {
-                if (window.innerWidth > 750) {
-                    this.destroy(true, true);
-                    initLeftColumnSlider();
-                } else {
-                    const newContainerWidth = leftColumn.offsetWidth;
-                    const newSlideWidth = newContainerWidth * 0.8;
-
-                    this.slides.forEach(slide => {
-                        slide.style.width = newSlideWidth + 'px';
-                    });
-
-                    this.update();
-                    updateCenterSlide(this);
-                }
-            }
-        }
-    });
-
-    leftColumnSliders.push(slider);
-}
-
-function createMobileSlide(block, width, spaceBetween) {
-    const slideDiv = document.createElement('div');
-    slideDiv.className = 'swiper-slide';
-    slideDiv.style.width = width + 'px';
-    slideDiv.style.height = 'auto';
-    slideDiv.style.marginRight = spaceBetween + 'px';
-    slideDiv.style.flexShrink = '0';
-
-    const blockClone = block.cloneNode(true);
-    blockClone.style.transform = '';
-    blockClone.style.transition = 'background 0.3s ease, color 0.3s ease';
-    blockClone.style.height = 'auto';
-    blockClone.style.margin = '0';
-
-    slideDiv.appendChild(blockClone);
-    return slideDiv;
-}
-
-function destroyLeftColumnSlider() {
-    leftColumnSliders.forEach(slider => {
-        if (slider && !slider.destroyed) {
-            slider.destroy(true, true);
-        }
-    });
-    leftColumnSliders = [];
-
-    const leftColumn = document.querySelector('.control-units__item:first-child');
-    if (leftColumn) {
-        if (leftColumn.dataset.originalContent) {
-            leftColumn.innerHTML = leftColumn.dataset.originalContent;
-            delete leftColumn.dataset.originalContent;
-        }
-
-        leftColumn.style.height = '';
-        leftColumn.style.overflow = '';
-        leftColumn.style.position = '';
-        leftColumn.style.width = '';
-        delete leftColumn.swiper;
-    }
-}
-
 function initHistorySlider() {
     const historySliderElement = document.querySelector('.history__slider .swiper');
     if (!historySliderElement) return;
@@ -474,19 +315,94 @@ function initHistorySlider() {
     const historySection = document.querySelector('.history__slider');
     const scrollbarContainer = historySection.querySelector('.swiper-custom-scrollbar');
 
-    function getVisibleSlidesCount() {
-        const width = window.innerWidth;
-        if (width <= 750) return 1;
-        if (width <= 1350) return 2;
-        return 4;
+    const allSlides = Array.from(historySliderElement.querySelectorAll('.swiper-slide'));
+
+
+    const realSlides = allSlides.filter(slide => !slide.classList.contains('swiper-slide-duplicate'));
+    const totalRealSlides = realSlides.length;
+
+
+    const realIndexToDataIndex = {};
+    realSlides.forEach((slide, idx) => {
+
+        const dataIndex = parseInt(slide.getAttribute('data-swiper-slide-index'));
+        realIndexToDataIndex[idx] = dataIndex;
+    });
+
+    let pendingTargetDataIndex = null;
+    let isTransitioning = false;
+    let retryCount = 0;
+
+    function updateCircleActive(dataIndex) {
+        const allCircles = document.querySelectorAll('.scrollbar-circle-big');
+        if (!allCircles.length) return;
+
+        let targetCircleIndex = -1;
+        for (let i = 0; i < allCircles.length; i++) {
+            const circleDataIndex = parseInt(allCircles[i].dataset.index);
+            if (circleDataIndex === dataIndex) {
+                targetCircleIndex = i;
+                break;
+            }
+        }
+
+        if (targetCircleIndex === -1) return;
+
+        allCircles.forEach((circle, idx) => {
+            if (idx === targetCircleIndex) {
+                if (!circle.classList.contains('active')) {
+                    circle.classList.add('active');
+                    circle.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="43" height="43" viewBox="0 0 43 43" fill="none">
+                        <foreignObject x="-24" y="-24" width="91" height="91"><div xmlns="http://www.w3.org/1999/xhtml" style="backdrop-filter:blur(12px);height:100%;width:100%"></div></foreignObject>
+                        <circle data-figma-bg-blur-radius="24" cx="21.5" cy="21.5" r="21" stroke="url(#paint0_linear_567_20355)" stroke-opacity="0.83" stroke-linecap="round" stroke-linejoin="round"/>
+                        <foreignObject x="-15" y="-15" width="73" height="73"><div xmlns="http://www.w3.org/1999/xhtml" style="backdrop-filter:blur(12px);clip-path:url(#bgblur_0_567_20355_clip_path);height:100%;width:100%"></div></foreignObject>
+                        <circle data-figma-bg-blur-radius="24" cx="21.5" cy="21.5" r="12" fill="url(#paint1_radial_567_20355)" stroke="url(#paint2_linear_567_20355)" stroke-linecap="round" stroke-linejoin="round"/>
+                        <defs>
+                            <clipPath id="bgblur_0_567_20355_clip_path" transform="translate(15 15)"><circle cx="21.5" cy="21.5" r="12"/></clipPath>
+                            <linearGradient id="paint0_linear_567_20355" x1="21.5152" y1="14.6667" x2="21.4949" y2="42" gradientUnits="userSpaceOnUse">
+                                <stop stop-color="#62B6EA"/>
+                                <stop offset="0.426133" stop-color="#77C5F5"/>
+                                <stop offset="1" stop-color="#E2F4FF" stop-opacity="0.1"/>
+                            </linearGradient>
+                            <radialGradient id="paint1_radial_567_20355" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(18 17) rotate(74.9315) scale(13.4629)">
+                                <stop stop-color="#C5E9FF"/>
+                                <stop offset="1" stop-color="#77C5F5"/>
+                            </radialGradient>
+                            <linearGradient id="paint2_linear_567_20355" x1="13.6612" y1="12.6795" x2="28.3328" y2="30.8506" gradientUnits="userSpaceOnUse">
+                                <stop stop-color="white" stop-opacity="0.25"/>
+                                <stop offset="1" stop-color="white" stop-opacity="0"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>`;
+                }
+            } else {
+                if (circle.classList.contains('active')) {
+                    circle.classList.remove('active');
+                    circle.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 25 25" fill="none">
+                        <foreignObject x="-24" y="-24" width="73" height="73"><div xmlns="http://www.w3.org/1999/xhtml" style="backdrop-filter:blur(12px);clip-path:url(#bgblur_0_567_19992_clip_path);height:100%;width:100%"></div></foreignObject>
+                        <circle data-figma-bg-blur-radius="24" cx="12.5" cy="12.5" r="12" fill="url(#paint0_radial_567_19992)" stroke="url(#paint1_linear_567_19992)" stroke-linecap="round" stroke-linejoin="round"/>
+                        <defs>
+                            <clipPath id="bgblur_0_567_19992_clip_path" transform="translate(24 24)"><circle cx="12.5" cy="12.5" r="12"/></clipPath>
+                            <radialGradient id="paint0_radial_567_19992" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(9 8) rotate(74.9315) scale(13.4629)">
+                                <stop stop-color="#C5E9FF"/>
+                                <stop offset="1" stop-color="#77C5F5"/>
+                            </radialGradient>
+                            <linearGradient id="paint1_linear_567_19992" x1="4.66122" y1="3.67953" x2="19.3328" y2="21.8506" gradientUnits="userSpaceOnUse">
+                                <stop stop-color="white" stop-opacity="0.25"/>
+                                <stop offset="1" stop-color="white" stop-opacity="0"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>`;
+                }
+            }
+        });
     }
 
-    function createScrollbar(visibleCount) {
+    function createScrollbar() {
         scrollbarContainer.innerHTML = '';
 
         const trackContainer = document.createElement('div');
         trackContainer.className = 'scrollbar-track';
-
 
         const lineSvg = document.createElement('div');
         lineSvg.className = 'scrollbar-line';
@@ -497,7 +413,6 @@ function initHistorySlider() {
 
         const circlesContainer = document.createElement('div');
         circlesContainer.className = 'scrollbar-circles';
-
 
         const leftSmallCircle = document.createElement('span');
         leftSmallCircle.className = 'scrollbar-circle scrollbar-circle-small scrollbar-circle-left';
@@ -518,11 +433,15 @@ function initHistorySlider() {
         </svg>`;
         circlesContainer.appendChild(leftSmallCircle);
 
+        const isMobile = window.innerWidth <= 750;
+        const numberOfCircles = isMobile ? 1 : totalRealSlides;
 
-        for (let i = 0; i < visibleCount; i++) {
+        for (let i = 0; i < numberOfCircles; i++) {
+
+            const dataIndexForCircle = realIndexToDataIndex[i];
             const bigCircle = document.createElement('span');
             bigCircle.className = `scrollbar-circle scrollbar-circle-big ${i === 0 ? 'active' : ''}`;
-            bigCircle.dataset.index = i;
+            bigCircle.dataset.index = dataIndexForCircle;
 
             if (i === 0) {
                 bigCircle.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="43" height="43" viewBox="0 0 43 43" fill="none">
@@ -564,9 +483,44 @@ function initHistorySlider() {
                     </defs>
                 </svg>`;
             }
+
+            if (!isMobile && numberOfCircles > 1) {
+                bigCircle.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (historySlider && !historySlider.destroyed && !isTransitioning) {
+                        const targetDataIndex = parseInt(bigCircle.dataset.index);
+                        const activeSlide = historySliderElement.querySelector('.swiper-slide-active');
+                        let currentDataIndex = null;
+
+
+                        if (activeSlide && !activeSlide.classList.contains('swiper-slide-duplicate')) {
+                            currentDataIndex = parseInt(activeSlide.getAttribute('data-swiper-slide-index'));
+                        } else if (activeSlide) {
+
+                            const originalIndex = parseInt(activeSlide.getAttribute('data-swiper-slide-index'));
+                            currentDataIndex = originalIndex;
+                        }
+
+                        if (targetDataIndex === currentDataIndex) return;
+
+                        pendingTargetDataIndex = targetDataIndex;
+                        isTransitioning = true;
+                        retryCount = 0;
+
+
+                        const targetRealIndex = Object.keys(realIndexToDataIndex).find(
+                            key => realIndexToDataIndex[key] === targetDataIndex
+                        );
+                        if (targetRealIndex !== undefined) {
+                            historySlider.slideToLoop(parseInt(targetRealIndex), 300);
+                        }
+                    }
+                });
+            }
+
             circlesContainer.appendChild(bigCircle);
         }
-
 
         const rightSmallCircle = document.createElement('span');
         rightSmallCircle.className = 'scrollbar-circle scrollbar-circle-small scrollbar-circle-right';
@@ -591,16 +545,15 @@ function initHistorySlider() {
         scrollbarContainer.appendChild(trackContainer);
     }
 
-
-    const initialVisibleCount = getVisibleSlidesCount();
-    createScrollbar(initialVisibleCount);
+    createScrollbar();
 
     historySlider = new Swiper(historySliderElement, {
         modules: [Navigation],
         slidesPerView: 1,
         spaceBetween: 30,
         loop: true,
-        speed: 500,
+        loopPreventsSlide: false,
+        speed: 300,
         navigation: {
             nextEl: historySection.querySelector('.swiper-button-next'),
             prevEl: historySection.querySelector('.swiper-button-prev'),
@@ -622,95 +575,90 @@ function initHistorySlider() {
         on: {
             init: function() {
                 updateHistoryArrowStates(this);
-                updateCustomScrollbar(this);
+                const isMobile = window.innerWidth <= 750;
+                if (isMobile) {
+                    updateCircleActive(0);
+                } else {
+                    const activeSlide = historySliderElement.querySelector('.swiper-slide-active');
+                    let currentDataIndex = 0;
+
+                    if (activeSlide && !activeSlide.classList.contains('swiper-slide-duplicate')) {
+                        currentDataIndex = parseInt(activeSlide.getAttribute('data-swiper-slide-index'));
+                    } else if (activeSlide) {
+                        currentDataIndex = parseInt(activeSlide.getAttribute('data-swiper-slide-index'));
+                    }
+
+                    updateCircleActive(currentDataIndex);
+                }
             },
             slideChange: function() {
                 updateHistoryArrowStates(this);
-                updateCustomScrollbar(this);
+            },
+            slideChangeTransitionEnd: function() {
+                const isMobile = window.innerWidth <= 750;
+                if (isMobile) {
+                    updateCircleActive(0);
+                } else {
+                    const activeSlide = historySliderElement.querySelector('.swiper-slide-active');
+                    let currentDataIndex = 0;
+
+                    if (activeSlide && !activeSlide.classList.contains('swiper-slide-duplicate')) {
+                        currentDataIndex = parseInt(activeSlide.getAttribute('data-swiper-slide-index'));
+                    } else if (activeSlide) {
+                        currentDataIndex = parseInt(activeSlide.getAttribute('data-swiper-slide-index'));
+                    }
+
+                    if (pendingTargetDataIndex !== null) {
+                        if (currentDataIndex === pendingTargetDataIndex) {
+                            updateCircleActive(pendingTargetDataIndex);
+                            pendingTargetDataIndex = null;
+                            retryCount = 0;
+                        } else if (retryCount < 3) {
+                            retryCount++;
+                            setTimeout(() => {
+                                if (historySlider && !historySlider.destroyed && pendingTargetDataIndex !== null) {
+                                    const targetRealIndex = Object.keys(realIndexToDataIndex).find(
+                                        key => realIndexToDataIndex[key] === pendingTargetDataIndex
+                                    );
+                                    if (targetRealIndex !== undefined) {
+                                        historySlider.slideToLoop(parseInt(targetRealIndex), 300);
+                                    }
+                                }
+                            }, 100);
+                        } else {
+                            updateCircleActive(currentDataIndex);
+                            pendingTargetDataIndex = null;
+                            retryCount = 0;
+                        }
+                    } else {
+                        updateCircleActive(currentDataIndex);
+                    }
+                    isTransitioning = false;
+                }
             },
             resize: function() {
+                createScrollbar();
+                this.update();
+                updateHistoryArrowStates(this);
+                const isMobile = window.innerWidth <= 750;
+                if (isMobile) {
+                    updateCircleActive(0);
+                } else {
+                    const activeSlide = historySliderElement.querySelector('.swiper-slide-active');
+                    let currentDataIndex = 0;
 
-                const newVisibleCount = getVisibleSlidesCount();
-                const currentBigCircles = historySection.querySelectorAll('.scrollbar-circle-big').length;
+                    if (activeSlide && !activeSlide.classList.contains('swiper-slide-duplicate')) {
+                        currentDataIndex = parseInt(activeSlide.getAttribute('data-swiper-slide-index'));
+                    } else if (activeSlide) {
+                        currentDataIndex = parseInt(activeSlide.getAttribute('data-swiper-slide-index'));
+                    }
 
-                if (newVisibleCount !== currentBigCircles) {
-
-                    createScrollbar(newVisibleCount);
+                    updateCircleActive(currentDataIndex);
                 }
-
-                updateCustomScrollbar(this);
             }
         }
     });
 }
-
-function updateCustomScrollbar(swiper) {
-    const historySection = document.querySelector('.history__slider');
-    if (!historySection) return;
-
-    const bigCircles = historySection.querySelectorAll('.scrollbar-circle-big');
-
-    let activeIndex = swiper.activeIndex;
-
-    if (swiper.params.loop) {
-        activeIndex = swiper.realIndex;
-    }
-
-
-    const visibleCount = bigCircles.length;
-    if (visibleCount === 2) {
-
-        activeIndex = activeIndex % 2;
-    } else if (visibleCount === 1) {
-        activeIndex = 0;
-    }
-
-    bigCircles.forEach((circle, index) => {
-        if (index === activeIndex) {
-            circle.classList.add('active');
-            circle.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="43" height="43" viewBox="0 0 43 43" fill="none">
-                <foreignObject x="-24" y="-24" width="91" height="91"><div xmlns="http://www.w3.org/1999/xhtml" style="backdrop-filter:blur(12px);height:100%;width:100%"></div></foreignObject>
-                <circle data-figma-bg-blur-radius="24" cx="21.5" cy="21.5" r="21" stroke="url(#paint0_linear_567_20355)" stroke-opacity="0.83" stroke-linecap="round" stroke-linejoin="round"/>
-                <foreignObject x="-15" y="-15" width="73" height="73"><div xmlns="http://www.w3.org/1999/xhtml" style="backdrop-filter:blur(12px);clip-path:url(#bgblur_0_567_20355_clip_path);height:100%;width:100%"></div></foreignObject>
-                <circle data-figma-bg-blur-radius="24" cx="21.5" cy="21.5" r="12" fill="url(#paint1_radial_567_20355)" stroke="url(#paint2_linear_567_20355)" stroke-linecap="round" stroke-linejoin="round"/>
-                <defs>
-                    <clipPath id="bgblur_0_567_20355_clip_path" transform="translate(15 15)"><circle cx="21.5" cy="21.5" r="12"/></clipPath>
-                    <linearGradient id="paint0_linear_567_20355" x1="21.5152" y1="14.6667" x2="21.4949" y2="42" gradientUnits="userSpaceOnUse">
-                        <stop stop-color="#62B6EA"/>
-                        <stop offset="0.426133" stop-color="#77C5F5"/>
-                        <stop offset="1" stop-color="#E2F4FF" stop-opacity="0.1"/>
-                    </linearGradient>
-                    <radialGradient id="paint1_radial_567_20355" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(18 17) rotate(74.9315) scale(13.4629)">
-                        <stop stop-color="#C5E9FF"/>
-                        <stop offset="1" stop-color="#77C5F5"/>
-                    </radialGradient>
-                    <linearGradient id="paint2_linear_567_20355" x1="13.6612" y1="12.6795" x2="28.3328" y2="30.8506" gradientUnits="userSpaceOnUse">
-                        <stop stop-color="white" stop-opacity="0.25"/>
-                        <stop offset="1" stop-color="white" stop-opacity="0"/>
-                    </linearGradient>
-                </defs>
-            </svg>`;
-        } else {
-            circle.classList.remove('active');
-            circle.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 25 25" fill="none">
-                <foreignObject x="-24" y="-24" width="73" height="73"><div xmlns="http://www.w3.org/1999/xhtml" style="backdrop-filter:blur(12px);clip-path:url(#bgblur_0_567_19992_clip_path);height:100%;width:100%"></div></foreignObject>
-                <circle data-figma-bg-blur-radius="24" cx="12.5" cy="12.5" r="12" fill="url(#paint0_radial_567_19992)" stroke="url(#paint1_linear_567_19992)" stroke-linecap="round" stroke-linejoin="round"/>
-                <defs>
-                    <clipPath id="bgblur_0_567_19992_clip_path" transform="translate(24 24)"><circle cx="12.5" cy="12.5" r="12"/></clipPath>
-                    <radialGradient id="paint0_radial_567_19992" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(9 8) rotate(74.9315) scale(13.4629)">
-                        <stop stop-color="#C5E9FF"/>
-                        <stop offset="1" stop-color="#77C5F5"/>
-                    </radialGradient>
-                    <linearGradient id="paint1_linear_567_19992" x1="4.66122" y1="3.67953" x2="19.3328" y2="21.8506" gradientUnits="userSpaceOnUse">
-                        <stop stop-color="white" stop-opacity="0.25"/>
-                        <stop offset="1" stop-color="white" stop-opacity="0"/>
-                    </linearGradient>
-                </defs>
-            </svg>`;
-        }
-    });
-}
-
 function updateHistoryArrowStates(swiperInstance) {
     const historySection = document.querySelector('.history__slider');
     if (!historySection) return;
@@ -736,64 +684,6 @@ function updateHistoryArrowStates(swiperInstance) {
         nextButton.removeAttribute('disabled');
     }
 }
-
-function initPartnersSlider() {
-    const partnersSliderElement = document.querySelector('.partners__slider.swiper');
-    if (!partnersSliderElement) return;
-
-    if (partnersSlider && !partnersSlider.destroyed) {
-        return;
-    }
-
-    if (partnersSlider) {
-        partnersSlider.destroy(true, true);
-        partnersSlider = null;
-    }
-
-    partnersSlider = new Swiper(partnersSliderElement, {
-        modules: [Autoplay],
-        slidesPerView: 10,
-        spaceBetween: 20,
-        loop: true,
-        speed: 500,
-        autoplay: {
-            delay: 3000,
-            disableOnInteraction: false,
-            pauseOnMouseEnter: true
-        },
-        breakpoints: {
-            0: {
-                slidesPerView: 3,
-                spaceBetween: 16
-            },
-            450: {
-                slidesPerView: 4,
-                spaceBetween: 20
-            },
-            751: {
-                slidesPerView: 5,
-                spaceBetween: 20
-            },
-            800: {
-                slidesPerView: 6,
-                spaceBetween: 20
-            },
-            1000: {
-                slidesPerView: 7,
-                spaceBetween: 20
-            },
-            1200: {
-                slidesPerView: 8,
-                spaceBetween: 20
-            },
-            1601: {
-                slidesPerView: 10,
-                spaceBetween: 20
-            }
-        }
-    });
-}
-
 function initReviewsResultSlider() {
     const reviewsPage = document.querySelector('.reviews-page');
     if (!reviewsPage) return;
@@ -819,12 +709,12 @@ function initReviewsResultSlider() {
 
     resultList.classList.add('swiper-container');
     resultList.style.overflow = 'hidden';
-    resultList.style.background = 'none'; // Убираем фон
+    resultList.style.background = 'none';
 
     const wrapperDiv = document.createElement('div');
     wrapperDiv.className = 'swiper-wrapper';
     wrapperDiv.style.transitionTimingFunction = 'cubic-bezier(0.4, 0, 0.2, 1)';
-    wrapperDiv.style.background = 'none'; // Убираем фон
+    wrapperDiv.style.background = 'none';
 
     items.forEach(item => {
         if (item && item.nodeType === 1) {

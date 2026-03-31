@@ -565,10 +565,6 @@
     }
   }
 
-  .swiper-button-prev {
-    transform: rotate(180deg);
-  }
-
   .swiper-custom-scrollbar {
     position: absolute;
     top: 29px;
@@ -723,12 +719,11 @@
     padding: 20.75px 52.29px 20.75px 29.05px;
     border-radius: 24.9px;
     border: 0.83px solid #FFF;
-    box-shadow: -2px 2px 2.4px 0 rgba(255, 185, 185, 0.35) inset, 0 4px 30px 0 rgba(43, 47, 66, 0.25);
     transition: all 0.3s ease;
     position: relative;
 
     img {
-      width: 55%;
+      width: 50%;
       position: absolute;
       height: auto;
       bottom: 0;
@@ -764,7 +759,7 @@
     }
 
     @media (max-width: 750px) {
-      padding: 16.58px 27px 16.58px 24px;
+      padding: 16.58px 20px 16.58px 20px;
       height: 156px;
     }
 
