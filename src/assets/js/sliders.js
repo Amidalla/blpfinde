@@ -684,6 +684,57 @@ function updateHistoryArrowStates(swiperInstance) {
         nextButton.removeAttribute('disabled');
     }
 }
+
+function initPartnersSlider() {
+    const partnersSliderElement = document.querySelector('.partners__slider.swiper');
+    if (!partnersSliderElement) return;
+
+    if (partnersSlider && !partnersSlider.destroyed) {
+        partnersSlider.update();
+        return;
+    }
+
+    if (partnersSlider) {
+        partnersSlider.destroy(true, true);
+        partnersSlider = null;
+    }
+
+    partnersSlider = new Swiper(partnersSliderElement, {
+        modules: [Navigation, Autoplay],
+        slidesPerView: 2,
+        spaceBetween: 20,
+        loop: true,
+        autoplay: {
+            delay: 3000,
+            disableOnInteraction: false,
+            pauseOnMouseEnter: true
+        },
+        speed: 400,
+        breakpoints: {
+            0: {
+                slidesPerView: 2.5,
+                spaceBetween: 16
+            },
+            450: {
+                slidesPerView: 3,
+                spaceBetween: 20
+            },
+            600: {
+                slidesPerView: 4,
+                spaceBetween: 24
+            },
+            1024: {
+                slidesPerView: 7,
+                spaceBetween: 30
+            },
+            1650: {
+                slidesPerView: 10,
+                spaceBetween: 30
+            }
+        }
+    });
+}
+
 function initReviewsResultSlider() {
     const reviewsPage = document.querySelector('.reviews-page');
     if (!reviewsPage) return;
