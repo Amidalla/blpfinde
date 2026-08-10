@@ -378,3 +378,16 @@
     }
   }
 }
+
+.consultants-card__item--certificate {
+  .consultants-card__certificate {
+    cursor: pointer;
+    position: relative;
+    display: inline-block;
+    transition: all 0.3s ease;
+
+    &:hover {
+      color: #F83E49;
+    }
+  }
+}

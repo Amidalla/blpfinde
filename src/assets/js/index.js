@@ -231,6 +231,14 @@ const App = {
 
         setTimeout(() => {
             try {
+                this.initConsultantCertificates();
+            } catch (e) {
+                console.warn('Consultant certificates initialization failed:', e);
+            }
+        }, 600);
+
+        setTimeout(() => {
+            try {
                 const certificateLinks = document.querySelectorAll('[data-fancybox="certificates"]');
 
                 certificateLinks.forEach((link) => {
@@ -544,7 +552,7 @@ const App = {
             }
         }, 500);
 
-        setTimeout(() => {
+        /*setTimeout(() => {
             try {
                 const reviewLinks = document.querySelectorAll('.all-reviews__body .news-link');
 
@@ -684,7 +692,7 @@ const App = {
                 });
             } catch (e) {
             }
-        }, 500);
+        }, 500);*/
 
         try {
             this.lazyLoad.update();
@@ -733,29 +741,124 @@ const App = {
         });
     },
 
-    addCustomCloseButton() {
-        this.removeCustomCloseButton();
+    createConsultantCertificateSlide(certificateSrc, index) {
+        const certificate = document.createElement('div');
+        certificate.className = 'certificates__item certificates__item--expanded';
 
-        const container = document.querySelector('.fancybox__container');
-        if (!container) return;
+        const image = document.createElement('img');
+        image.src = certificateSrc;
+        image.alt = '';
+        certificate.appendChild(image);
 
         const closeBtn = document.createElement('button');
-        closeBtn.className = 'custom-fancybox-close';
+        closeBtn.className = 'custom-fancybox-close scale-in';
+        closeBtn.setAttribute('type', 'button');
+        closeBtn.setAttribute('data-fancybox-close', '');
         closeBtn.setAttribute('aria-label', 'Закрыть');
-        closeBtn.onclick = (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            Fancybox.close();
-        };
+        const isMobile = window.matchMedia('(max-width: 768px)').matches;
+        const isSmallMobile = window.matchMedia('(max-width: 480px)').matches;
+        const buttonSize = isSmallMobile ? 28 : isMobile ? 32 : 44;
 
-        container.appendChild(closeBtn);
+        closeBtn.style.width = `${buttonSize}px`;
+        closeBtn.style.height = `${buttonSize}px`;
+        closeBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="${buttonSize}" height="${buttonSize}" viewBox="0 0 44 44" fill="none" aria-hidden="true">
+            <path d="M37.5963 33.224L26.3729 22.0006L37.5963 10.7771C38.808 9.56543 38.808 7.61465 37.5963 6.40293C36.3846 5.19121 34.4338 5.19121 33.2221 6.40293L21.9986 17.6264L10.7752 6.40293C9.56348 5.19121 7.6127 5.19121 6.40098 6.40293C5.18926 7.61465 5.18926 9.56543 6.40098 10.7771L17.6244 22.0006L6.40098 33.224C5.18926 34.4357 5.18926 36.3865 6.40098 37.5982C7.6127 38.81 9.56348 38.81 10.7752 37.5982L21.9986 26.3748L33.2221 37.5982C34.4338 38.81 36.3846 38.81 37.5963 37.5982C38.7994 36.3865 38.7994 34.4272 37.5963 33.224Z" fill="#212529"/>
+        </svg>`;
+        certificate.appendChild(closeBtn);
+
+        const modalId = `consultant-certificate-modal-${index}-${Date.now()}`;
+        certificate.id = modalId;
+
+        const tempDiv = document.createElement('div');
+        tempDiv.style.display = 'none';
+        tempDiv.appendChild(certificate);
+        document.body.appendChild(tempDiv);
+
+        return {
+            src: `#${modalId}`,
+            type: 'inline'
+        };
     },
 
-    removeCustomCloseButton() {
-        const existingBtn = document.querySelector('.custom-fancybox-close');
-        if (existingBtn) {
-            existingBtn.remove();
-        }
+    initConsultantCertificates() {
+        const certificateSpans = document.querySelectorAll('.consultants-card__certificate');
+
+        certificateSpans.forEach((span) => {
+            span.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+
+                const certificateSrc = span.getAttribute('data-certificate');
+                if (!certificateSrc) return;
+
+                // Получаем все сертификаты для текущего консультанта
+                const parentCard = span.closest('.consultants-card');
+                const allCertificates = parentCard.querySelectorAll('.consultants-card__certificate');
+
+                if (allCertificates.length === 1) {
+                    Fancybox.show([
+                        this.createConsultantCertificateSlide(certificateSrc, 0)
+                    ], {
+                        showClass: "f-fadeIn",
+                        hideClass: "f-fadeOut",
+                        Images: {
+                            initialSize: "fit",
+                            zoom: true,
+                            pan: true,
+                        },
+                        wheel: "zoom",
+                        click: "toggleZoom",
+                        Toolbar: false,
+                        Thumbs: false,
+                        on: {
+                            close: () => this.removeConsultantCertificateSlides()
+                        }
+                    });
+                } else {
+                    const currentIndex = Array.from(allCertificates).indexOf(span);
+                    const items = Array.from(allCertificates).map((cert, index) =>
+                        this.createConsultantCertificateSlide(cert.getAttribute('data-certificate'), index)
+                    );
+
+                    Fancybox.show(items, {
+                        startIndex: currentIndex,
+                        showClass: "f-fadeIn",
+                        hideClass: "f-fadeOut",
+                        groupAll: true,
+                        infinite: true,
+                        transitionEffect: "fade",
+                        Images: {
+                            initialSize: "fit",
+                            zoom: true,
+                            pan: true,
+                        },
+                        wheel: "zoom",
+                        click: "toggleZoom",
+                        Toolbar: false,
+                        Thumbs: false,
+                        Carousel: {
+                            fade: true,
+                            Navigation: {
+                                prevTpl: '<button class="f-button is-prev" title="Назад" style="display: flex; align-items: center; justify-content: center; width: 50px; height: 50px; background: rgba(0,0,0,0.5); border-radius: 50%; color: white; font-size: 24px; position: absolute; left: 20px; top: 50%; transform: translateY(-50%); z-index: 1000; cursor: pointer; border: none;">‹</button>',
+                                nextTpl: '<button class="f-button is-next" title="Вперед" style="display: flex; align-items: center; justify-content: center; width: 50px; height: 50px; background: rgba(0,0,0,0.5); border-radius: 50%; color: white; font-size: 24px; position: absolute; right: 20px; top: 50%; transform: translateY(-50%); z-index: 1000; cursor: pointer; border: none;">›</button>',
+                            },
+                        },
+                        on: {
+                            close: () => this.removeConsultantCertificateSlides()
+                        }
+                    });
+                }
+            });
+
+            // Добавляем курсор pointer для интерактивности
+            span.style.cursor = 'pointer';
+        });
+    },
+
+    removeConsultantCertificateSlides() {
+        document.querySelectorAll('[id^="consultant-certificate-modal-"]').forEach((certificate) => {
+            certificate.parentNode?.remove();
+        });
     },
 
     initModules() {
